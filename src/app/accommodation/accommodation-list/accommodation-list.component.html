@@ -1,0 +1,32 @@
+<div class="accommodation-list-container">
+  <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+    <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+      <th mat-header-cell *matHeaderCellDef> {{ column | uppercase }} </th>
+      <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+    </ng-container>
+
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <mat-grid-list cols="1" rowHeight="45">
+            <mat-grid-tile>
+              <span class="bold-medium">{{'Ilość osób zakwaterowana' | uppercase }}</span><span>{{ element['il. os. zakwaterowana'] }}</span></mat-grid-tile>
+            <mat-grid-tile>
+              <span class="bold-medium">{{ 'Można dostawić' | uppercase }}</span><span>{{ element['można dostawić'] }}</span></mat-grid-tile>
+            <mat-grid-tile>
+              <span class="bold-medium">{{ 'Przydział' | uppercase }}</span><span>{{ element['przydział'] }}</span></mat-grid-tile>
+          </mat-grid-list>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+        [class.example-expanded-row]="expandedElement === element"
+        (click)="expandedElement = expandedElement === element ? null : element">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr> -->
+  </table>
+</div>
+

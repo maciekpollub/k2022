@@ -1,0 +1,15 @@
+<div class="home-page-content">
+  <mat-grid-list cols="2" rowHeight="50vh">
+    <mat-grid-tile
+      *ngFor="let tile of tiles"
+      [style.background]="tile.bgColor"
+      [style.color]="tile.color"
+      [colspan]="tile.cols"
+      [rowspan]="tile.rows"
+     >
+      {{ tile.text }}
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+
+

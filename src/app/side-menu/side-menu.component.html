@@ -1,0 +1,10 @@
+
+<div class="side-menu-header">
+  <mat-icon>people</mat-icon>
+  <h3>KONWIWENCJA 2022</h3>
+</div>
+<mat-selection-list [multiple]="false">
+  <mat-list-option *ngFor="let item of menuItems" [value]="item.name" (click)="routeTo(item.path)">
+    {{ item.name }}
+  </mat-list-option>
+</mat-selection-list>

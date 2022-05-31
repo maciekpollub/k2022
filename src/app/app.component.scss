@@ -1,0 +1,30 @@
+.drawer-container {
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  .sidenav {
+    width: 16%;
+  }
+
+  .sidenav-content {
+    display: block;
+    height: 100%;
+    justify-content: start;
+    position: relative;
+    //z-index: 1;
+
+  .call-to-action {
+    position: absolute;
+    bottom: calc(50% - 30px);
+    left: calc(50% - 28px);
+    // z-index: 5;
+  }
+
+  .back-home {
+    position: fixed;
+    top: calc(100vh - 80px);
+    right: 26px;
+  }
+}
+}
+

@@ -1,0 +1,12 @@
+.side-menu-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  mat-icon {
+    font: 24px;
+  }
+}
+mat-list-option {
+  margin: 8px;
+}
