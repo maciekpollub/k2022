@@ -1,0 +1,32 @@
+.summary-container{
+  position: relative;
+  margin: 0 2rem;
+
+  table {
+    width: 100%;
+  }
+}
+
+th.mat-header-cell {
+  font-weight: 500;
+  color: white;
+  letter-spacing: 1px;
+  background-color: #3F51B5;
+  padding-right: 12px;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-description-attribution {
+  opacity: 0.5;
+}

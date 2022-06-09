@@ -28,7 +28,7 @@ export class TopFilterComponent implements OnInit {
 
   openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
     this.dialog.open(SummaryComponent, {
-      width: '250px',
+      width: '90%',
     });
   }
 
