@@ -17,12 +17,33 @@
       <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
         <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
           <mat-grid-list cols="1" rowHeight="35">
-            <mat-grid-tile>
-              <span class="bold-medium">{{'Zakwaterowanie' | uppercase }}</span><span>{{ element.zakwaterowanie }}</span></mat-grid-tile>
-            <mat-grid-tile>
-              <span class="bold-medium">{{ 'Samochód' | uppercase }}</span><span>{{ element['samochód'] }}</span></mat-grid-tile>
-            <mat-grid-tile>
-              <span class="bold-medium">{{ 'Przydział' | uppercase }}</span><span>{{ element['przydział'] }}</span></mat-grid-tile>
+            <mat-grid-tile *ngIf="element.zakwaterowanie">
+              <span class="bold-medium">{{'Zakwaterowanie' | uppercase }}</span><span>{{ element.zakwaterowanie }}</span>
+            </mat-grid-tile>
+            <mat-grid-tile *ngIf="element['obecność']">
+              <span class="bold-medium">{{'Obecność' | uppercase }}</span><span>{{ element['obecność'] }}</span>
+            </mat-grid-tile>
+            <mat-grid-tile *ngIf="element['samochód']">
+              <span class="bold-medium">{{ 'Samochód' | uppercase }}</span><span>{{ element['samochód'] }}</span>
+            </mat-grid-tile>
+            <mat-grid-tile *ngIf="element['niemowlęta']">
+              <span class="bold-medium">{{'Niemowlęta' | uppercase }}</span><span>{{ element['niemowlęta'] }}</span>
+            </mat-grid-tile>
+            <mat-grid-tile *ngIf="element.dzieci">
+              <span class="bold-medium">{{'Dzieci' | uppercase }}</span><span>{{ element.dzieci }}</span>
+            </mat-grid-tile>
+            <mat-grid-tile *ngIf="element.nianiaZRodziny">
+              <span class="bold-medium">{{'Niania z rodziny' | uppercase }}</span><span>{{ element.nianiaZRodziny }}</span>
+            </mat-grid-tile>
+            <mat-grid-tile *ngIf="element.nianiaObca">
+              <span class="bold-medium">{{'Niania obca' | uppercase }}</span><span>{{ element.nianiaObca }}</span>
+            </mat-grid-tile>
+            <mat-grid-tile *ngIf="element.wiek">
+              <span class="bold-medium">{{'Wiek' | uppercase }}</span><span>{{ element.wiek }}</span>
+            </mat-grid-tile>
+            <mat-grid-tile *ngIf="element['przydział']">
+              <span class="bold-medium">{{ 'Przydział' | uppercase }}</span><span>{{ element['przydział'] }}</span>
+            </mat-grid-tile>
           </mat-grid-list>
         </div>
       </td>

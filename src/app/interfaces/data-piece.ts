@@ -1,12 +1,19 @@
 export interface IFirstDataPiece {
   'Katechiści': string;
-  'Lp. ': string;
+  'Obecność': string;
   'Nazwisko i imię (małżeństwa razem, dzieci osobno)': string;
   'Przydział': string;
   'Zakwaterowanie': string;
   'Środek transportu (własny samochód lub brak)': string;
   'Prezbiterzy'?: number;
   'Małżeństwa (il. osób)'?: number;
+  'Kobiety (1)'?: number;
+  'Mężczyźni (1)'?: number;
+  'Niemowlęta i dzieci (bez dodatkowego łóżka i posiłku)'?: number;
+  'Dzieci większe (z łóżkiem i posiłkiem)'?: number;
+  'Niania z rodziny - mieszkanie z rodziną'?: number;
+  'Niania obca lub z rodziny - mieszkanie osobne'?: number;
+  'Uwagi, niepełnosprawność, diety'?: string;
   'Wiek jedynek, nianiek np. 40+'?: string;
 }
 

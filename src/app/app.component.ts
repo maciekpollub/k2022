@@ -65,17 +65,20 @@ export class AppComponent implements OnInit, OnDestroy {
 
         let first_sheet_name = workbook.SheetNames[0];
         let first_worksheet = workbook.Sheets[first_sheet_name];
+        this.fDSrv.update_sheet_range(first_worksheet);
         this.first_filelist = XLSX.utils.sheet_to_json(first_worksheet, {raw: true});
         this.firstFilteredList = this.fDSrv.filterFetchedParticipants(this.first_filelist);
         this.participantList = this.fDSrv.mapParticipantList(this.firstFilteredList);
 
         let second_sheet_name = workbook.SheetNames[1];
         let second_worksheet = workbook.Sheets[second_sheet_name];
+        this.fDSrv.update_sheet_range(second_worksheet);
         this.second_filelist = XLSX.utils.sheet_to_json(second_worksheet, {raw: true});
         this.accommodationList = this.fDSrv.mapAccommodationList(this.second_filelist);
 
         let third_sheet_name = workbook.SheetNames[2];
         let third_worksheet = workbook.Sheets[third_sheet_name];
+        this.fDSrv.update_sheet_range(third_worksheet);
         this.third_filelist = XLSX.utils.sheet_to_json(third_worksheet, {raw: true});
         this.otherAccommodationList = this.fDSrv.mapOtherAccommodationList(this.third_filelist);
 
