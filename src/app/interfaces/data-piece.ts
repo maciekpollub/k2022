@@ -21,3 +21,16 @@ export interface ISecondDataPiece {
   'razem il. osób'?: number;
   'wspólnota'?: string;
 }
+
+export interface IThirdDataPiece {
+  'łóżko pojedyncze': number;
+  'ilość tapczanów 2-os.': number;
+  'łóżko duże': number;
+  'przydział': number;
+  'ilość os. zakwaterowana': number;
+  'wolne łóżka': number;
+  'kondygnacja - nr pokoju/il. pokoi'?: string;
+  'max il. osób w pokoju'?: number;
+  'nazwiska zakwaterowanych'?: string;
+  'wspólnota'?: string;
+}

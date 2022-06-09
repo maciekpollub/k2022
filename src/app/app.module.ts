@@ -9,12 +9,16 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { HomeComponent } from './home/home.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { AppRoutingModule } from './app-routing.module';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from './shared/shared.module';
+import { AccommodationModule } from './accommodation/accommodation.module';
+import { ParticipantsModule } from './participants/participants.module';
+import { SummaryComponent } from './top-filter/summary/summary.component';
 
 
 
@@ -22,7 +26,8 @@ import { SharedModule } from './shared/shared.module';
   declarations: [
     AppComponent,
     HomeComponent,
-    SideMenuComponent
+    SideMenuComponent,
+    SummaryComponent,
   ],
   imports: [
     CommonModule,
@@ -35,10 +40,13 @@ import { SharedModule } from './shared/shared.module';
       logOnly: environment.production
     }),
     AppRoutingModule,
+    AccommodationModule,
+    ParticipantsModule,
     MatSidenavModule,
+    MatMenuModule,
   ],
   exports: [
-    SharedModule
+    SharedModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

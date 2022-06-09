@@ -1,5 +1,12 @@
 .participant-list-container{
   position: relative;
+  margin: 0 2rem;
+
+  mat-form-field {
+    font-size: 14px;
+    width: 50%;
+  }
+
   table {
     width: 100%;
   }

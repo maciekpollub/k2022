@@ -8,7 +8,7 @@ const initialState: IAccommodationState = {
 
 const _accommodationsReducer = createReducer(
   initialState,
-  on(fetchSpreadSheet, (state, { fetchedDataParticipants, fetchedDataAccommodations }) => ({
+  on(fetchSpreadSheet, (state, { fetchedDataAccommodations }) => ({
     ...state,
     accommodations: fetchedDataAccommodations
     })

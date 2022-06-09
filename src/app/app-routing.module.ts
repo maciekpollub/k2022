@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes} from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { ParticipantListComponent } from './participants/participant-list/participant-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -9,7 +10,8 @@ const routes: Routes = [
   { path: 'participant-list',
     loadChildren: () => import('./participants/participants.module').then(m => m.ParticipantsModule)
   },
-  { path: 'accommodation-list',
+// { path: 'participant-list', component: ParticipantListComponent},
+  { path: 'accommodation',
     loadChildren: () => import('./accommodation/accommodation.module').then(m => m.AccommodationModule)
   },
 ];

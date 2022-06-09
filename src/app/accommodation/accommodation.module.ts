@@ -3,10 +3,15 @@ import { AccommodationListComponent } from './accommodation-list/accommodation-l
 import { SharedModule } from '../shared/shared.module';
 import { CommonModule } from '@angular/common';
 import { AccommodationRouting } from './accommodation.routing';
+import { OtherAccommodationListComponent } from './other-accommodation-list/other-accommodation-list.component';
+import { MainComponent } from './main/main.component';
+
 
 @NgModule({
   declarations: [
-    AccommodationListComponent
+    AccommodationListComponent,
+    OtherAccommodationListComponent,
+    MainComponent,
   ],
   imports: [
     CommonModule,

@@ -1,10 +1,9 @@
-<div class="accommodation-list-container">
+<div class="other-accommodation-list-container">
 
   <!-- <mat-form-field appearance="standard">
     <mat-label>Filtruj</mat-label>
     <input matInput (keyup)="applyFilter($event)" #input formControlName="filter">
   </mat-form-field> -->
-
   <app-top-filter [dataSource_]="dataSource"></app-top-filter>
 
   <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
@@ -19,16 +18,20 @@
         <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
           <mat-grid-list cols="1" rowHeight="35">
             <mat-grid-tile>
-              <span class="bold-medium">{{'Razem osób' | uppercase }}</span><span>{{ element['razem osób'] }}</span>
+              <span class="bold-medium">{{'Łóżko duże' | uppercase }}</span><span>{{ element['łóżko duże'] }}</span>
             </mat-grid-tile>
             <mat-grid-tile>
-              <span class="bold-medium">{{ 'Ilość tapczanów 1 os.' | uppercase }}</span><span>{{ element['il. tap. 1-os.'] }}</span>
+              <span class="bold-medium">{{'Ilość tapczanów 2-os.' | uppercase }}</span><span>{{ element['il. tap. 2-os.'] }}</span>
             </mat-grid-tile>
             <mat-grid-tile>
-              <span class="bold-medium">{{ 'Można dostawić' | uppercase }}</span><span>{{ element['można dostawić'] }}</span>
+              <span class="bold-medium">{{'Łóżko pojedyncze' | uppercase }}</span><span>{{ element['łóżko pojed.'] }}</span>
             </mat-grid-tile>
             <mat-grid-tile>
-              <span class="bold-medium">{{ 'Przydział' | uppercase }}</span><span>{{ element['przydział'] }}</span></mat-grid-tile>
+              <span class="bold-medium">{{ 'Wolne łóżka' | uppercase }}</span><span>{{ element['można dostawić'] }}</span>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <span class="bold-medium">{{ 'Przydział' | uppercase }}</span><span>{{ element['przydział'] }}</span>
+            </mat-grid-tile>
           </mat-grid-list>
         </div>
       </td>

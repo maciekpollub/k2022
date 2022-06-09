@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { IFirstDataPiece, ISecondDataPiece } from '../interfaces/data-piece';
+import { IFirstDataPiece, ISecondDataPiece, IThirdDataPiece } from '../interfaces/data-piece';
 import { IParticipant } from '../interfaces/participant';
 import { IAccommodation } from '../interfaces/accommodation';
+import { IOtherAccommodation } from '../interfaces/other-accommodation';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,25 @@ export class FetchedDataService {
         'nazwiska': el['nazwiska zakwaterowanych'] ?? null,
         'pokój': el['kondygnacja – nr pokoju/il. pokoi'] ?? null,
         'razem osób': el['razem il. osób'] ?? null,
+        'wspólnota': el.wspólnota ?? null
+      }
+    })
+    return mappedList;
+  }
+
+  mapOtherAccommodationList(list: IThirdDataPiece[]): IOtherAccommodation[] {
+    let mappedList: IOtherAccommodation[];
+    mappedList = list.map((el: IThirdDataPiece) => {
+      return {
+        'łóżko pojed.': el['łóżko pojedyncze'],
+        'il. tap. 2-os.': el['ilość tapczanów 2-os.'],
+        'łóżko duże': el['łóżko duże'],
+        'przydział': el.przydział,
+        'il. os. zakwaterowana': el['ilość os. zakwaterowana'],
+        'wolne łóżka': el['wolne łóżka'],
+        'nazwiska': el['nazwiska zakwaterowanych'] ?? null,
+        'pokój': el['kondygnacja - nr pokoju/il. pokoi'] ?? null,
+        'max il. osób': el['max il. osób w pokoju'] ?? null,
         'wspólnota': el.wspólnota ?? null
       }
     })

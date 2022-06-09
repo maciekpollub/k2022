@@ -4,6 +4,8 @@ import { participantsReducer } from './participants/participants.reducer';
 import { IParticipantsState } from './interfaces/participant-state';
 import { IAccommodationState } from './interfaces/accommodation-state';
 import { accommodationsReducer } from './accommodation/accommodation.reducer';
+import { IOtherAccommodationState } from './interfaces/other-accommodation-state';
+import { otherAccommodationsReducer } from './accommodation/other-accommodation.reducer';
 
 const initialGeneralState: IGeneralState = {
   callToActionVisible: true,
@@ -25,6 +27,7 @@ function generalReducer(state: any, action: Action) {
 export interface IAppState {
   participantsState: IParticipantsState;
   accommodationsState: IAccommodationState;
+  otherAccommodationsState: IOtherAccommodationState;
   generalState: IGeneralState;
 }
 
@@ -37,6 +40,7 @@ export interface IGeneralState {
 export const reducers: ActionReducerMap<IAppState> = {
   participantsState: participantsReducer,
   accommodationsState: accommodationsReducer,
+  otherAccommodationsState: otherAccommodationsReducer,
   generalState: generalReducer,
 }
 

@@ -1,0 +1,10 @@
+<div class="container">
+  <mat-form-field appearance="standard">
+    <mat-label>Filtruj</mat-label>
+    <input matInput (keyup)="applyFilter($event)" #input>
+  </mat-form-field>
+
+  <button mat-stroked-button color="primary" (click)="openDialog('0ms', '0ms')">Podsumuj</button>
+</div>
+
+

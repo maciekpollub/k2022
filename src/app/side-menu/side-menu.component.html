@@ -4,7 +4,17 @@
   <h3>KONWIWENCJA 2022</h3>
 </div>
 <mat-selection-list [multiple]="false">
-  <mat-list-option *ngFor="let item of menuItems" [value]="item.name" (click)="routeTo(item.path)">
-    {{ item.name }}
+  <mat-list-option value='Uczestnicy' (click)="routeTo('participants')">
+    Uczestnicy
   </mat-list-option>
+
+  <mat-list-option value='Kwatery' (click)="routeTo('accommodation')" [matMenuTriggerFor]="menu">
+    Kwatery
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="routeTo('accommodation-list')">Buzuna</button>
+      <!-- <button mat-menu-item (click)="routeTo('other-accommodation-list')">Inne</button> -->
+      <button mat-menu-item (click)="routeTo('other-accommodation-list')">Inne</button>
+    </mat-menu>
+  </mat-list-option>
+
 </mat-selection-list>

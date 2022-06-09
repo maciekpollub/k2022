@@ -6,12 +6,12 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
-    ParticipantListComponent
+    ParticipantListComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
     ParticipantsRouting
-  ]
+  ],
 })
 export class ParticipantsModule { }

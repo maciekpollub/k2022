@@ -5,6 +5,7 @@ import * as fromRoot from '../../reducer';
 import * as fromParticipants from '../participants.reducer';
 import { Subscription, tap } from 'rxjs';
 import { IParticipant, IExpandedParticipant } from '../../interfaces/participant';
+import { MatTableDataSource } from '@angular/material/table';
 
 export interface IExpPartTile {
   rows: number,
@@ -25,7 +26,7 @@ export interface IExpPartTile {
   ],
 })
 export class ParticipantListComponent implements OnInit, OnDestroy {
-  dataSource: IParticipant[] = [];
+  dataSource: MatTableDataSource<IParticipant>;
 
   subs: Subscription = new Subscription();
 
@@ -40,7 +41,7 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.store.select(fromParticipants.getParticipants).pipe(
         tap((participants) => {
-          this.dataSource = participants;
+          this.dataSource = new MatTableDataSource(participants);
           console.log('To są participants: ', participants)
         })
       ).subscribe());

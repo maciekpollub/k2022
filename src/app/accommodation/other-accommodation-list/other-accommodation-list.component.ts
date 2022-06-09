@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import * as fromRoot from '../../reducer';
-import * as fromAccommodations from '../accommodation.reducer';
-import { IAccommodation } from '../../interfaces/accommodation';
+import { IOtherAccommodation } from '../../interfaces/other-accommodation';
 import { Subscription, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
+import * as fromRoot from '../../reducer';
+import * as fromOtherAccommodations from '../other-accommodation.reducer';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
-  selector: 'app-accommodation-list',
-  templateUrl: './accommodation-list.component.html',
-  styleUrls: ['./accommodation-list.component.scss'],
+  selector: 'app-other-accommodation-list',
+  templateUrl: './other-accommodation-list.component.html',
+  styleUrls: ['./other-accommodation-list.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({height: '0px', minHeight: '0'})),
@@ -19,21 +19,21 @@ import { MatTableDataSource } from '@angular/material/table';
     ]),
   ],
 })
-export class AccommodationListComponent implements OnInit {
-  dataSource: MatTableDataSource<IAccommodation>;
+export class OtherAccommodationListComponent implements OnInit {
+  dataSource: MatTableDataSource<IOtherAccommodation>;
 
   subs: Subscription = new Subscription();
 
-  columnsToDisplay = ['pokój', 'il. os. zakwaterowana', 'wolne łóżka', 'nazwiska', 'wspólnota'];
+  columnsToDisplay = ['pokój', 'max il. osób', 'il. os. zakwaterowana','nazwiska', 'wspólnota'];
   expandedElement: any;
 
   constructor( private store: Store<fromRoot.IAppState>) { }
 
   ngOnInit(): void {
     this.subs.add(
-      this.store.select(fromAccommodations.getAccommodations).pipe(
-        tap((accommodations) => {
-          this.dataSource = new MatTableDataSource(accommodations);
+      this.store.select(fromOtherAccommodations.getOtherAccommodations).pipe(
+        tap((otherAccommodations) => {
+          this.dataSource = new MatTableDataSource(otherAccommodations);
         })
       ).subscribe());
   }

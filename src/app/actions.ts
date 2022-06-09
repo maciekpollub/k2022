@@ -1,12 +1,14 @@
 import { createAction, props } from '@ngrx/store';
 import { IParticipant } from './interfaces/participant';
 import { IAccommodation } from './interfaces/accommodation';
+import { IOtherAccommodation } from './interfaces/other-accommodation';
 
 export const fetchSpreadSheet = createAction(
   '[App Component] Fetch data from the xlsx file',
   props<{
     fetchedDataParticipants: IParticipant[],
     fetchedDataAccommodations: IAccommodation[],
+    fetchedDataOtherAccommodations: IOtherAccommodation[],
   }>()
   );
 

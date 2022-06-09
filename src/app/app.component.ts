@@ -10,6 +10,7 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { Router, NavigationStart } from '@angular/router';
 import { IAccommodation } from './interfaces/accommodation';
 import { FetchedDataService } from './services/fetched-data.service';
+import { IOtherAccommodation } from './interfaces/other-accommodation';
 
 @Component({
   selector: 'app-root',
@@ -23,10 +24,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   first_filelist: any;
   second_filelist: any;
+  third_filelist: any;
 
   firstFilteredList: IFirstDataPiece[];
   participantList: IParticipant[];
   accommodationList: IAccommodation[];
+  otherAccommodationList: IOtherAccommodation[];
 
   CTAVisible: Observable<boolean>;
   @ViewChild('drawer') drawer: MatDrawer;
@@ -41,6 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.firstFilteredList= [];
     this.participantList = [];
     this.accommodationList = [];
+    this.otherAccommodationList = [];
 
     this.readfile();
   }
@@ -70,14 +74,21 @@ export class AppComponent implements OnInit, OnDestroy {
         this.second_filelist = XLSX.utils.sheet_to_json(second_worksheet, {raw: true});
         this.accommodationList = this.fDSrv.mapAccommodationList(this.second_filelist);
 
+        let third_sheet_name = workbook.SheetNames[2];
+        let third_worksheet = workbook.Sheets[third_sheet_name];
+        this.third_filelist = XLSX.utils.sheet_to_json(third_worksheet, {raw: true});
+        this.otherAccommodationList = this.fDSrv.mapOtherAccommodationList(this.third_filelist);
+
         this.store.dispatch(fetchSpreadSheet({
           fetchedDataParticipants: this.participantList,
-          fetchedDataAccommodations: this.accommodationList
+          fetchedDataAccommodations: this.accommodationList,
+          fetchedDataOtherAccommodations: this.otherAccommodationList,
         }));
 
         console.log('To jest firstFilteredList ', this.firstFilteredList);
         console.log('A to jest secondFileList: ', this.second_filelist);
         console.log('To jest accommodationList:', this.accommodationList);
+        console.log('To jest otherAccommodationList:', this.otherAccommodationList);
     };
     req.send();
   }
