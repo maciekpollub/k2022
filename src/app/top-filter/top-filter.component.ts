@@ -1,7 +1,8 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { SummaryComponent } from './summary/summary.component';
+import { IParticipant } from '../interfaces/participant';
+import { SummaryParticipantsComponent } from './summary-participants/summary-participants.component';
 
 @Component({
   selector: 'app-top-filter',
@@ -12,22 +13,25 @@ export class TopFilterComponent implements OnInit {
   @Input() dataSource_: MatTableDataSource<any>;
   filteredDataSource: MatTableDataSource<any>;
 
-  constructor(public dialog: MatDialog) { }
+  entryDataSource: MatTableDataSource<IParticipant>;
+
+  constructor(public dialog: MatDialog) {}
 
   ngOnInit(): void {
+    if (this.dataSource_) {
+      this.entryDataSource= this.dataSource_;
+    }
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    if(this.dataSource_) {
-      this.dataSource_.filter = filterValue.trim().toLowerCase();
-      this.filteredDataSource = this.dataSource_;
-      console.log('To jest filteredDataSource: ', this.filteredDataSource);
-    }
+    this.dataSource_.filter = filterValue.trim().toLowerCase();
+    this.filteredDataSource = this.dataSource_;
   }
 
   openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
-    this.dialog.open(SummaryComponent, {
+    this.dialog.open(SummaryParticipantsComponent, {
+      data: this.filteredDataSource,
       width: '90%',
     });
   }

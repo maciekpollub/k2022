@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from './shared/shared.module';
 import { AccommodationModule } from './accommodation/accommodation.module';
 import { ParticipantsModule } from './participants/participants.module';
-import { SummaryComponent } from './top-filter/summary/summary.component';
+import { SummaryParticipantsComponent } from './top-filter/summary-participants/summary-participants.component';
 
 
 
@@ -27,7 +27,7 @@ import { SummaryComponent } from './top-filter/summary/summary.component';
     AppComponent,
     HomeComponent,
     SideMenuComponent,
-    SummaryComponent,
+    SummaryParticipantsComponent,
   ],
   imports: [
     CommonModule,
