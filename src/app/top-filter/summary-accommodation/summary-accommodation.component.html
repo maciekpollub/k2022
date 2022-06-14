@@ -1,0 +1,49 @@
+<div class="summary-container">
+  <h1 mat-dialog-title>Podsumowanie</h1>
+  <div mat-dialog-content>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="ilość pokoi">
+        <th mat-header-cell *matHeaderCellDef> Pokoje </th>
+        <td mat-cell *matCellDef="let element">{{ element['ilość pokoi'] }}</td>
+      </ng-container>
+      <ng-container matColumnDef="ilość tapczanów 1-os.">
+        <th mat-header-cell *matHeaderCellDef> Tapczany 1-os. </th>
+        <td mat-cell *matCellDef="let element">{{ element['ilość tapczanów 1-os.'] }}</td>
+      </ng-container>
+      <ng-container matColumnDef="ile można dostawić">
+        <th mat-header-cell *matHeaderCellDef> Można dostawić </th>
+        <td mat-cell *matCellDef="let element">{{ element['ile można dostawić'] }}</td>
+      </ng-container>
+      <ng-container matColumnDef="ilość osób">
+        <th mat-header-cell *matHeaderCellDef> Osoby </th>
+        <td mat-cell *matCellDef="let element">{{ element['ilość osób'] }}</td>
+      </ng-container>
+      <ng-container matColumnDef="ilość przydziałów">
+        <th mat-header-cell *matHeaderCellDef> Przydziały </th>
+        <td mat-cell *matCellDef="let element">{{ element['ilość przydziałów'] }}</td>
+      </ng-container>
+      <ng-container matColumnDef="ilość osób zakwaterowanych">
+        <th mat-header-cell *matHeaderCellDef> Zakwaterowani </th>
+        <td mat-cell *matCellDef="let element">{{ element['ilość osób zakwaterowanych'] }}</td>
+      </ng-container>
+      <ng-container matColumnDef="ilość wolnych łóżek">
+        <th mat-header-cell *matHeaderCellDef> Wolne łóżka </th>
+        <td mat-cell *matCellDef="let element">{{ element['ilość wolnych łóżek'] }}</td>
+      </ng-container>
+      <ng-container matColumnDef="zakwaterowani minus ilość osób">
+        <th mat-header-cell *matHeaderCellDef> Zakwaterowani 'minus' liczba osób </th>
+        <td mat-cell *matCellDef="let element">{{ element['zakwaterowani minus ilość osób'] }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  <div class="dialog-actions" mat-dialog-actions>
+    <!-- <button mat-button mat-dialog-close>No</button> -->
+    <button mat-stroked-button color="primary" mat-dialog-close cdkFocusInitial>Ok</button>
+  </div>
+</div>
+
+

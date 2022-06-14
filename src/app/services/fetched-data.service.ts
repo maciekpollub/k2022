@@ -54,7 +54,9 @@ export class FetchedDataService {
 
   mapAccommodationList(list: ISecondDataPiece[]): IAccommodation[] {
     let mappedList: IAccommodation[];
+    let tempRoom = '';
     mappedList = list.map((el: ISecondDataPiece) => {
+      if (el['kondygnacja – nr pokoju/il. pokoi']) {tempRoom = el['kondygnacja – nr pokoju/il. pokoi']};
       return {
         'il. os. zakwaterowana': el['ilość os. zakwaterowana'],
         'il. tap. 1-os.': el['ilość tapczanów 1-os.'],
@@ -62,7 +64,7 @@ export class FetchedDataService {
         'wolne łóżka': el['wolne łóżka'],
         'przydział': el.przydział,
         'nazwiska': el['nazwiska zakwaterowanych'] ?? null,
-        'pokój': el['kondygnacja – nr pokoju/il. pokoi'] ?? null,
+        'pokój': tempRoom,
         'razem osób': el['razem il. osób'] ?? null,
         'wspólnota': el.wspólnota ?? null
       }
@@ -72,16 +74,18 @@ export class FetchedDataService {
 
   mapOtherAccommodationList(list: IThirdDataPiece[]): IOtherAccommodation[] {
     let mappedList: IOtherAccommodation[];
+    let tempRoom = '';
     mappedList = list.map((el: IThirdDataPiece) => {
+      if (el['kondygnacja - nr pokoju/il. pokoi']) {tempRoom = el['kondygnacja - nr pokoju/il. pokoi']};
       return {
         'łóżko pojed.': el['łóżko pojedyncze'],
         'il. tap. 2-os.': el['ilość tapczanów 2-os.'],
         'łóżko duże': el['łóżko duże'],
-        'przydział': el.przydział,
+        'przydział': el.przydział ?? 0,
         'il. os. zakwaterowana': el['ilość os. zakwaterowana'],
         'wolne łóżka': el['wolne łóżka'],
         'nazwiska': el['nazwiska zakwaterowanych'] ?? null,
-        'pokój': el['kondygnacja - nr pokoju/il. pokoi'] ?? null,
+        'pokój': tempRoom,
         'max il. osób': el['max il. osób w pokoju'] ?? null,
         'wspólnota': el.wspólnota ?? null
       }

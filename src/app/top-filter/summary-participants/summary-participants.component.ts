@@ -21,7 +21,7 @@ export class SummaryParticipantsComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<SummaryParticipantsComponent>,
-    @Inject(MAT_DIALOG_DATA) public filteredDataSource: MatTableDataSource<any>,
+    @Inject(MAT_DIALOG_DATA) public filteredDataSource: MatTableDataSource<any>
   ) {}
 
   ngOnInit(): void {

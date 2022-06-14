@@ -1,10 +1,5 @@
 <div class="other-accommodation-list-container">
-
-  <!-- <mat-form-field appearance="standard">
-    <mat-label>Filtruj</mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input formControlName="filter">
-  </mat-form-field> -->
-  <app-top-filter [dataSource_]="dataSource"></app-top-filter>
+  <app-top-filter [dataSource_]="dataSource" [summaryType_]="'other-accommodation'"></app-top-filter>
 
   <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
     <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">

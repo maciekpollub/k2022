@@ -6,7 +6,7 @@ export interface IAccommodation {
   'wolne łóżka': number;
   'przydział': number;
   'nazwiska': string | null;
-  'pokój': string | null;
-  'razem osób': number| null;
+  'pokój': string;
+  'razem osób': number | null;
   'wspólnota': string | null;
 }
