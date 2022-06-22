@@ -1,10 +1,10 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as fromRoot from '../../reducer';
-import * as fromParticipants from '../participants.reducer';
+import * as fromRoot from '../../../reducer';
+import * as fromParticipants from '../../participants.reducer';
 import { Subscription, tap } from 'rxjs';
-import { IParticipant, IExpandedParticipant } from '../../interfaces/participant';
+import { IParticipant, IExpandedParticipant } from '../../../interfaces/participant';
 import { MatTableDataSource } from '@angular/material/table';
 
 export interface IExpPartTile {

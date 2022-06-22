@@ -21,6 +21,7 @@ import { ParticipantsModule } from './participants/participants.module';
 import { SummaryParticipantsComponent } from './top-filter/summary-participants/summary-participants.component';
 import { SummaryAccommodationComponent } from './top-filter/summary-accommodation/summary-accommodation.component';
 import { SummaryOtherAccommodationComponent } from './top-filter/summary-other-accommodation/summary-other-accommodation.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -38,6 +39,7 @@ import { SummaryOtherAccommodationComponent } from './top-filter/summary-other-a
     BrowserModule,
     SharedModule,
     BrowserAnimationsModule,
+    ReactiveFormsModule,
     StoreModule.forRoot(reducers),
     StoreDevtoolsModule.instrument({
       maxAge: 25,

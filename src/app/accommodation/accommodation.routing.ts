@@ -6,9 +6,9 @@ import { MainComponent } from './main/main.component';
 
 const routes: Routes = [
   {path: '', component: MainComponent, children: [
-    {path: '', redirectTo: 'accommodation-list', pathMatch: 'full'},
-    {path: 'accommodation-list', component: AccommodationListComponent},
-    {path: 'other-accommodation-list', component: OtherAccommodationListComponent},
+    {path: '', redirectTo: 'buzun-list', pathMatch: 'full'},
+    {path: 'buzun-list', component: AccommodationListComponent},
+    {path: 'other-list', component: OtherAccommodationListComponent},
   ]},
 ]
 

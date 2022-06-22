@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes} from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { ParticipantListComponent } from './participants/participant-list/participant-list.component';
+import { ParticipantListComponent } from './participants/main/participant-list/participant-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full'},
   { path: 'home', component: HomeComponent},
-  { path: 'participant-list',
+  { path: 'participants',
     loadChildren: () => import('./participants/participants.module').then(m => m.ParticipantsModule)
   },
 // { path: 'participant-list', component: ParticipantListComponent},

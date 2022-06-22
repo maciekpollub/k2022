@@ -1,0 +1,92 @@
+<div class="form-container">
+  <h4>{{ 'Nowy uczestnik' | uppercase}} </h4>
+
+  <form [formGroup]="participantForm" (ngSubmit)="save()">
+
+    <div class="half-width">
+      <mat-form-field appearance="fill" class="obligatory-control">
+        <mat-label>Wspólnota</mat-label>
+        <input type="text" matInput formControlName="wspólnota" [matAutocomplete]="auto">
+        <mat-error *ngIf="community && community.invalid">{{ getErrorMessage('community') }}</mat-error>
+        <mat-hint>Format: Lublin Pallotyni 1 / Lubartów 2</mat-hint>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let option of [] " [value]="option">
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="obligatory-control">
+        <mat-label>Nazwisko</mat-label>
+        <input type="text" matInput formControlName="nazwisko">
+        <mat-error *ngIf="surname && surname.invalid">{{ getErrorMessage('surname') }}</mat-error>
+        <mat-hint>Format: Kowalska Anna / Tkacz Piotr i Anna / Kot Jan i Celina + 2 dzieci / ks. Kwiatkowski Jan</mat-hint>
+      </mat-form-field>
+
+      <div class="linear">
+        <mat-form-field class="quarter-width">
+          <mat-label>Małżeństwo</mat-label>
+          <input type="number" matInput formControlName="małżeństwo">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Kobiety</mat-label>
+          <input type="number" matInput formControlName="kobiety">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Mężczyźni</mat-label>
+          <input type="number" matInput formControlName="mężczyźni">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Prezbiter</mat-label>
+          <input type="number" matInput formControlName="prezbiter">
+        </mat-form-field>
+      </div>
+
+      <div class="linear">
+        <mat-form-field class="quarter-width">
+          <mat-label>Dzieci</mat-label>
+          <input type="number" matInput formControlName="dzieci">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Niemowlęta</mat-label>
+          <input type="number" matInput formControlName="niemowlęta">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Niania obca</mat-label>
+          <input type="number" matInput formControlName="nianiaObca">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Niania z rodziny</mat-label>
+          <input type="number" matInput formControlName="nianiaZRodziny">
+        </mat-form-field>
+      </div>
+
+      <div class="linear">
+        <mat-form-field class="quarter-width">
+          <mat-label>Wiek</mat-label>
+          <input type="number" matInput formControlName="wiek">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Samochód</mat-label>
+          <input type="string" matInput formControlName="samochód">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Obecność</mat-label>
+          <input type="string" matInput formControlName="obecność">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Uwagi</mat-label>
+          <input type="string" matInput formControlName="uwagi">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="half-width bottom">
+      <div class="button-container">
+        <button color="primary" mat-raised-button [disabled]="participantForm.invalid" type="submit">Zapisz</button>
+      </div>
+    </div>
+
+
+  </form>
+</div>
+

@@ -11,10 +11,19 @@
   <mat-list-option value='Kwatery' (click)="routeTo('accommodation')" [matMenuTriggerFor]="menu">
     Kwatery
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="routeTo('accommodation-list')">Buzuna</button>
-      <!-- <button mat-menu-item (click)="routeTo('other-accommodation-list')">Inne</button> -->
-      <button mat-menu-item (click)="routeTo('other-accommodation-list')">Inne</button>
+      <button mat-menu-item (click)="routeTo('buzun-list')">Buzuna</button>
+      <button mat-menu-item (click)="routeTo('other-list')">Inne</button>
     </mat-menu>
+  </mat-list-option>
+
+  <hr>
+
+  <mat-list-option value='Dodaj uczestnika' *ngIf="currentRoute.indexOf('participants') > -1"
+    (click)="routeTo('new')">
+    Dodaj uczestnika
+  </mat-list-option>
+  <mat-list-option value='Dodaj kwaterę' *ngIf="currentRoute.indexOf('accommodation') > -1">
+    Dodaj kwaterę
   </mat-list-option>
 
 </mat-selection-list>

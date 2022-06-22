@@ -11,6 +11,7 @@ import { Router, NavigationStart } from '@angular/router';
 import { IAccommodation } from './interfaces/accommodation';
 import { FetchedDataService } from './services/fetched-data.service';
 import { IOtherAccommodation } from './interfaces/other-accommodation';
+import { DataBaseService } from './services/data-base.service';
 
 @Component({
   selector: 'app-root',
@@ -39,7 +40,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<IAppState>,
     private router: Router,
-    private fDSrv: FetchedDataService) {
+    private fDSrv: FetchedDataService,
+    private dbSrv: DataBaseService) {
     this.file = null;
     this.firstFilteredList= [];
     this.participantList = [];
@@ -82,16 +84,18 @@ export class AppComponent implements OnInit, OnDestroy {
         this.third_filelist = XLSX.utils.sheet_to_json(third_worksheet, {raw: true});
         this.otherAccommodationList = this.fDSrv.mapOtherAccommodationList(this.third_filelist);
 
+        this.dbSrv.pushToLocalDB(this.participantList, this.accommodationList, this.otherAccommodationList);
+
         this.store.dispatch(fetchSpreadSheet({
           fetchedDataParticipants: this.participantList,
           fetchedDataAccommodations: this.accommodationList,
           fetchedDataOtherAccommodations: this.otherAccommodationList,
         }));
 
-        console.log('To jest firstFilteredList ', this.firstFilteredList);
-        console.log('A to jest secondFileList: ', this.second_filelist);
-        console.log('To jest accommodationList:', this.accommodationList);
-        console.log('To jest otherAccommodationList:', this.otherAccommodationList);
+        // console.log('To jest firstFilteredList ', this.firstFilteredList);
+        // console.log('A to jest secondFileList: ', this.second_filelist);
+        // console.log('To jest accommodationList:', this.accommodationList);
+        // console.log('To jest otherAccommodationList:', this.otherAccommodationList);
     };
     req.send();
   }

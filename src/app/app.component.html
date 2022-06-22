@@ -5,6 +5,7 @@
 
   <div class="sidenav-content">
     <router-outlet></router-outlet>
+    <!-- <button class="reset-data" mat-mini-fab color="warn" (click)="readfile()">Reset</button> -->
     <button class="call-to-action" mat-fab color="primary" (click)="toggleDrawer()" *ngIf="CTAVisible | async">
       <mat-icon>touch_app</mat-icon>
     </button>

@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TopFilterComponent } from '../top-filter/top-filter.component';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 
 
@@ -19,7 +20,6 @@ import { TopFilterComponent } from '../top-filter/top-filter.component';
   imports: [
     CommonModule,
     MatGridListModule,
-    //MatSelectionList,
     MatListModule,
     MatButtonModule,
     MatIconModule,
@@ -27,6 +27,7 @@ import { TopFilterComponent } from '../top-filter/top-filter.component';
     MatFormFieldModule,
     MatInputModule,
     MatDialogModule,
+    MatAutocompleteModule,
   ],
   exports: [
     MatGridListModule,
@@ -39,6 +40,7 @@ import { TopFilterComponent } from '../top-filter/top-filter.component';
     MatInputModule,
     MatDialogModule,
     TopFilterComponent,
+    MatAutocompleteModule,
   ],
 })
 export class SharedModule { }
