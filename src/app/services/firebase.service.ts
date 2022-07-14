@@ -59,6 +59,7 @@ export class FirebaseService {
       .catch((error) => {
         this.errorMgmt(error);
       });
+      return this.participantRef;
   }
 
   getParticipant(id: string) {

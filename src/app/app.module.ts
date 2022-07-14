@@ -27,6 +27,7 @@ import { SummaryParticipantsComponent } from './top-filter/summary-participants/
 import { SummaryAccommodationComponent } from './top-filter/summary-accommodation/summary-accommodation.component';
 import { SummaryOtherAccommodationComponent } from './top-filter/summary-other-accommodation/summary-other-accommodation.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ParticipantsModule,
     MatSidenavModule,
     MatMenuModule,
+    EffectsModule.forRoot([]),
   ],
   exports: [
     SharedModule,
