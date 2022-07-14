@@ -12,14 +12,14 @@ export class FetchedDataService {
 
   constructor() { }
 
-  update_sheet_range(ws: any) {
-    var range = {s:{r:20000000, c:20000000},e:{r:0,c:0}};
-    Object.keys(ws).filter(function(x) { return x.charAt(0) != "!"; }).map(XLSX.utils.decode_cell).forEach(function(x) {
-      range.s.c = Math.min(range.s.c, x.c); range.s.r = Math.min(range.s.r, x.r);
-      range.e.c = Math.max(range.e.c, x.c); range.e.r = Math.max(range.e.r, x.r);
-    });
-    ws['!ref'] = XLSX.utils.encode_range(range);
-  }
+  // update_sheet_range(ws: any) {
+  //   var range = {s:{r:20000000, c:20000000},e:{r:0,c:0}};
+  //   Object.keys(ws).filter(function(x) { return x.charAt(0) != "!"; }).map(XLSX.utils.decode_cell).forEach(function(x) {
+  //     range.s.c = Math.min(range.s.c, x.c); range.s.r = Math.min(range.s.r, x.r);
+  //     range.e.c = Math.max(range.e.c, x.c); range.e.r = Math.max(range.e.r, x.r);
+  //   });
+  //   ws['!ref'] = XLSX.utils.encode_range(range);
+  // }
 
   filterFetchedParticipants(list: any[]): IFirstDataPiece[] {
     let filteredList: IFirstDataPiece[];
@@ -31,14 +31,15 @@ export class FetchedDataService {
     let mappedList: IParticipant[];
     mappedList = list.map((el: IFirstDataPiece) => {
       return {
-        'wspólnota': el.Katechiści,
+        'id': el['Id '] ?? null,
+        'wspólnota': el['Wspólnota'],
         'obecność': el['Obecność'],
         'nazwisko': el['Nazwisko i imię (małżeństwa razem, dzieci osobno)'],
         'przydział': el.Przydział,
         'zakwaterowanie': el.Zakwaterowanie,
         'samochód': el['Środek transportu (własny samochód lub brak)'],
         'prezbiter': el.Prezbiterzy ?? null,
-        'małżeństwo': el['Małżeństwa (il. osób)'] ?? null,
+        'małżeństwo': el['Małżeństwa (il osób)'] ?? null,
         'kobiety': el['Kobiety (1)'] ?? null,
         'mężczyźni': el['Mężczyźni (1)'] ?? null,
         'niemowlęta': el['Niemowlęta i dzieci (bez dodatkowego łóżka i posiłku)'] ?? null,
@@ -46,7 +47,7 @@ export class FetchedDataService {
         'nianiaZRodziny': el['Niania z rodziny - mieszkanie z rodziną'] ?? null,
         'nianiaObca': el['Niania obca lub z rodziny - mieszkanie osobne'] ?? null,
         'uwagi': el['Uwagi, niepełnosprawność, diety'] ?? null,
-        'wiek': el['Wiek jedynek, nianiek np. 40+'] ?? null
+        'wiek': el['Wiek jedynek, nianiek np 40+'] ?? null
       }
     })
     return mappedList;
@@ -56,16 +57,17 @@ export class FetchedDataService {
     let mappedList: IAccommodation[];
     let tempRoom = '';
     mappedList = list.map((el: ISecondDataPiece) => {
-      if (el['kondygnacja – nr pokoju/il. pokoi']) {tempRoom = el['kondygnacja – nr pokoju/il. pokoi']};
+      if (el['kondygnacja – nr pokoju lub il pokoi']) {tempRoom = el['kondygnacja – nr pokoju lub il pokoi']};
       return {
-        'il. os. zakwaterowana': el['ilość os. zakwaterowana'],
-        'il. tap. 1-os.': el['ilość tapczanów 1-os.'],
+        'id': el.id,
+        'il os zakwaterowana': el['ilość os zakwaterowana'],
+        'il tap 1-os': el['ilość tapczanów 1-os'],
         'można dostawić': el['można dostawić'],
         'wolne łóżka': el['wolne łóżka'],
         'przydział': el.przydział,
         'nazwiska': el['nazwiska zakwaterowanych'] ?? null,
         'pokój': tempRoom,
-        'razem osób': el['razem il. osób'] ?? null,
+        'razem osób': el['razem il osób'] ?? null,
         'wspólnota': el.wspólnota ?? null
       }
     })
@@ -76,17 +78,18 @@ export class FetchedDataService {
     let mappedList: IOtherAccommodation[];
     let tempRoom = '';
     mappedList = list.map((el: IThirdDataPiece) => {
-      if (el['kondygnacja - nr pokoju/il. pokoi']) {tempRoom = el['kondygnacja - nr pokoju/il. pokoi']};
+      if (el['kondygnacja - nr pokoju lub il pokoi']) {tempRoom = el['kondygnacja - nr pokoju lub il pokoi']};
       return {
-        'łóżko pojed.': el['łóżko pojedyncze'],
-        'il. tap. 2-os.': el['ilość tapczanów 2-os.'],
+        'id': el.id,
+        'łóżko pojed': el['łóżko pojedyncze'],
+        'il tap 2-os': el['ilość tapczanów 2-os'],
         'łóżko duże': el['łóżko duże'],
         'przydział': el.przydział ?? 0,
-        'il. os. zakwaterowana': el['ilość os. zakwaterowana'],
+        'il os zakwaterowana': el['ilość os zakwaterowana'],
         'wolne łóżka': el['wolne łóżka'],
         'nazwiska': el['nazwiska zakwaterowanych'] ?? null,
         'pokój': tempRoom,
-        'max il. osób': el['max il. osób w pokoju'] ?? null,
+        'max il osób': el['max il osób w pokoju'] ?? null,
         'wspólnota': el.wspólnota ?? null
       }
     })

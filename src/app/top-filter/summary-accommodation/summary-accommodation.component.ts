@@ -34,11 +34,11 @@ export class SummaryAccommodationComponent implements OnInit {
       let roomArray: string[] = [];
       this.filteredDataSource.filteredData.forEach((el: IAccommodation) => {
         roomArray.push(el.pokój);
-        this.singleDivans = this.singleDivans + (Number(el['il. tap. 1-os.']) || 0);
+        this.singleDivans = this.singleDivans + (Number(el['il tap 1-os']) || 0);
         this.toSupply = this.toSupply + (Number(el['można dostawić']) || 0);
         this.people = this.people + (Number(el['razem osób']) || 0);
         this.allocations = this.allocations + (Number(el.przydział) || 0);
-        this.accommodated = this.accommodated + (Number(el['il. os. zakwaterowana']) || 0);
+        this.accommodated = this.accommodated + (Number(el['il os zakwaterowana']) || 0);
         this.spareBeds = this.spareBeds + (Number(el['wolne łóżka']) || 0);
       });
       this.rooms = new Set(roomArray).size;

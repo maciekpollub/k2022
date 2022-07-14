@@ -37,12 +37,12 @@ export class SummaryOtherAccommodationComponent implements OnInit {
       let roomArray: string[] = [];
       this.filteredDataSource.filteredData.forEach((el: IOtherAccommodation) => {
         roomArray.push(el.pokój);
-        this.singleBeds = this.singleBeds + (Number(el['łóżko pojed.']) || 0);
-        this.doubleDivans = this.doubleDivans + (Number(el['il. tap. 2-os.']) || 0);
+        this.singleBeds = this.singleBeds + (Number(el['łóżko pojed']) || 0);
+        this.doubleDivans = this.doubleDivans + (Number(el['il tap 2-os']) || 0);
         this.bigBads = this.bigBads + (Number(el['łóżko duże']) || 0);
-        this.maxNumberOfPeople = this.maxNumberOfPeople + (Number(el['max il. osób']) || 0);
+        this.maxNumberOfPeople = this.maxNumberOfPeople + (Number(el['max il osób']) || 0);
         this.allocations = this.allocations + (Number(el.przydział) || 0);
-        this.accommodated = this.accommodated + (Number(el['il. os. zakwaterowana']) || 0);
+        this.accommodated = this.accommodated + (Number(el['il os zakwaterowana']) || 0);
         this.spareBeds = this.spareBeds + (Number(el['wolne łóżka']) || 0);
       });
       this.rooms = new Set(roomArray).size;

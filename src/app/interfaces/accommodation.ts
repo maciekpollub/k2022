@@ -1,7 +1,8 @@
 
 export interface IAccommodation {
-  'il. os. zakwaterowana': number;
-  'il. tap. 1-os.': number;
+  'id': number;
+  'il os zakwaterowana': number;
+  'il tap 1-os': number;
   'można dostawić': number;
   'wolne łóżka': number;
   'przydział': number;

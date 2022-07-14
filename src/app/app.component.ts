@@ -5,13 +5,14 @@ import { IAppState, isCTAVisible } from './reducer';
 import { fetchSpreadSheet, setCTAVisibility, toggleDrawerState } from './actions';
 import { IFirstDataPiece } from './interfaces/data-piece';
 import { IParticipant } from './interfaces/participant';
-import { map, Observable, Subscription } from 'rxjs';
+import { combineLatest, forkJoin, map, Observable, Subscription, tap, zip } from 'rxjs';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Router, NavigationStart } from '@angular/router';
 import { IAccommodation } from './interfaces/accommodation';
 import { FetchedDataService } from './services/fetched-data.service';
 import { IOtherAccommodation } from './interfaces/other-accommodation';
-import { DataBaseService } from './services/data-base.service';
+import { AngularFireList } from '@angular/fire/compat/database';
+import { FirebaseService } from './services/firebase.service';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +33,10 @@ export class AppComponent implements OnInit, OnDestroy {
   accommodationList: IAccommodation[];
   otherAccommodationList: IOtherAccommodation[];
 
+  participantList$: Observable<IParticipant[]>;
+  accommodationList$: Observable<IAccommodation[]>;
+  otherAccommodationList$: Observable<IOtherAccommodation[]>
+
   CTAVisible: Observable<boolean>;
   @ViewChild('drawer') drawer: MatDrawer;
 
@@ -41,64 +46,68 @@ export class AppComponent implements OnInit, OnDestroy {
     private store: Store<IAppState>,
     private router: Router,
     private fDSrv: FetchedDataService,
-    private dbSrv: DataBaseService) {
+    private firebaseSrv: FirebaseService,
+    ) {
     this.file = null;
     this.firstFilteredList= [];
     this.participantList = [];
     this.accommodationList = [];
     this.otherAccommodationList = [];
 
-    this.readfile();
+    this.participantList$ = this.firebaseSrv.getParticipantList().valueChanges().pipe(
+      map(partList => this.fDSrv.mapParticipantList(partList))
+    );
+    this.accommodationList$ = this.firebaseSrv.getAccommodationList().valueChanges().pipe(
+      map(accomList => this.fDSrv.mapAccommodationList(accomList))
+    );
+    this.otherAccommodationList$ = this.firebaseSrv.getOtherAccommodationList().valueChanges().pipe(
+      map(otherAccomList => this.fDSrv.mapOtherAccommodationList(otherAccomList))
+    );
   }
 
-  readfile() {
-    let url = "/assets/kr2018.xlsx";
-    let req = new XMLHttpRequest();
-    req.open("GET", url, true);
-    req.responseType = "arraybuffer";
-    req.onload =  (e) => {
-        let data = new Uint8Array(req.response);
-        let arr = new Array();
-        for(let i = 0; i != data.length; ++i) {
-          arr[i] = String.fromCharCode(data[i]);
-        }
-        let bstr = arr.join("");
-        let workbook = XLSX.read(bstr, {type:"binary"});
+  // readfile() {
+  //   let url = "/assets/kr2018.xlsx";
+  //   let req = new XMLHttpRequest();
+  //   req.open("GET", url, true);
+  //   req.responseType = "arraybuffer";
+  //   req.onload =  (e) => {
+  //       let data = new Uint8Array(req.response);
+  //       let arr = new Array();
+  //       for(let i = 0; i != data.length; ++i) {
+  //         arr[i] = String.fromCharCode(data[i]);
+  //       }
+  //       let bstr = arr.join("");
+  //       let workbook = XLSX.read(bstr, {type:"binary"});
 
-        let first_sheet_name = workbook.SheetNames[0];
-        let first_worksheet = workbook.Sheets[first_sheet_name];
-        this.fDSrv.update_sheet_range(first_worksheet);
-        this.first_filelist = XLSX.utils.sheet_to_json(first_worksheet, {raw: true});
-        this.firstFilteredList = this.fDSrv.filterFetchedParticipants(this.first_filelist);
-        this.participantList = this.fDSrv.mapParticipantList(this.firstFilteredList);
+  //       let first_sheet_name = workbook.SheetNames[0];
+  //       let first_worksheet = workbook.Sheets[first_sheet_name];
+  //       this.fDSrv.update_sheet_range(first_worksheet);
+  //       this.first_filelist = XLSX.utils.sheet_to_json(first_worksheet, {raw: true});
+  //       this.firstFilteredList = this.fDSrv.filterFetchedParticipants(this.first_filelist);
+  //       this.participantList = this.fDSrv.mapParticipantList(this.firstFilteredList);
 
-        let second_sheet_name = workbook.SheetNames[1];
-        let second_worksheet = workbook.Sheets[second_sheet_name];
-        this.fDSrv.update_sheet_range(second_worksheet);
-        this.second_filelist = XLSX.utils.sheet_to_json(second_worksheet, {raw: true});
-        this.accommodationList = this.fDSrv.mapAccommodationList(this.second_filelist);
+  //       let second_sheet_name = workbook.SheetNames[1];
+  //       let second_worksheet = workbook.Sheets[second_sheet_name];
+  //       this.fDSrv.update_sheet_range(second_worksheet);
+  //       this.second_filelist = XLSX.utils.sheet_to_json(second_worksheet, {raw: true});
+  //       this.accommodationList = this.fDSrv.mapAccommodationList(this.second_filelist);
 
-        let third_sheet_name = workbook.SheetNames[2];
-        let third_worksheet = workbook.Sheets[third_sheet_name];
-        this.fDSrv.update_sheet_range(third_worksheet);
-        this.third_filelist = XLSX.utils.sheet_to_json(third_worksheet, {raw: true});
-        this.otherAccommodationList = this.fDSrv.mapOtherAccommodationList(this.third_filelist);
+  //       let third_sheet_name = workbook.SheetNames[2];
+  //       let third_worksheet = workbook.Sheets[third_sheet_name];
+  //       this.fDSrv.update_sheet_range(third_worksheet);
+  //       this.third_filelist = XLSX.utils.sheet_to_json(third_worksheet, {raw: true});
+  //       this.otherAccommodationList = this.fDSrv.mapOtherAccommodationList(this.third_filelist);
 
-        this.dbSrv.pushToLocalDB(this.participantList, this.accommodationList, this.otherAccommodationList);
+  //       this.dbSrv.pushToLocalDB(this.participantList, this.accommodationList, this.otherAccommodationList);
 
-        this.store.dispatch(fetchSpreadSheet({
-          fetchedDataParticipants: this.participantList,
-          fetchedDataAccommodations: this.accommodationList,
-          fetchedDataOtherAccommodations: this.otherAccommodationList,
-        }));
-
-        // console.log('To jest firstFilteredList ', this.firstFilteredList);
-        // console.log('A to jest secondFileList: ', this.second_filelist);
-        // console.log('To jest accommodationList:', this.accommodationList);
-        // console.log('To jest otherAccommodationList:', this.otherAccommodationList);
-    };
-    req.send();
-  }
+  //       this.store.dispatch(fetchSpreadSheet({
+  //         fetchedDataParticipants: this.participantList,
+  //         fetchedDataAccommodations: this.accommodationList,
+  //         fetchedDataOtherAccommodations: this.otherAccommodationList,
+  //       }));
+  //   };
+  //   req.send();
+  // }
 
   ngOnInit() {
     this.subs.add(
@@ -108,7 +117,21 @@ export class AppComponent implements OnInit, OnDestroy {
             this.store.dispatch(setCTAVisibility({ visible: false }))
           }
         })
-      ).subscribe());
+      ).subscribe()
+    );
+
+    this.subs.add(
+      combineLatest([ this.participantList$, this.accommodationList$, this.otherAccommodationList$ ])
+      .pipe(
+        tap(([ partList, accomList, otherAccomList ]) => {
+          this.store.dispatch(fetchSpreadSheet({
+            fetchedDataParticipants: partList,
+            fetchedDataAccommodations: accomList,
+            fetchedDataOtherAccommodations: otherAccomList,
+          }));
+        })
+      ).subscribe()
+    )
 
     this.CTAVisible = this.store.select(isCTAVisible);
   }

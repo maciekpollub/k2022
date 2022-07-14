@@ -1,4 +1,5 @@
 export interface IParticipant {
+  'id': number;
   'wspólnota': string;
   'obecność': string;
   'nazwisko': string;

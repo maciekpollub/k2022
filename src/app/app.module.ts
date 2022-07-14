@@ -16,14 +16,17 @@ import { SideMenuComponent } from './side-menu/side-menu.component';
 import { AppRoutingModule } from './app-routing.module';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from './shared/shared.module';
+
+import { FirebaseService } from './services/firebase.service';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+
 import { AccommodationModule } from './accommodation/accommodation.module';
 import { ParticipantsModule } from './participants/participants.module';
 import { SummaryParticipantsComponent } from './top-filter/summary-participants/summary-participants.component';
 import { SummaryAccommodationComponent } from './top-filter/summary-accommodation/summary-accommodation.component';
 import { SummaryOtherAccommodationComponent } from './top-filter/summary-other-accommodation/summary-other-accommodation.component';
 import { ReactiveFormsModule } from '@angular/forms';
-
-
 
 @NgModule({
   declarations: [
@@ -40,6 +43,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     SharedModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireDatabaseModule,
     StoreModule.forRoot(reducers),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
