@@ -1,0 +1,79 @@
+<div class="form-container">
+  <h4>{{ 'Nowa kwatera u Buzuna' | uppercase}} </h4>
+
+  <form [formGroup]="accommodationForm" (ngSubmit)="save()">
+
+    <div class="half-width">
+      <mat-form-field appearance="fill" class="obligatory-control">
+        <mat-label>Pokój</mat-label>
+        <input type="text" matInput formControlName="pokój" [matAutocomplete]="auto">
+        <mat-error *ngIf="accommodationUnit && accommodationUnit.invalid">{{ getErrorMessage('community') }}</mat-error>
+        <mat-hint>Format: bud. A parter - p.3 / bud. B 2 piętro - p.26 / Domek nr 3 - na piętrze / Domek nr 5 - dwupoziomowy / Domek nr 6 - (za budynkiem B)</mat-hint>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let option of [] " [value]="option">
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div class="linear">
+        <mat-form-field class="quarter-width">
+          <mat-label>Tapczan 1 osobowy</mat-label>
+          <input type="number" matInput formControlName="il tap 1-os">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Można dostawić</mat-label>
+          <input type="number" matInput formControlName="można dostawić">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Wolne łóżka</mat-label>
+          <input type="number" matInput formControlName="wolne łóżka">
+        </mat-form-field>
+      </div>
+
+      <div class="linear">
+        <mat-form-field class="quarter-width">
+          <mat-label>Ilość osób zakwaterowanych</mat-label>
+          <input type="number" matInput formControlName="il os zakwaterowana">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Razem osób</mat-label>
+          <input type="number" matInput formControlName="razem osób">
+        </mat-form-field>
+        <mat-form-field class="quarter-width">
+          <mat-label>Przydział</mat-label>
+          <input type="text" matInput formControlName="przydział">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field>
+        <mat-label>Nazwisko zakwaterowanego</mat-label>
+        <input type="text" matInput formControlName="nazwiska" [matAutocomplete]="auto">
+        <mat-hint>Format: Kowalska Anna / Tkacz Piotr i Anna / Kot Jan i Celina + 2 dzieci / ks. Kwiatkowski Jan</mat-hint>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let option of [] " [value]="option">
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Wspólnota zakwaterowanego</mat-label>
+        <input type="text" matInput formControlName="wspólnota" [matAutocomplete]="auto">
+        <mat-hint>Format: Lublin Pallotyni 1 / Lubartów 2</mat-hint>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let option of [] " [value]="option">
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+    </div>
+
+    <div class="half-width bottom">
+      <div class="button-container">
+        <button color="primary" mat-raised-button [disabled]="accommodationForm.invalid" type="submit">Zapisz</button>
+      </div>
+    </div>
+
+
+  </form>
+</div>
+

@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { AccommodationRouting } from './accommodation.routing';
 import { OtherAccommodationListComponent } from './other-accommodation-list/other-accommodation-list.component';
 import { MainComponent } from './main/main.component';
+import { AccommodationEditComponent } from './accommodation-edit/accommodation-edit.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -12,11 +14,13 @@ import { MainComponent } from './main/main.component';
     AccommodationListComponent,
     OtherAccommodationListComponent,
     MainComponent,
+    AccommodationEditComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
-    AccommodationRouting
+    AccommodationRouting,
+    ReactiveFormsModule,
   ],
 })
 export class AccommodationModule { }

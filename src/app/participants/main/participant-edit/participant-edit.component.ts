@@ -1,12 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable, tap, Subscription } from 'rxjs';
+import { tap, Subscription } from 'rxjs';
 import * as fromRoot from './.././../../reducer';
 import { Store } from '@ngrx/store';
 import { addParticipantSuccess } from '../../actions';
-import { DataBaseService } from '../../../services/data-base.service';
-
-import { FetchedDataService } from '../../../services/fetched-data.service';
 import { FirebaseService } from '../../../services/firebase.service';
 
 @Component({
@@ -20,7 +17,7 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
   community: FormControl;
   surname: FormControl;
 
-  fValue$: Observable<any>;
+  // fValue$: Observable<any>;
 
   currentNumberOfParticipants: number;
 
@@ -29,8 +26,6 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
   constructor(
     private fB: FormBuilder,
     private store: Store<fromRoot.IAppState>,
-    private dBSrv: DataBaseService,
-    private fDSrv: FetchedDataService,
     private fBSrv: FirebaseService) {
     this.participantForm = this.fB.group({
       'wspólnota': ['', Validators.required],
@@ -56,8 +51,6 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
     this.community = this.participantForm.controls['wspólnota'] as FormControl;
     this.surname = this.participantForm.controls['nazwisko'] as FormControl;
 
-    this.fValue$= this.participantForm.valueChanges;
-
     this.subs.add(
       this.fBSrv.getParticipantList().valueChanges().pipe(
         tap(pts => {
@@ -79,7 +72,6 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
 
   save() {
     const newPartObj = {...this.participantForm.value, id: this.currentNumberOfParticipants }
-    console.log('To jest dodany nowy udzestnik:', newPartObj);
     this.store.dispatch(addParticipantSuccess({newParticipant: newPartObj}));
     this.fBSrv.addParticipant(newPartObj);
   }

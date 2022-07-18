@@ -58,22 +58,26 @@ export class FetchedDataService {
     return mappedList;
   }
 
-  mapAccommodationList(list: ISecondDataPiece[]): IAccommodation[] {
+  mapAccommodationList(list: (ISecondDataPiece | IAccommodation)[]): IAccommodation[] {
     let mappedList: IAccommodation[];
     let tempRoom = '';
-    mappedList = list.map((el: ISecondDataPiece) => {
-      if (el['kondygnacja – nr pokoju lub il pokoi']) {tempRoom = el['kondygnacja – nr pokoju lub il pokoi']};
-      return {
-        'id': el.id,
-        'il os zakwaterowana': el['ilość os zakwaterowana'],
-        'il tap 1-os': el['ilość tapczanów 1-os'],
-        'można dostawić': el['można dostawić'],
-        'wolne łóżka': el['wolne łóżka'],
-        'przydział': el.przydział,
-        'nazwiska': el['nazwiska zakwaterowanych'] ?? null,
-        'pokój': tempRoom,
-        'razem osób': el['razem il osób'] ?? null,
-        'wspólnota': el.wspólnota ?? null
+    mappedList = list.map((el: ISecondDataPiece | IAccommodation) => {
+      if ('nazwiska' in el) {
+        return el;
+      } else {
+        if (el['kondygnacja – nr pokoju lub il pokoi']) {tempRoom = el['kondygnacja – nr pokoju lub il pokoi']};
+        return {
+          'id': el.id,
+          'il os zakwaterowana': el['ilość os zakwaterowana'],
+          'il tap 1-os': el['ilość tapczanów 1-os'],
+          'można dostawić': el['można dostawić'],
+          'wolne łóżka': el['wolne łóżka'],
+          'przydział': el.przydział,
+          'nazwiska': el['nazwiska zakwaterowanych'] ?? null,
+          'pokój': tempRoom,
+          'razem osób': el['razem il osób'] ?? null,
+          'wspólnota': el.wspólnota ?? null
+        }
       }
     })
     return mappedList;

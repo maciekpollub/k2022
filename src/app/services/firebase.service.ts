@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IParticipant } from '../interfaces/participant';
+import { IAccommodation } from '../interfaces/accommodation';
 import {
   AngularFireDatabase,
   AngularFireList,
@@ -56,6 +57,25 @@ export class FirebaseService {
         nianiaObca: p.nianiaObca,
         uwagi: p.uwagi,
         wiek: p.wiek,
+      })
+      .catch((error) => {
+        this.errorMgmt(error);
+      });
+  }
+
+  addAccommodation(a: IAccommodation) {
+    this.accommodationsRef
+      .push({
+        'id': a.id,
+        'il os zakwaterowana': a['il os zakwaterowana'],
+        'il tap 1-os': a['il tap 1-os'],
+        'można dostawić': a['można dostawić'],
+        'wolne łóżka': a['wolne łóżka'],
+        'przydział': a.przydział,
+        'nazwiska': a.nazwiska,
+        'pokój': a.pokój,
+        'razem osób': a['razem osób'],
+        'wspólnota': a.wspólnota,
       })
       .catch((error) => {
         this.errorMgmt(error);
