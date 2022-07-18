@@ -4,6 +4,7 @@ import { IParticipant } from '../interfaces/participant';
 import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
 import * as XLSX from 'xlsx';
+import { ofType } from '@ngrx/effects';
 
 @Injectable({
   providedIn: 'root'
@@ -27,27 +28,31 @@ export class FetchedDataService {
     return filteredList;
   }
 
-  mapParticipantList(list: IFirstDataPiece[]): IParticipant[] {
+  mapParticipantList(list: (IFirstDataPiece | IParticipant)[]): IParticipant[] {
     let mappedList: IParticipant[];
-    mappedList = list.map((el: IFirstDataPiece) => {
-      return {
-        'id': el['Id '] ?? null,
-        'wspólnota': el['Wspólnota'],
-        'obecność': el['Obecność'],
-        'nazwisko': el['Nazwisko i imię (małżeństwa razem, dzieci osobno)'],
-        'przydział': el.Przydział,
-        'zakwaterowanie': el.Zakwaterowanie,
-        'samochód': el['Środek transportu (własny samochód lub brak)'],
-        'prezbiter': el.Prezbiterzy ?? null,
-        'małżeństwo': el['Małżeństwa (il osób)'] ?? null,
-        'kobiety': el['Kobiety (1)'] ?? null,
-        'mężczyźni': el['Mężczyźni (1)'] ?? null,
-        'niemowlęta': el['Niemowlęta i dzieci (bez dodatkowego łóżka i posiłku)'] ?? null,
-        'dzieci': el['Dzieci większe (z łóżkiem i posiłkiem)'] ?? null,
-        'nianiaZRodziny': el['Niania z rodziny - mieszkanie z rodziną'] ?? null,
-        'nianiaObca': el['Niania obca lub z rodziny - mieszkanie osobne'] ?? null,
-        'uwagi': el['Uwagi, niepełnosprawność, diety'] ?? null,
-        'wiek': el['Wiek jedynek, nianiek np 40+'] ?? null
+    mappedList = list.map((el: IFirstDataPiece | IParticipant) => {
+      if ( 'id' in el) {
+        return el;
+      } else {
+        return {
+          'id': el['Id '],
+          'wspólnota': el['Wspólnota'],
+          'obecność': el['Obecność'],
+          'nazwisko': el['Nazwisko i imię (małżeństwa razem, dzieci osobno)'],
+          'przydział': el.Przydział,
+          'zakwaterowanie': el.Zakwaterowanie,
+          'samochód': el['Środek transportu (własny samochód lub brak)'],
+          'prezbiter': el.Prezbiterzy ?? null,
+          'małżeństwo': el['Małżeństwa (il osób)'] ?? null,
+          'kobiety': el['Kobiety (1)'] ?? null,
+          'mężczyźni': el['Mężczyźni (1)'] ?? null,
+          'niemowlęta': el['Niemowlęta i dzieci (bez dodatkowego łóżka i posiłku)'] ?? null,
+          'dzieci': el['Dzieci większe (z łóżkiem i posiłkiem)'] ?? null,
+          'nianiaZRodziny': el['Niania z rodziny - mieszkanie z rodziną'] ?? null,
+          'nianiaObca': el['Niania obca lub z rodziny - mieszkanie osobne'] ?? null,
+          'uwagi': el['Uwagi, niepełnosprawność, diety'] ?? null,
+          'wiek': el['Wiek jedynek, nianiek np 40+'] ?? null
+        }
       }
     })
     return mappedList;

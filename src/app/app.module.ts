@@ -28,6 +28,7 @@ import { SummaryAccommodationComponent } from './top-filter/summary-accommodatio
 import { SummaryOtherAccommodationComponent } from './top-filter/summary-other-accommodation/summary-other-accommodation.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { EffectsModule } from '@ngrx/effects';
+import { ParticipantsEffects } from './participants/effects';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { EffectsModule } from '@ngrx/effects';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
     StoreModule.forRoot(reducers),
+    EffectsModule.forRoot([ParticipantsEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production

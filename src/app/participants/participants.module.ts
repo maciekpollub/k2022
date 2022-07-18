@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { MainComponent } from './main/main.component';
 import { ParticipantEditComponent } from './main/participant-edit/participant-edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { EffectsModule } from '@ngrx/effects';
+import { ParticipantsEffects } from './effects';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     SharedModule,
     ParticipantsRouting,
     ReactiveFormsModule,
+    EffectsModule.forFeature([ParticipantsEffects])
   ],
 })
 export class ParticipantsModule { }

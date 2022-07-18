@@ -1,19 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, tap, Subscription } from 'rxjs';
 import * as fromRoot from './.././../../reducer';
 import { Store } from '@ngrx/store';
-import { addParticipant } from '../../actions';
+import { addParticipantSuccess } from '../../actions';
 import { DataBaseService } from '../../../services/data-base.service';
 
 import { FetchedDataService } from '../../../services/fetched-data.service';
+import { FirebaseService } from '../../../services/firebase.service';
 
 @Component({
   selector: 'app-participant-edit',
   templateUrl: './participant-edit.component.html',
   styleUrls: ['./participant-edit.component.scss']
 })
-export class ParticipantEditComponent implements OnInit {
+export class ParticipantEditComponent implements OnInit, OnDestroy {
 
   participantForm: FormGroup;
   community: FormControl;
@@ -21,14 +22,16 @@ export class ParticipantEditComponent implements OnInit {
 
   fValue$: Observable<any>;
 
+  currentNumberOfParticipants: number;
 
-  participantsWorkSheet: any;
+  subs = new Subscription();
 
   constructor(
     private fB: FormBuilder,
     private store: Store<fromRoot.IAppState>,
     private dBSrv: DataBaseService,
-    private fDSrv: FetchedDataService) {
+    private fDSrv: FetchedDataService,
+    private fBSrv: FirebaseService) {
     this.participantForm = this.fB.group({
       'wspólnota': ['', Validators.required],
       'obecność': [''],
@@ -54,6 +57,16 @@ export class ParticipantEditComponent implements OnInit {
     this.surname = this.participantForm.controls['nazwisko'] as FormControl;
 
     this.fValue$= this.participantForm.valueChanges;
+
+    this.subs.add(
+      this.fBSrv.getParticipantList().valueChanges().pipe(
+        tap(pts => {
+          this.currentNumberOfParticipants = pts.length;
+          console.log('liczba uczestnikó: ',this.currentNumberOfParticipants )
+        })
+      ).subscribe()
+    );
+
   }
 
   getErrorMessage(control: string) {
@@ -65,9 +78,14 @@ export class ParticipantEditComponent implements OnInit {
   }
 
   save() {
-    this.store.dispatch(addParticipant({newParticipant: this.participantForm.value}));
+    const newPartObj = {...this.participantForm.value, id: this.currentNumberOfParticipants }
+    console.log('To jest dodany nowy udzestnik:', newPartObj);
+    this.store.dispatch(addParticipantSuccess({newParticipant: newPartObj}));
+    this.fBSrv.addParticipant(newPartObj);
+  }
 
-    console.log('To jest formValue:', this.participantForm.value);
+  ngOnDestroy() {
+    this.subs.unsubscribe();
   }
 
 }

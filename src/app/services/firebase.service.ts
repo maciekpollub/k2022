@@ -39,27 +39,27 @@ export class FirebaseService {
   addParticipant(p: IParticipant) {
     this.participantsRef
       .push({
-        'wspólnota': p.wspólnota,
-        'obecność': p.obecność,
-        'nazwisko': p.nazwisko,
-        'przydział': p.przydział,
-        'zakwaterowanie': p.zakwaterowanie,
-        'samochód': p.samochód,
-        'prezbiter': p.prezbiter,
-        'małżeństwo': p.małżeństwo,
-        'kobiety': p.kobiety,
-        'mężczyźni': p.mężczyźni,
-        'niemowlęta': p.niemowlęta,
-        'dzieci': p.dzieci,
-        'nianiaZRodziny': p.nianiaZRodziny,
-        'nianiaObca': p.nianiaObca,
-        'uwagi': p.uwagi,
-        'wiek': p.wiek,
+        id: p.id,
+        wspólnota: p.wspólnota,
+        obecność: p.obecność,
+        nazwisko: p.nazwisko,
+        przydział: p.przydział,
+        zakwaterowanie: p.zakwaterowanie,
+        samochód: p.samochód,
+        prezbiter: p.prezbiter,
+        małżeństwo: p.małżeństwo,
+        kobiety: p.kobiety,
+        mężczyźni: p.mężczyźni,
+        niemowlęta: p.niemowlęta,
+        dzieci: p.dzieci,
+        nianiaZRodziny: p.nianiaZRodziny,
+        nianiaObca: p.nianiaObca,
+        uwagi: p.uwagi,
+        wiek: p.wiek,
       })
       .catch((error) => {
         this.errorMgmt(error);
       });
-      return this.participantRef;
   }
 
   getParticipant(id: string) {

@@ -1,6 +1,6 @@
 import { IAccommodationState } from '../interfaces/accommodation-state';
 import { Action, createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
-import { fetchSpreadSheet } from '../actions';
+import { fetchData } from '../actions';
 
 const initialState: IAccommodationState = {
   accommodations: [],
@@ -8,7 +8,7 @@ const initialState: IAccommodationState = {
 
 const _accommodationsReducer = createReducer(
   initialState,
-  on(fetchSpreadSheet, (state, { fetchedDataAccommodations }) => ({
+  on(fetchData, (state, { fetchedDataAccommodations }) => ({
     ...state,
     accommodations: fetchedDataAccommodations
     })

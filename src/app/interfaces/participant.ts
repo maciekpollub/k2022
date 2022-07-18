@@ -1,5 +1,5 @@
 export interface IParticipant {
-  'id': number;
+  'id': number | string;
   'wspólnota': string;
   'obecność': string;
   'nazwisko': string;

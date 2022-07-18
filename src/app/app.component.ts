@@ -2,16 +2,15 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as XLSX from 'xlsx';
 import { IAppState, isCTAVisible } from './reducer';
-import { fetchSpreadSheet, setCTAVisibility, toggleDrawerState } from './actions';
+import { setCTAVisibility, toggleDrawerState, fetchData } from './actions';
 import { IFirstDataPiece } from './interfaces/data-piece';
 import { IParticipant } from './interfaces/participant';
-import { combineLatest, forkJoin, map, Observable, Subscription, tap, zip } from 'rxjs';
+import { combineLatest, distinctUntilChanged, filter, forkJoin, map, Observable, Subscription, tap, zip } from 'rxjs';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Router, NavigationStart } from '@angular/router';
 import { IAccommodation } from './interfaces/accommodation';
 import { FetchedDataService } from './services/fetched-data.service';
 import { IOtherAccommodation } from './interfaces/other-accommodation';
-import { AngularFireList } from '@angular/fire/compat/database';
 import { FirebaseService } from './services/firebase.service';
 
 @Component({
@@ -55,7 +54,10 @@ export class AppComponent implements OnInit, OnDestroy {
     this.otherAccommodationList = [];
 
     this.participantList$ = this.firebaseSrv.getParticipantList().valueChanges().pipe(
-      map(partList => this.fDSrv.mapParticipantList(partList))
+      filter(partList => !!partList),
+      tap(pts => console.log('To są uczestnicy sprzed zmapowania: ', pts)),
+      map(partList => this.fDSrv.mapParticipantList(partList)),
+      tap(pts => console.log('A too są uczestnicy już po zmapowaniu: ', pts))
     );
     this.accommodationList$ = this.firebaseSrv.getAccommodationList().valueChanges().pipe(
       map(accomList => this.fDSrv.mapAccommodationList(accomList))
@@ -121,10 +123,10 @@ export class AppComponent implements OnInit, OnDestroy {
     );
 
     this.subs.add(
-      combineLatest([ this.participantList$, this.accommodationList$, this.otherAccommodationList$ ])
+      zip([ this.participantList$, this.accommodationList$, this.otherAccommodationList$ ])
       .pipe(
         tap(([ partList, accomList, otherAccomList ]) => {
-          this.store.dispatch(fetchSpreadSheet({
+          this.store.dispatch(fetchData({
             fetchedDataParticipants: partList,
             fetchedDataAccommodations: accomList,
             fetchedDataOtherAccommodations: otherAccomList,

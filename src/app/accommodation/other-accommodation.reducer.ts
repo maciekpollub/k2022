@@ -1,5 +1,5 @@
 import { IOtherAccommodationState } from '../interfaces/other-accommodation-state';
-import { fetchSpreadSheet } from '../actions';
+import { fetchData } from '../actions';
 import { on, createReducer, Action, createFeatureSelector, createSelector } from '@ngrx/store';
 
 const initialState: IOtherAccommodationState = {
@@ -8,7 +8,7 @@ const initialState: IOtherAccommodationState = {
 
 const _otherAccommodationsReducer = createReducer(
   initialState,
-  on(fetchSpreadSheet, (state, { fetchedDataOtherAccommodations }) => ({
+  on(fetchData, (state, { fetchedDataOtherAccommodations }) => ({
     ...state,
     otherAccommodations: fetchedDataOtherAccommodations
   }) )

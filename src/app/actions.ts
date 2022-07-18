@@ -3,8 +3,8 @@ import { IParticipant } from './interfaces/participant';
 import { IAccommodation } from './interfaces/accommodation';
 import { IOtherAccommodation } from './interfaces/other-accommodation';
 
-export const fetchSpreadSheet = createAction(
-  '[App Component] Fetch data from the xlsx file',
+export const fetchData = createAction(
+  '[App Component] Fetch data from firebase store',
   props<{
     fetchedDataParticipants: IParticipant[],
     fetchedDataAccommodations: IAccommodation[],

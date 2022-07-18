@@ -1,6 +1,6 @@
 
 export interface IOtherAccommodation {
-  'id': number;
+  'id'?: number | string;
   'pokój': string;
   'łóżko pojed': number;
   'il tap 2-os': number;

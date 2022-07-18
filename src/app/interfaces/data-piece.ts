@@ -1,5 +1,5 @@
 export interface IFirstDataPiece {
-  'Id ': number;
+  'Id ': number | string;
   'Wspólnota': string;
   'Obecność': string;
   'Nazwisko i imię (małżeństwa razem, dzieci osobno)': string;
@@ -19,7 +19,7 @@ export interface IFirstDataPiece {
 }
 
 export interface ISecondDataPiece {
-  'id': number;
+  'id': number | string;
   'ilość os zakwaterowana': number;
   'ilość tapczanów 1-os': number;
   'można dostawić': number;
@@ -32,7 +32,7 @@ export interface ISecondDataPiece {
 }
 
 export interface IThirdDataPiece {
-  'id': number;
+  'id': number | string;
   'łóżko pojedyncze': number;
   'ilość tapczanów 2-os': number;
   'łóżko duże': number;

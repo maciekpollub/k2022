@@ -1,7 +1,7 @@
 import { Action, createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
-import { fetchSpreadSheet } from '../actions';
+import { fetchData } from '../actions';
 import { IParticipantsState } from '../interfaces/participant-state';
-import { addParticipant } from './actions';
+import { addParticipantSuccess } from './actions';
 
 const initialState: IParticipantsState = {
   participants: [],
@@ -9,11 +9,11 @@ const initialState: IParticipantsState = {
 
 const _participantsReducer = createReducer(
   initialState,
-  on(fetchSpreadSheet, (state, { fetchedDataParticipants, fetchedDataAccommodations }) => ({
+  on(fetchData, (state, { fetchedDataParticipants, fetchedDataAccommodations }) => ({
     ...state,
     participants: fetchedDataParticipants
   })),
-  on(addParticipant, (state, { newParticipant } ) => ({
+  on(addParticipantSuccess, (state, { newParticipant } ) => ({
     ...state,
     participants: [...state.participants, newParticipant]
   })),
