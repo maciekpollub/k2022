@@ -83,7 +83,7 @@ export class FetchedDataService {
     return mappedList;
   }
 
-  mapOtherAccommodationList(list: IThirdDataPiece[]): IOtherAccommodation[] {
+  mapOtherAccommodationList(list: (IThirdDataPiece | IOtherAccommodation)[]): IOtherAccommodation[] {
     let mappedList: IOtherAccommodation[];
     let tempRoom = '';
     mappedList = list.map((el: IThirdDataPiece | IOtherAccommodation) => {
