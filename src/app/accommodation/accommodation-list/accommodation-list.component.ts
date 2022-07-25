@@ -26,6 +26,7 @@ export class AccommodationListComponent implements OnInit {
 
   columnsToDisplay = ['pokój', 'il os zakwaterowana', 'wolne łóżka', 'nazwiska', 'wspólnota'];
   expandedElement: any;
+  numericValueColumns = ['il os zakwaterowana', 'wolne łóżka'];
 
   constructor( private store: Store<fromRoot.IAppState>) { }
 

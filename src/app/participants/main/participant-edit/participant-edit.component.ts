@@ -5,6 +5,7 @@ import * as fromRoot from './.././../../reducer';
 import { Store } from '@ngrx/store';
 import { addParticipantSuccess } from '../../actions';
 import { FirebaseService } from '../../../services/firebase.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-participant-edit',
@@ -26,7 +27,8 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
   constructor(
     private fB: FormBuilder,
     private store: Store<fromRoot.IAppState>,
-    private fBSrv: FirebaseService) {
+    private fBSrv: FirebaseService,
+    private router: Router) {
     this.participantForm = this.fB.group({
       'wspólnota': ['', Validators.required],
       'obecność': [''],
@@ -74,6 +76,7 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
     const newPartObj = {...this.participantForm.value, id: this.currentNumberOfParticipants }
     this.store.dispatch(addParticipantSuccess({newParticipant: newPartObj}));
     this.fBSrv.addParticipant(newPartObj);
+    this.router.navigate(['participants', 'list']);
   }
 
   ngOnDestroy() {

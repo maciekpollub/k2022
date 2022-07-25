@@ -5,6 +5,7 @@ import * as fromRoot from '../../reducer';
 import { Store } from '@ngrx/store';
 import { FirebaseService } from '../../services/firebase.service';
 import { addAccommodationSuccess } from '../actions';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-accommodation-edit',
@@ -23,7 +24,8 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
   constructor(
     private fB: FormBuilder,
     private store: Store<fromRoot.IAppState>,
-    private fBSrv: FirebaseService
+    private fBSrv: FirebaseService,
+    private router: Router,
   ) {
     this.accommodationForm = this.fB.group({
       'pokój': ['', Validators.required],
@@ -61,6 +63,7 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
     const newAccObj = {...this.accommodationForm.value, id: this.currentNumberOfAccommodations }
     this.store.dispatch(addAccommodationSuccess({newAccommodation: newAccObj}));
     this.fBSrv.addAccommodation(newAccObj);
+    this.router.navigate(['accommodation', 'buzun-list']);
   }
 
   ngOnDestroy() {

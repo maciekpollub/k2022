@@ -30,7 +30,8 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 
   subs: Subscription = new Subscription();
 
-  columnsToDisplay = ['wspólnota', 'nazwisko', 'kobiety', 'mężczyźni', 'małżeństwo', 'prezbiter', 'uwagi'];
+  columnsToDisplay = ['wspólnota', 'nazwisko', 'kobiety', 'mężczyźni', 'małżeństwo', 'prezbiter', 'uwagi', 'akcje'];
+  numericValueColumns = ['kobiety', 'mężczyźni', 'małżeństwo', 'prezbiter'];
   expandedElement: IExpandedParticipant;
 
   constructor(

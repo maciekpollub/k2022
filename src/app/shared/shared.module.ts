@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TopFilterComponent } from '../top-filter/top-filter.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 
@@ -28,6 +29,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatInputModule,
     MatDialogModule,
     MatAutocompleteModule,
+    MatMenuModule,
   ],
   exports: [
     MatGridListModule,
@@ -41,6 +43,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatDialogModule,
     TopFilterComponent,
     MatAutocompleteModule,
+    MatMenuModule,
   ],
 })
 export class SharedModule { }

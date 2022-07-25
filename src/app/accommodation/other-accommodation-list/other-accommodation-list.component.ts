@@ -26,6 +26,7 @@ export class OtherAccommodationListComponent implements OnInit {
 
   columnsToDisplay = ['pokój', 'max il osób', 'il os zakwaterowana','nazwiska', 'wspólnota'];
   expandedElement: any;
+  numericValueColumns = ['max il osób', 'il os zakwaterowana'];
 
   constructor( private store: Store<fromRoot.IAppState>) { }
 
