@@ -58,9 +58,9 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    const newPartObj = {...this.accommodationForm.value, id: this.currentNumberOfAccommodations }
-    this.store.dispatch(addAccommodationSuccess({newAccommodation: newPartObj}));
-    this.fBSrv.addAccommodation(newPartObj);
+    const newAccObj = {...this.accommodationForm.value, id: this.currentNumberOfAccommodations }
+    this.store.dispatch(addAccommodationSuccess({newAccommodation: newAccObj}));
+    this.fBSrv.addAccommodation(newAccObj);
   }
 
   ngOnDestroy() {

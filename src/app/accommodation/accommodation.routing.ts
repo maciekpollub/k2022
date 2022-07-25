@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { OtherAccommodationListComponent } from './other-accommodation-list/other-accommodation-list.component';
 import { MainComponent } from './main/main.component';
 import { AccommodationEditComponent } from './accommodation-edit/accommodation-edit.component';
+import { OtherAccommodationEditComponent } from './other-accommodation-edit/other-accommodation-edit.component';
 
 const routes: Routes = [
   {path: '', component: MainComponent, children: [
@@ -11,6 +12,7 @@ const routes: Routes = [
     {path: 'buzun-list', component: AccommodationListComponent},
     {path: 'other-list', component: OtherAccommodationListComponent},
     {path: 'new-accommodation', component: AccommodationEditComponent},
+    {path: 'new-other-accommodation', component: OtherAccommodationEditComponent},
   ]},
 ]
 

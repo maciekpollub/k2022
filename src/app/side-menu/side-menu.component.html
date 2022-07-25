@@ -22,9 +22,13 @@
     (click)="routeTo('new')">
     Dodaj uczestnika
   </mat-list-option>
-  <mat-list-option value='Dodaj kwaterę' *ngIf="currentRoute.indexOf('accommodation') > -1"
+  <mat-list-option value='Dodaj kwaterę' *ngIf="currentRoute.indexOf('other-list') > -1"
+    (click)="routeTo('new-other-accommodation')">
+    Dodaj kwaterę inną
+  </mat-list-option>
+  <mat-list-option value='Dodaj kwaterę' *ngIf="currentRoute.indexOf('buzun-list') > -1"
     (click)="routeTo('new-accommodation')">
-    Dodaj kwaterę
+    Dodaj kwaterę Buzuna
   </mat-list-option>
 
 </mat-selection-list>

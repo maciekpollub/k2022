@@ -7,6 +7,7 @@ import { OtherAccommodationListComponent } from './other-accommodation-list/othe
 import { MainComponent } from './main/main.component';
 import { AccommodationEditComponent } from './accommodation-edit/accommodation-edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { OtherAccommodationEditComponent } from './other-accommodation-edit/other-accommodation-edit.component';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     OtherAccommodationListComponent,
     MainComponent,
     AccommodationEditComponent,
+    OtherAccommodationEditComponent,
   ],
   imports: [
     CommonModule,

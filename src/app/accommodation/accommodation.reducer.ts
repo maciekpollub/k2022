@@ -1,7 +1,7 @@
 import { IAccommodationState } from '../interfaces/accommodation-state';
 import { Action, createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
 import { fetchData } from '../actions';
-import { addAccommodationSuccess } from './actions';
+import { addAccommodationSuccess, addOtherAccommodationSuccess } from './actions';
 
 const initialState: IAccommodationState = {
   accommodations: [],
