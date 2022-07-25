@@ -66,5 +66,4 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
-
 }
