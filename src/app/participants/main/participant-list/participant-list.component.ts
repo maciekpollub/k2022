@@ -6,6 +6,9 @@ import * as fromParticipants from '../../participants.reducer';
 import { Subscription, tap } from 'rxjs';
 import { IParticipant, IExpandedParticipant } from '../../../interfaces/participant';
 import { MatTableDataSource } from '@angular/material/table';
+import { deleteParticipantSuccess } from '../../actions';
+import { FirebaseService } from '../../../services/firebase.service';
+import { Router } from '@angular/router';
 
 export interface IExpPartTile {
   rows: number,
@@ -35,7 +38,9 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
   expandedElement: IExpandedParticipant;
 
   constructor(
-    private store: Store<fromRoot.IAppState>) {
+    private store: Store<fromRoot.IAppState>,
+    private fBSrv: FirebaseService,
+    private router: Router) {
   }
 
   ngOnInit(): void {
@@ -46,6 +51,13 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
           console.log('To są participants: ', participants)
         })
       ).subscribe());
+  }
+
+  delete(participant: IParticipant) {
+    this.store.dispatch(deleteParticipantSuccess({participantId: participant.id.toString()}));
+    this.subs.add(
+      this.fBSrv.deleteParticipant(participant.id.toString()).subscribe()
+    );
   }
 
 

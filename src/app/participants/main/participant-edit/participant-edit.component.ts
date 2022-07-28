@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { tap, Subscription } from 'rxjs';
 import * as fromRoot from './.././../../reducer';
 import { Store } from '@ngrx/store';
 import { addParticipantSuccess } from '../../actions';
@@ -12,17 +11,15 @@ import { Router } from '@angular/router';
   templateUrl: './participant-edit.component.html',
   styleUrls: ['./participant-edit.component.scss']
 })
-export class ParticipantEditComponent implements OnInit, OnDestroy {
+export class ParticipantEditComponent implements OnInit {
 
   participantForm: FormGroup;
   community: FormControl;
   surname: FormControl;
 
-  // fValue$: Observable<any>;
+  // currentNumberOfParticipants: number;
 
-  currentNumberOfParticipants: number;
-
-  subs = new Subscription();
+  // subs = new Subscription();
 
   constructor(
     private fB: FormBuilder,
@@ -53,14 +50,14 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
     this.community = this.participantForm.controls['wspólnota'] as FormControl;
     this.surname = this.participantForm.controls['nazwisko'] as FormControl;
 
-    this.subs.add(
-      this.fBSrv.getParticipantList().valueChanges().pipe(
-        tap(pts => {
-          this.currentNumberOfParticipants = pts.length;
-          console.log('liczba uczestnikó: ',this.currentNumberOfParticipants )
-        })
-      ).subscribe()
-    );
+    // this.subs.add(
+    //   this.fBSrv.getParticipantList().valueChanges().pipe(
+    //     tap(pts => {
+    //       this.currentNumberOfParticipants = pts.length;
+    //       console.log('liczba uczestnikó: ',this.currentNumberOfParticipants )
+    //     })
+    //   ).subscribe()
+    // );
 
   }
 
@@ -73,14 +70,14 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    const newPartObj = {...this.participantForm.value, id: this.currentNumberOfParticipants }
+    const newPartObj = {...this.participantForm.value, id: Date.now() }
     this.store.dispatch(addParticipantSuccess({newParticipant: newPartObj}));
     this.fBSrv.addParticipant(newPartObj);
     this.router.navigate(['participants', 'list']);
   }
 
-  ngOnDestroy() {
-    this.subs.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   this.subs.unsubscribe();
+  // }
 
 }

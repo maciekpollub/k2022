@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Subscription, tap } from 'rxjs';
 import * as fromRoot from '../../reducer';
 import { Store } from '@ngrx/store';
 import { FirebaseService } from '../../services/firebase.service';
@@ -16,10 +15,6 @@ export class OtherAccommodationEditComponent implements OnInit {
 
   otherAccommodationForm: FormGroup;
   otherAccommodationUnit: FormControl;
-
-  currentNumberOfOtherAccommodations: number;
-
-  subs = new Subscription();
 
   constructor(
     private fB: FormBuilder,
@@ -43,14 +38,6 @@ export class OtherAccommodationEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.otherAccommodationUnit = this.otherAccommodationForm.controls['pokój'] as FormControl;
-
-    this.subs.add(
-      this.fBSrv.getOtherAccommodationList().valueChanges().pipe(
-        tap(othAcmds => {
-          this.currentNumberOfOtherAccommodations = othAcmds.length;
-        })
-      ).subscribe()
-    );
   }
 
   getErrorMessage(control: string) {
@@ -61,7 +48,7 @@ export class OtherAccommodationEditComponent implements OnInit {
   }
 
   save() {
-    const newOthAccObj = {...this.otherAccommodationForm.value, id: this.currentNumberOfOtherAccommodations + 1 }
+    const newOthAccObj = {...this.otherAccommodationForm.value, id: Date.now()}
     this.store.dispatch(addOtherAccommodationSuccess({newOtherAccommodation: newOthAccObj}));
     this.fBSrv.addOtherAccommodation(newOthAccObj);
     this.router.navigate(['accommodation', 'other-list']);

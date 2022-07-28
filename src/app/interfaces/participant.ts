@@ -23,3 +23,8 @@ export interface IExpandedParticipant {
   'samochód': string | null;
   'przydział': string | null;
 }
+
+export interface IFBParticipant {
+  key: string | null;
+  elem: IParticipant;
+}

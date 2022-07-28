@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Subscription, tap } from 'rxjs';
 import * as fromRoot from '../../reducer';
 import { Store } from '@ngrx/store';
 import { FirebaseService } from '../../services/firebase.service';
@@ -12,14 +11,14 @@ import { Router } from '@angular/router';
   templateUrl: './accommodation-edit.component.html',
   styleUrls: ['./accommodation-edit.component.scss']
 })
-export class AccommodationEditComponent implements OnInit, OnDestroy {
+export class AccommodationEditComponent implements OnInit {
 
   accommodationForm: FormGroup;
   accommodationUnit: FormControl;
 
-  currentNumberOfAccommodations: number;
+  // currentNumberOfAccommodations: number;
 
-  subs = new Subscription();
+  // subs = new Subscription();
 
   constructor(
     private fB: FormBuilder,
@@ -43,13 +42,13 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.accommodationUnit = this.accommodationForm.controls['pokój'] as FormControl;
 
-    this.subs.add(
-      this.fBSrv.getAccommodationList().valueChanges().pipe(
-        tap(acmds => {
-          this.currentNumberOfAccommodations = acmds.length;
-        })
-      ).subscribe()
-    );
+    // this.subs.add(
+    //   this.fBSrv.getAccommodationList().valueChanges().pipe(
+    //     tap(acmds => {
+    //       this.currentNumberOfAccommodations = acmds.length;
+    //     })
+    //   ).subscribe()
+    // );
   }
 
   getErrorMessage(control: string) {
@@ -60,13 +59,13 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    const newAccObj = {...this.accommodationForm.value, id: this.currentNumberOfAccommodations }
+    const newAccObj = {...this.accommodationForm.value, id: Date.now()}
     this.store.dispatch(addAccommodationSuccess({newAccommodation: newAccObj}));
     this.fBSrv.addAccommodation(newAccObj);
     this.router.navigate(['accommodation', 'buzun-list']);
   }
 
-  ngOnDestroy() {
-    this.subs.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   this.subs.unsubscribe();
+  // }
 }

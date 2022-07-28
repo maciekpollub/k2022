@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { IParticipant } from '../interfaces/participant';
 import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
@@ -7,11 +7,12 @@ import {
   AngularFireList,
   AngularFireObject,
 } from '@angular/fire/compat/database';
+import { map, tap, combineLatest, Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseService {
+export class FirebaseService implements OnDestroy {
   participantsRef: AngularFireList<any>;
   participantRef: AngularFireObject<any>;
 
@@ -20,6 +21,20 @@ export class FirebaseService {
 
   otherAccommodationsRef: AngularFireList<any>;
   otherAccommodationRef: AngularFireObject<any>;
+
+  participantsSnChngs$ = this.fireDb.list('Lista braci').snapshotChanges();
+  participantsValChngs$ = this.fireDb.list('Lista braci').valueChanges();
+  participantListWithFBKeys: any[] = [];
+
+  accommodationsSnChngs$ = this.fireDb.list('Kwatery u Buzunów').snapshotChanges();
+  accommodationsValChngs$ = this.fireDb.list('Kwatery u Buzunów').valueChanges();
+  accommodationListWithFBKeys: any[] = [];
+
+  otherAccommodationsSnChngs$ = this.fireDb.list('Kwatery obce').snapshotChanges();
+  otherAccommodationsValChngs$ = this.fireDb.list('Kwatery obce').valueChanges();
+  otherAccommodationListWithFBKeys: any[] = [];
+
+  subs = new Subscription();
 
   constructor(private fireDb: AngularFireDatabase) {}
 
@@ -125,13 +140,64 @@ export class FirebaseService {
   }
 
   deleteParticipant(id: string) {
-    this.participantRef = this.fireDb.object('Lista braci/' + id);
-    this.participantRef.remove().catch((error) => {
-      this.errorMgmt(error);
-    });
+    return combineLatest([this.participantsSnChngs$, this.participantsValChngs$]).pipe(
+      map(([sC, vC]) => {
+        vC.forEach((elem, index) => {
+          let participantWithFBKey = {...{elem}, key: sC[index]?.key}
+          this.participantListWithFBKeys.push(participantWithFBKey);
+        })
+      }),
+      tap(() => {
+        let elemToDelete = this.participantListWithFBKeys.find(p => (+p.elem['Id '] === +id || +p.elem.id === +id));
+        this.participantRef = this.fireDb.object('Lista braci/' + elemToDelete?.key);
+        this.participantRef.remove().catch((error) => {
+          this.errorMgmt(error);
+        });
+      })
+    )
+  }
+
+  deleteAccommodation(id: string) {
+    return combineLatest([this.accommodationsSnChngs$, this.accommodationsValChngs$]).pipe(
+      map(([sC, vC]) => {
+        vC.forEach((elem, index) => {
+          let accommodationWithFBKey = {...{elem}, key: sC[index]?.key}
+          this.accommodationListWithFBKeys.push(accommodationWithFBKey);
+        })
+      }),
+      tap(() => {
+        let elemToDelete = this.accommodationListWithFBKeys.find(a => (+a.elem['id'] === +id));
+        this.accommodationRef = this.fireDb.object('Kwatery u Buzunów/' + elemToDelete?.key);
+        this.accommodationRef.remove().catch((error) => {
+          this.errorMgmt(error);
+        });
+      })
+    )
+  }
+
+  deleteOtherAccommodation(id: string) {
+    return combineLatest([this.otherAccommodationsSnChngs$, this.otherAccommodationsValChngs$]).pipe(
+      map(([sC, vC]) => {
+        vC.forEach((elem, index) => {
+          let otherAccommodationWithFBKey = {...{elem}, key: sC[index]?.key}
+          this.otherAccommodationListWithFBKeys.push(otherAccommodationWithFBKey);
+        })
+      }),
+      tap(() => {
+        let elemToDelete = this.otherAccommodationListWithFBKeys.find(a => (+a.elem['id'] === +id));
+        this.otherAccommodationRef = this.fireDb.object('Kwatery obce/' + elemToDelete?.key);
+        this.otherAccommodationRef.remove().catch((error) => {
+          this.errorMgmt(error);
+        });
+      })
+    )
   }
 
   private errorMgmt(error: any) {
     console.log(error);
+  }
+
+  ngOnDestroy(): void {
+      this.subs.unsubscribe();
   }
 }

@@ -75,6 +75,14 @@ tr.example-element-row:not(.example-expanded-row):active {
   border-bottom-width: 0;
 }
 
+.close-icon {
+  text-align: end;
+  mat-icon {
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+}
+
 
 
 

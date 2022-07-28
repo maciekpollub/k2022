@@ -1,7 +1,7 @@
 import { Action, createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
 import { fetchData } from '../actions';
 import { IParticipantsState } from '../interfaces/participant-state';
-import { addParticipantSuccess } from './actions';
+import { addParticipantSuccess, deleteParticipantSuccess } from './actions';
 
 const initialState: IParticipantsState = {
   participants: [],
@@ -17,6 +17,10 @@ const _participantsReducer = createReducer(
     ...state,
     participants: [...state.participants, newParticipant]
   })),
+  on(deleteParticipantSuccess, (state, { participantId } ) => ({
+    ...state,
+    participants: [...state.participants.filter(p => p.id.toString() !== participantId)]
+  }))
 )
 export function participantsReducer(state: any, action: Action) {
   return _participantsReducer(state, action);

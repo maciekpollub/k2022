@@ -6,6 +6,8 @@ import { IAccommodation } from '../../interfaces/accommodation';
 import { Subscription, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { MatTableDataSource } from '@angular/material/table';
+import { deleteAccommodationSuccess } from '../actions';
+import { FirebaseService } from '../../services/firebase.service';
 
 @Component({
   selector: 'app-accommodation-list',
@@ -24,11 +26,13 @@ export class AccommodationListComponent implements OnInit {
 
   subs: Subscription = new Subscription();
 
-  columnsToDisplay = ['pokój', 'il os zakwaterowana', 'wolne łóżka', 'nazwiska', 'wspólnota'];
+  columnsToDisplay = ['pokój', 'il os zakwaterowana', 'wolne łóżka', 'nazwiska', 'wspólnota', 'akcje'];
   expandedElement: any;
   numericValueColumns = ['il os zakwaterowana', 'wolne łóżka'];
 
-  constructor( private store: Store<fromRoot.IAppState>) { }
+  constructor(
+    private store: Store<fromRoot.IAppState>,
+    private fBSrv: FirebaseService) { }
 
   ngOnInit(): void {
     this.subs.add(
@@ -37,6 +41,13 @@ export class AccommodationListComponent implements OnInit {
           this.dataSource = new MatTableDataSource(accommodations);
         })
       ).subscribe());
+  }
+
+  delete(accommodation: IAccommodation) {
+    this.store.dispatch(deleteAccommodationSuccess({accommodationId: accommodation.id.toString()}));
+    this.subs.add(
+      this.fBSrv.deleteAccommodation(accommodation.id.toString()).subscribe()
+    );
   }
 
   ngOnDestroy(): void {

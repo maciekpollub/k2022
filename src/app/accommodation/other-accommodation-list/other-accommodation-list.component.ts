@@ -6,6 +6,8 @@ import { Store } from '@ngrx/store';
 import * as fromRoot from '../../reducer';
 import * as fromOtherAccommodations from '../other-accommodation.reducer';
 import { MatTableDataSource } from '@angular/material/table';
+import { FirebaseService } from '../../services/firebase.service';
+import { deleteOtherAccommodationSuccess } from '../actions';
 
 @Component({
   selector: 'app-other-accommodation-list',
@@ -24,11 +26,13 @@ export class OtherAccommodationListComponent implements OnInit {
 
   subs: Subscription = new Subscription();
 
-  columnsToDisplay = ['pokój', 'max il osób', 'il os zakwaterowana','nazwiska', 'wspólnota'];
+  columnsToDisplay = ['pokój', 'max il osób', 'il os zakwaterowana','nazwiska', 'wspólnota', 'akcje'];
   expandedElement: any;
   numericValueColumns = ['max il osób', 'il os zakwaterowana'];
 
-  constructor( private store: Store<fromRoot.IAppState>) { }
+  constructor(
+    private store: Store<fromRoot.IAppState>,
+    private fBSrv: FirebaseService) { }
 
   ngOnInit(): void {
     this.subs.add(
@@ -37,6 +41,13 @@ export class OtherAccommodationListComponent implements OnInit {
           this.dataSource = new MatTableDataSource(otherAccommodations);
         })
       ).subscribe());
+  }
+
+  delete(otherAccommodation: IOtherAccommodation) {
+    this.store.dispatch(deleteOtherAccommodationSuccess({ otherAccommodationId: otherAccommodation.id.toString() }));
+    this.subs.add(
+      this.fBSrv.deleteOtherAccommodation(otherAccommodation.id.toString()).subscribe()
+    );
   }
 
   ngOnDestroy(): void {

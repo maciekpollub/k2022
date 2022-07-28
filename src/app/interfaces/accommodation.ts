@@ -1,6 +1,6 @@
 
 export interface IAccommodation {
-  'id'?: number | string;
+  'id': number | string;
   'il os zakwaterowana': number;
   'il tap 1-os': number;
   'można dostawić': number;

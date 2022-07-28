@@ -16,3 +16,23 @@ export const addOtherAccommodationSuccess = createAction(
   '[Accommodations] Add newly created other accommodation - success',
   props<{ newOtherAccommodation: IOtherAccommodation }>()
 );
+
+export const deleteAccommodationRequest = createAction(
+  '[Accommodations] Delete accommodation - request',
+  props<{ accommodationId: string }>()
+)
+
+export const deleteAccommodationSuccess = createAction(
+  '[Accommodations] Delete accommodation - success',
+  props<{ accommodationId: string }>()
+)
+
+export const deleteOtherAccommodationRequest = createAction(
+  '[Accommodations] Delete other accommodation - request',
+  props<{ otherAccommodationId: string }>()
+)
+
+export const deleteOtherAccommodationSuccess = createAction(
+  '[Accommodations] Delete other accommodation - success',
+  props<{ otherAccommodationId: string }>()
+)

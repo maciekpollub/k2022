@@ -19,7 +19,7 @@
               <mat-icon>create</mat-icon>
               <span>Edytuj uczestnika</span>
             </button>
-            <button mat-menu-item>
+            <button mat-menu-item (click)="delete(element)">
               <mat-icon>delete</mat-icon>
               <span>Usuń uczestnika</span>
             </button>
@@ -33,7 +33,7 @@
 
   <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
     <ng-container matColumnDef="expandedDetail">
-      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length" (click)="expandedElement = expandedElement === element ? null : element">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
         <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
           <mat-grid-list cols="1" rowHeight="35">
             <mat-grid-tile *ngIf="element.zakwaterowanie">
@@ -64,6 +64,9 @@
               <span class="bold-medium">{{ 'Przydział' | uppercase }}</span><span>{{ element['przydział'] }}</span>
             </mat-grid-tile>
           </mat-grid-list>
+          <div class="close-icon">
+            <mat-icon (click)="expandedElement = expandedElement === element ? null : element">close</mat-icon>
+          </div>
         </div>
       </td>
     </ng-container>
