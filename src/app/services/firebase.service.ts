@@ -123,20 +123,40 @@ export class FirebaseService implements OnDestroy {
     return this.participantRef;
   }
 
-  updateParticipant(id: string, participant: IParticipant) {
-    this.participantRef
-      .update({
-        // book_name: book.book_name,
-        // isbn_10: book.isbn_10,
-        // author_name: book.author_name,
-        // publication_date: book.publication_date,
-        // binding_type: book.binding_type,
-        // in_stock: book.in_stock,
-        // languages: book.languages,
+  updateParticipant(part: IParticipant) {
+    return combineLatest([this.participantsSnChngs$, this.participantsValChngs$]).pipe(
+      map(([sC, vC]) => {
+        vC.forEach((elem, index) => {
+          let participantWithFBKey = {...{elem}, key: sC[index]?.key}
+          this.participantListWithFBKeys.push(participantWithFBKey);
+        })
+      }),
+      tap(() => {
+        let elemToUpdate = this.participantListWithFBKeys.find(p => (+p.elem['Id '] === +part.id || +p.elem.id === +part.id));
+        console.log('To jest key:', elemToUpdate?.key);
+        this.participantRef = this.fireDb.object('Lista braci/' + elemToUpdate?.key);
+        this.participantRef.update({
+          wspólnota: part.wspólnota,
+          obecność: part.obecność,
+          nazwisko: part.nazwisko,
+          przydział: part.przydział,
+          zakwaterowanie: part.zakwaterowanie,
+          samochód: part.samochód,
+          prezbiter: part.prezbiter,
+          małżeństwo: part.małżeństwo,
+          kobiety: part.kobiety,
+          mężczyźni: part.mężczyźni,
+          niemowlęta: part.niemowlęta,
+          dzieci: part.dzieci,
+          nianiaZRodziny: part.nianiaZRodziny,
+          nianiaObca: part.nianiaObca,
+          uwagi: part.uwagi,
+          wiek: part.wiek,
+        }).catch((error) => {
+          this.errorMgmt(error);
+        });
       })
-      .catch((error) => {
-        this.errorMgmt(error);
-      });
+    )
   }
 
   deleteParticipant(id: string) {

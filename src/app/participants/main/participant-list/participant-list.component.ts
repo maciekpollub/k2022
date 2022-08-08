@@ -6,7 +6,7 @@ import * as fromParticipants from '../../participants.reducer';
 import { Subscription, tap } from 'rxjs';
 import { IParticipant, IExpandedParticipant } from '../../../interfaces/participant';
 import { MatTableDataSource } from '@angular/material/table';
-import { deleteParticipantSuccess } from '../../actions';
+import { deleteParticipantSuccess, loadActiveParticipantDataSuccess } from '../../actions';
 import { FirebaseService } from '../../../services/firebase.service';
 import { Router } from '@angular/router';
 
@@ -51,6 +51,11 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
           console.log('To są participants: ', participants)
         })
       ).subscribe());
+  }
+
+  edit(participant: IParticipant) {
+    this.store.dispatch(loadActiveParticipantDataSuccess({participantId: participant.id.toString()}));
+    this.router.navigate(['participants', 'edit', participant.id.toString()])
   }
 
   delete(participant: IParticipant) {

@@ -20,3 +20,28 @@ export const deleteParticipantSuccess = createAction(
   '[Participants] Delete participant - success',
   props<{ participantId: string }>()
 )
+
+export const loadActiveParticipantDataRequest = createAction(
+  '[Participants] Load active participant data - request',
+  props<{ participantId: string }>()
+)
+
+export const loadActiveParticipantDataSuccess = createAction(
+  '[Participants] Load active participant data - success',
+  props<{ participantId: string }>()
+)
+
+export const relieveActiveParticpantData = createAction(
+  '[Participants] Relieve active participant data',
+)
+
+export const updateParticipantRequest = createAction(
+  '[Participants] Update participant - request',
+  props<{ participant: IParticipant }>()
+)
+
+export const updateParticipantSuccess = createAction(
+  '[Participants] Update participant - success',
+  props<{ participant: IParticipant }>()
+)
+

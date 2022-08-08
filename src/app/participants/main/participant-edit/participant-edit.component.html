@@ -3,7 +3,7 @@
 
   <form [formGroup]="participantForm" (ngSubmit)="save()">
 
-    <div class="half-width">
+    <div class="part-width">
       <mat-form-field appearance="fill" class="obligatory-control">
         <mat-label>Wspólnota</mat-label>
         <input type="text" matInput formControlName="wspólnota" [matAutocomplete]="auto">
@@ -80,9 +80,11 @@
       </div>
     </div>
 
-    <div class="half-width bottom">
+    <div class="part-width thiner bottom">
       <div class="button-container">
-        <button color="primary" mat-raised-button [disabled]="participantForm.invalid" type="submit">Zapisz</button>
+        <button color="primary" mat-raised-button [disabled]="disabled$ | async" type="submit">
+          <span>{{ buttonText }}</span>
+        </button>
       </div>
     </div>
 

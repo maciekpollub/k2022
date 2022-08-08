@@ -2,24 +2,32 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import * as fromRoot from './.././../../reducer';
 import { Store } from '@ngrx/store';
-import { addParticipantSuccess } from '../../actions';
+import { addParticipantSuccess, relieveActiveParticpantData, updateParticipantSuccess } from '../../actions';
 import { FirebaseService } from '../../../services/firebase.service';
 import { Router } from '@angular/router';
+import { Subscription, map, withLatestFrom, of, BehaviorSubject } from 'rxjs';
+import * as fromParticipants from '../../participants.reducer';
+import { IParticipant } from '../../../interfaces/participant';
 
 @Component({
   selector: 'app-participant-edit',
   templateUrl: './participant-edit.component.html',
   styleUrls: ['./participant-edit.component.scss']
 })
-export class ParticipantEditComponent implements OnInit {
+export class ParticipantEditComponent implements OnInit, OnDestroy {
 
   participantForm: FormGroup;
   community: FormControl;
   surname: FormControl;
 
-  // currentNumberOfParticipants: number;
+  editMode = false;
+  activeParticipant: IParticipant | undefined = undefined;
+  buttonText = 'Zapisz';
 
-  // subs = new Subscription();
+  disabled = new BehaviorSubject(true);
+  disabled$ = this.disabled.asObservable();
+
+  subs = new Subscription();
 
   constructor(
     private fB: FormBuilder,
@@ -50,15 +58,31 @@ export class ParticipantEditComponent implements OnInit {
     this.community = this.participantForm.controls['wspólnota'] as FormControl;
     this.surname = this.participantForm.controls['nazwisko'] as FormControl;
 
-    // this.subs.add(
-    //   this.fBSrv.getParticipantList().valueChanges().pipe(
-    //     tap(pts => {
-    //       this.currentNumberOfParticipants = pts.length;
-    //       console.log('liczba uczestnikó: ',this.currentNumberOfParticipants )
-    //     })
-    //   ).subscribe()
-    // );
+    this.subs.add(
+      this.store.select(fromParticipants.getActiveParticipant).pipe(
+        map((participant) => {
+          if(participant) {
+            this.editMode = true;
+            this.activeParticipant = participant;
+            this.participantForm.patchValue(participant);
+            this.buttonText = 'Aktualizuj';
+          }
+        }),
+      ).subscribe()
+    )
 
+    this.subs.add(
+      this.participantForm.statusChanges.pipe(
+        withLatestFrom(this.store.select(fromParticipants.getActiveParticipant)),
+        map(([status, activePart]) => {
+          if (activePart) {
+            this.disabled$ = of(this.participantForm.pristine);
+          } else {
+            this.disabled$ = (status === 'INVALID') ? of(true) : of(false);
+          }
+        })
+      ).subscribe()
+    )
   }
 
   getErrorMessage(control: string) {
@@ -70,14 +94,24 @@ export class ParticipantEditComponent implements OnInit {
   }
 
   save() {
-    const newPartObj = {...this.participantForm.value, id: Date.now() }
-    this.store.dispatch(addParticipantSuccess({newParticipant: newPartObj}));
-    this.fBSrv.addParticipant(newPartObj);
-    this.router.navigate(['participants', 'list']);
+    if (!this.editMode) {
+      const newPartObj = {...this.participantForm.value, id: Date.now() };
+      this.store.dispatch(addParticipantSuccess({newParticipant: newPartObj}));
+      this.fBSrv.addParticipant(newPartObj);
+      this.router.navigate(['participants', 'list']);
+    } else {
+      console.log('Wykonane update...')
+      const updatedPartObj = {...this.participantForm.value, id: this.activeParticipant?.id};
+      this.store.dispatch(updateParticipantSuccess({participant: updatedPartObj}));
+      this.subs.add(
+        this.fBSrv.updateParticipant(updatedPartObj).subscribe(() => this.router.navigate(['participants', 'list']))
+      );
+    }
   }
 
-  // ngOnDestroy() {
-  //   this.subs.unsubscribe();
-  // }
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+    this.store.dispatch(relieveActiveParticpantData())
+  }
 
 }

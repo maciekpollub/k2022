@@ -8,7 +8,8 @@ const routes: Routes = [
   {path: '', component: MainComponent, children: [
     {path: '', redirectTo: 'list', pathMatch: 'full'},
     {path: 'list', component: ParticipantListComponent},
-    {path: 'new', component: ParticipantEditComponent}
+    {path: 'new', component: ParticipantEditComponent},
+    {path: 'edit/:id', component: ParticipantEditComponent},
   ]},
 ]
 
