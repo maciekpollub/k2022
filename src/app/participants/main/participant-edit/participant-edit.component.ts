@@ -23,6 +23,7 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
   editMode = false;
   activeParticipant: IParticipant | undefined = undefined;
   buttonText = 'Zapisz';
+  headerText = 'Nowy uczestnik'
 
   disabled = new BehaviorSubject(true);
   disabled$ = this.disabled.asObservable();
@@ -66,11 +67,11 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
             this.activeParticipant = participant;
             this.participantForm.patchValue(participant);
             this.buttonText = 'Aktualizuj';
+            this.headerText = 'Edytuj uczestnika'
           }
         }),
       ).subscribe()
-    )
-
+    );
     this.subs.add(
       this.participantForm.statusChanges.pipe(
         withLatestFrom(this.store.select(fromParticipants.getActiveParticipant)),
@@ -100,7 +101,6 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
       this.fBSrv.addParticipant(newPartObj);
       this.router.navigate(['participants', 'list']);
     } else {
-      console.log('Wykonane update...')
       const updatedPartObj = {...this.participantForm.value, id: this.activeParticipant?.id};
       this.store.dispatch(updateParticipantSuccess({participant: updatedPartObj}));
       this.subs.add(
@@ -111,7 +111,7 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
-    this.store.dispatch(relieveActiveParticpantData())
+    this.store.dispatch(relieveActiveParticpantData());
   }
 
 }

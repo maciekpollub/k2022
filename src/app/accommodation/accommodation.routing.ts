@@ -13,6 +13,7 @@ const routes: Routes = [
     {path: 'other-list', component: OtherAccommodationListComponent},
     {path: 'new-accommodation', component: AccommodationEditComponent},
     {path: 'new-other-accommodation', component: OtherAccommodationEditComponent},
+    {path: 'buzun-list/edit/:id', component: AccommodationEditComponent},
   ]},
 ]
 

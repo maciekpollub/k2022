@@ -159,6 +159,35 @@ export class FirebaseService implements OnDestroy {
     )
   }
 
+  updateAccommodation(accom: IAccommodation) {
+    return combineLatest([this.accommodationsSnChngs$, this.accommodationsValChngs$]).pipe(
+      map(([sC, vC]) => {
+        vC.forEach((elem, index) => {
+          let accommodationWithFBKey = {...{elem}, key: sC[index]?.key}
+          this.accommodationListWithFBKeys.push(accommodationWithFBKey);
+        })
+      }),
+      tap(() => {
+        let elemToUpdate = this.accommodationListWithFBKeys.find(a => (+a.elem['Id '] === +accom.id || +a.elem.id === +accom.id));
+        this.accommodationRef = this.fireDb.object('Kwatery u Buzunów/' + elemToUpdate?.key);
+        this.accommodationRef.update({
+        'il os zakwaterowana': accom['il os zakwaterowana'],
+        'il tap 1-os': accom['il tap 1-os'],
+        'można dostawić': accom['można dostawić'],
+        'wolne łóżka': accom['wolne łóżka'],
+        'przydział': accom.przydział,
+        'nazwiska': accom.nazwiska,
+        'pokój': accom.pokój,
+        'razem osób': accom['razem osób'],
+        'wspólnota': accom.wspólnota,
+        }).catch((error) => {
+          this.errorMgmt(error);
+        });
+      })
+    )
+  }
+
+
   deleteParticipant(id: string) {
     return combineLatest([this.participantsSnChngs$, this.participantsValChngs$]).pipe(
       map(([sC, vC]) => {

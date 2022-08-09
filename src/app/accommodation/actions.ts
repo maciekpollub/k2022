@@ -36,3 +36,27 @@ export const deleteOtherAccommodationSuccess = createAction(
   '[Accommodations] Delete other accommodation - success',
   props<{ otherAccommodationId: string }>()
 )
+
+export const loadActiveAccommodationDataRequest = createAction(
+  '[Accommodations] Load active accommodation data - request',
+  props<{ accommodationId: string }>()
+)
+
+export const loadActiveAccommodationDataSuccess = createAction(
+  '[Accommodations] Load active accommodation data - success',
+  props<{ accommodationId: string }>()
+)
+
+export const relieveActiveAccommodationData = createAction(
+  '[Accommodations] Relieve active accommodation data',
+)
+
+export const updataeAccomodationRequest = createAction(
+  '[Accommodations] Update accommodation - request',
+  props<{ accommodation: IAccommodation }>()
+)
+
+export const updateAccommodationSuccess = createAction(
+  '[Accommodations] Update accommodation - success',
+  props<{ accommodation: IAccommodation }>()
+)

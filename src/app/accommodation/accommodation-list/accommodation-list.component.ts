@@ -6,8 +6,9 @@ import { IAccommodation } from '../../interfaces/accommodation';
 import { Subscription, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { MatTableDataSource } from '@angular/material/table';
-import { deleteAccommodationSuccess } from '../actions';
+import { deleteAccommodationSuccess, loadActiveAccommodationDataSuccess } from '../actions';
 import { FirebaseService } from '../../services/firebase.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-accommodation-list',
@@ -32,7 +33,8 @@ export class AccommodationListComponent implements OnInit {
 
   constructor(
     private store: Store<fromRoot.IAppState>,
-    private fBSrv: FirebaseService) { }
+    private fBSrv: FirebaseService,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.subs.add(
@@ -41,6 +43,11 @@ export class AccommodationListComponent implements OnInit {
           this.dataSource = new MatTableDataSource(accommodations);
         })
       ).subscribe());
+  }
+
+  edit(accommodation: IAccommodation) {
+    this.store.dispatch(loadActiveAccommodationDataSuccess({accommodationId: accommodation.id.toString()}));
+    this.router.navigate(['accommodation', 'buzun-list', 'edit', accommodation.id.toString()]);
   }
 
   delete(accommodation: IAccommodation) {
