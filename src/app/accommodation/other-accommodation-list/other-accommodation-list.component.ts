@@ -7,7 +7,8 @@ import * as fromRoot from '../../reducer';
 import * as fromOtherAccommodations from '../other-accommodation.reducer';
 import { MatTableDataSource } from '@angular/material/table';
 import { FirebaseService } from '../../services/firebase.service';
-import { deleteOtherAccommodationSuccess } from '../actions';
+import { deleteOtherAccommodationSuccess, loadActiveOtherAccommodationDataSuccess } from '../actions';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-other-accommodation-list',
@@ -32,7 +33,8 @@ export class OtherAccommodationListComponent implements OnInit {
 
   constructor(
     private store: Store<fromRoot.IAppState>,
-    private fBSrv: FirebaseService) { }
+    private fBSrv: FirebaseService,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.subs.add(
@@ -41,6 +43,11 @@ export class OtherAccommodationListComponent implements OnInit {
           this.dataSource = new MatTableDataSource(otherAccommodations);
         })
       ).subscribe());
+  }
+
+  edit(otherAccommodation: IOtherAccommodation) {
+    this.store.dispatch(loadActiveOtherAccommodationDataSuccess({otherAccommodationId: otherAccommodation.id.toString()}));
+    this.router.navigate(['accommodation', 'other-list', 'edit', otherAccommodation.id.toString()]);
   }
 
   delete(otherAccommodation: IOtherAccommodation) {

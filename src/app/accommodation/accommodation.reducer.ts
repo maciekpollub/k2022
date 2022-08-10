@@ -33,7 +33,7 @@ const _accommodationsReducer = createReducer(
   on(updateAccommodationSuccess, (state, { accommodation }) => {
     const accommodationBeforeUpdate = state.accommodations.find(a => a.id === accommodation.id);
     let updatedAccommodationOrderNumber = -1;
-    if (accommodationBeforeUpdate) {
+    if(accommodationBeforeUpdate) {
       updatedAccommodationOrderNumber = state.accommodations.indexOf(accommodationBeforeUpdate);
     }
     let accommodationsCopy = state.accommodations.slice();

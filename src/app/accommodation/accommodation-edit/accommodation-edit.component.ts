@@ -75,7 +75,7 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
           }
         })
       ).subscribe()
-    )
+    );
   }
 
   getErrorMessage(control: string) {
@@ -86,7 +86,7 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    if (!this.editMode) {
+    if(!this.editMode) {
       const newAccObj = {...this.accommodationForm.value, id: Date.now()}
       this.store.dispatch(addAccommodationSuccess({newAccommodation: newAccObj}));
       this.fBSrv.addAccommodation(newAccObj);

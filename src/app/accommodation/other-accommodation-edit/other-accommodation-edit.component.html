@@ -1,9 +1,9 @@
 <div class="form-container">
-  <h4>{{ 'Nowa kwatera (inna)' | uppercase}} </h4>
+  <h4>{{ headerText | uppercase}} </h4>
 
   <form [formGroup]="otherAccommodationForm" (ngSubmit)="save()">
 
-    <div class="half-width">
+    <div class="part-width">
       <mat-form-field appearance="fill" class="obligatory-control">
         <mat-label>Pokój</mat-label>
         <input type="text" matInput formControlName="pokój" [matAutocomplete]="auto">
@@ -71,9 +71,9 @@
 
     </div>
 
-    <div class="half-width bottom">
+    <div class="part-width thiner bottom">
       <div class="button-container">
-        <button color="primary" mat-raised-button [disabled]="otherAccommodationForm.invalid" type="submit">Zapisz</button>
+        <button color="primary" mat-raised-button [disabled]="disabled$ | async" type="submit">{{ buttonText }}</button>
       </div>
     </div>
 

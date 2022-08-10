@@ -48,7 +48,8 @@ export class SideMenuComponent implements OnInit, OnDestroy {
         break;
       };
       case 'new': {
-        this.router.navigate([this.currentRoute.replace('list', path)]);
+        // this.router.navigate([this.currentRoute.replace('list', path)]);
+        this.router.navigate(['participants', 'new']);
         break;
       }
       case 'accommodation': {

@@ -187,6 +187,35 @@ export class FirebaseService implements OnDestroy {
     )
   }
 
+  updateOtherAccommodation(othAccom: IOtherAccommodation) {
+    return combineLatest([this.otherAccommodationsSnChngs$, this.otherAccommodationsValChngs$]).pipe(
+      map(([sC, vC]) => {
+        vC.forEach((elem, index) => {
+          let otherAccommodationWithFBKey = {...{elem}, key: sC[index]?.key};
+          this.otherAccommodationListWithFBKeys.push(otherAccommodationWithFBKey);
+        })
+      }),
+      tap(() => {
+        let elemToUpdate = this.otherAccommodationListWithFBKeys.find(a => (+a.elem['Id '] === +othAccom.id || +a.elem.id === +othAccom.id));
+        this.otherAccommodationRef = this.fireDb.object('Kwatery obce/' + elemToUpdate?.key);
+        this.otherAccommodationRef.update({
+          'il os zakwaterowana': othAccom['il os zakwaterowana'],
+          'il tap 2-os': othAccom['il tap 2-os'],
+          'łóżko pojed': othAccom['łóżko pojed'],
+          'łóżko duże': othAccom['łóżko duże'],
+          'wolne łóżka': othAccom['wolne łóżka'],
+          'przydział': othAccom.przydział,
+          'nazwiska': othAccom.nazwiska,
+          'pokój': othAccom.pokój,
+          'max il osób': othAccom['max il osób'],
+          'wspólnota': othAccom.wspólnota,
+        }).catch((error) => {
+          this.errorMgmt(error);
+        });
+      })
+    )
+  }
+
 
   deleteParticipant(id: string) {
     return combineLatest([this.participantsSnChngs$, this.participantsValChngs$]).pipe(
