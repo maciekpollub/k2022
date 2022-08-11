@@ -24,10 +24,17 @@
     left: calc(50% - 28px);
   }
 
-  .back-home {
+  .toggle-menu {
+    position: fixed;
+    top: 18px;
+    right: 30px;
+  }
+
+  .route-back {
     position: fixed;
     top: calc(100vh - 80px);
-    right: 26px;
+    right: 9%;
+    width: 14%;
   }
 }
 }

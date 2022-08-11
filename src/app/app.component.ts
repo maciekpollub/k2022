@@ -5,13 +5,14 @@ import { IAppState, isCTAVisible } from './reducer';
 import { setCTAVisibility, toggleDrawerState, fetchData } from './actions';
 import { IFirstDataPiece } from './interfaces/data-piece';
 import { IParticipant } from './interfaces/participant';
-import { combineLatest, distinctUntilChanged, filter, forkJoin, map, Observable, Subscription, tap, zip } from 'rxjs';
+import { filter, map, Observable, Subscription, tap, zip } from 'rxjs';
 import { MatDrawer } from '@angular/material/sidenav';
-import { Router, NavigationStart } from '@angular/router';
+import { Router, NavigationStart, ActivatedRoute } from '@angular/router';
 import { IAccommodation } from './interfaces/accommodation';
 import { FetchedDataService } from './services/fetched-data.service';
 import { IOtherAccommodation } from './interfaces/other-accommodation';
 import { FirebaseService } from './services/firebase.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -44,6 +45,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<IAppState>,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private location: Location,
     private fDSrv: FetchedDataService,
     private firebaseSrv: FirebaseService,
     ) {
@@ -141,6 +144,10 @@ export class AppComponent implements OnInit, OnDestroy {
   toggleDrawer() {
     this.drawer.toggle();
     this.store.dispatch(toggleDrawerState());
+  }
+
+  routeBack() {
+    this.location.back();
   }
 
   ngOnDestroy(){

@@ -78,6 +78,19 @@
           <input type="string" matInput formControlName="uwagi">
         </mat-form-field>
       </div>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Zakwaterowanie</mat-label>
+        <mat-select formControlName="zakwaterowanie">
+          <mat-option *ngFor="let accom of (totalAccomList$ | async)"
+                      [value]="accom['pokój']"
+                      [ngStyle]="{'color': isTaken(accom) ? '#b6b5ba' : 'black'}"
+                      [disabled]="isTaken(accom)">
+            {{ accom['pokój'] }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
     </div>
 
     <div class="part-width thiner bottom">

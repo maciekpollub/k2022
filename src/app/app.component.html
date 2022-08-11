@@ -5,12 +5,15 @@
 
   <div class="sidenav-content">
     <router-outlet></router-outlet>
-    <!-- <button class="reset-data" mat-mini-fab color="warn" (click)="readfile()">Reset</button> -->
+
     <button class="call-to-action" mat-fab color="primary" (click)="toggleDrawer()" *ngIf="CTAVisible | async">
       <mat-icon>touch_app</mat-icon>
     </button>
-    <button class="back-home" mat-fab color="primary" (click)="toggleDrawer()" *ngIf="!(CTAVisible | async)">
-      <mat-icon>more_vert</mat-icon>
+    <button class="toggle-menu" mat-mini-fab color="primary" (click)="toggleDrawer()" *ngIf="!(CTAVisible | async)">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <button mat-raised-button class="route-back" color="primary" (click)="routeBack()" *ngIf="!(CTAVisible | async)">
+      <span>Powrót</span>
     </button>
   </div>
 

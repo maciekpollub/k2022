@@ -5,9 +5,16 @@ import { Store } from '@ngrx/store';
 import { addParticipantSuccess, relieveActiveParticpantData, updateParticipantSuccess } from '../../actions';
 import { FirebaseService } from '../../../services/firebase.service';
 import { Router } from '@angular/router';
-import { Subscription, map, withLatestFrom, of, BehaviorSubject } from 'rxjs';
+import { Subscription, map, withLatestFrom, of, BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import * as fromParticipants from '../../participants.reducer';
+import * as fromAccommodations from '../../../accommodation/accommodation.reducer';
+import * as fromOtherAccommodations from '../../../accommodation/other-accommodation.reducer';
 import { IParticipant } from '../../../interfaces/participant';
+import { getAccommodations } from '../../../accommodation/accommodation.reducer';
+import { TopFilterComponent } from '../../../top-filter/top-filter.component';
+import { getOtherAccommodations } from '../../../accommodation/other-accommodation.reducer';
+import { IOtherAccommodation } from '../../../interfaces/other-accommodation';
+import { IAccommodation } from '../../../interfaces/accommodation';
 
 @Component({
   selector: 'app-participant-edit',
@@ -27,6 +34,8 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
 
   disabled = new BehaviorSubject(true);
   disabled$ = this.disabled.asObservable();
+
+  totalAccomList$: Observable<(IAccommodation | IOtherAccommodation)[]>;
 
   subs = new Subscription();
 
@@ -83,7 +92,16 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
           }
         })
       ).subscribe()
-    )
+    );
+
+    this.totalAccomList$ = combineLatest([
+        this.store.select(fromAccommodations.getAccommodations),
+        this.store.select(fromOtherAccommodations.getOtherAccommodations)
+      ]).pipe(
+        map(([accomList, otherAccomList]) => {
+          return [...accomList, ...otherAccomList]
+        })
+      );
   }
 
   getErrorMessage(control: string) {
@@ -92,6 +110,10 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
     } else {
       return this.surname.hasError('required') ? 'Pole wymagane': '';
     }
+  }
+
+  isTaken(accom: IAccommodation | IOtherAccommodation) {
+    return accom['nazwiska'] || (!accom['nazwiska'] && (accom['wolne łóżka'] >= 0));
   }
 
   save() {
