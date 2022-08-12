@@ -27,9 +27,9 @@ export class OtherAccommodationListComponent implements OnInit {
 
   subs: Subscription = new Subscription();
 
-  columnsToDisplay = ['pokój', 'max il osób', 'il os zakwaterowana','nazwiska', 'wspólnota', 'akcje'];
+  columnsToDisplay = ['pokój', 'max il osób', 'il os zakwaterowana','nazwiska', 'wspólnota', 'przydzielony','akcje'];
   expandedElement: any;
-  numericValueColumns = ['max il osób', 'il os zakwaterowana'];
+  numericValueColumns = ['max il osób', 'il os zakwaterowana', 'przydzielony'];
 
   constructor(
     private store: Store<fromRoot.IAppState>,
