@@ -6,9 +6,11 @@ import * as fromParticipants from '../../participants.reducer';
 import { Subscription, tap } from 'rxjs';
 import { IParticipant, IExpandedParticipant } from '../../../interfaces/participant';
 import { MatTableDataSource } from '@angular/material/table';
-import { deleteParticipantSuccess, loadActiveParticipantDataSuccess } from '../../actions';
+import { loadActiveParticipantDataSuccess } from '../../actions';
 import { FirebaseService } from '../../../services/firebase.service';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { DeletionDialogComponent } from '../../../deletion-dialog/deletion-dialog.component';
 
 export interface IExpPartTile {
   rows: number,
@@ -40,7 +42,8 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<fromRoot.IAppState>,
     private fBSrv: FirebaseService,
-    private router: Router) {
+    private router: Router,
+    private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -58,13 +61,12 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
     this.router.navigate(['participants', 'edit', participant.id.toString()])
   }
 
-  delete(participant: IParticipant) {
-    this.store.dispatch(deleteParticipantSuccess({participantId: participant.id.toString()}));
-    this.subs.add(
-      this.fBSrv.deleteParticipant(participant.id.toString()).subscribe()
-    );
+  openDialog(enterAnimationDuration: string, exitAnimationDuration: string, element: any): void {
+    this.dialog.open(DeletionDialogComponent, {
+      data: element,
+      width: '50%',
+    });
   }
-
 
   ngOnDestroy(): void {
       this.subs.unsubscribe();

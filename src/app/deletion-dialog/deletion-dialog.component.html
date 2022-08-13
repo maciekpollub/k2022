@@ -1,0 +1,11 @@
+<div class="dialog-container">
+  <div mat-dialog-content>
+    <p *ngIf="elemToDelete['nazwisko']">
+      Czy na pewno usunąć <span style="font-weight: 600">{{ elemToDelete['nazwisko'] }} ?</span>
+    </p>
+  </div>
+  <div class="dialog-actions" mat-dialog-actions>
+    <button mat-stroked-button color="primary" mat-dialog-close cdkFocusInitial>Nie</button>
+    <button mat-stroked-button color="warn" mat-dialog-close (click)="delete()">Tak</button>
+  </div>
+</div>

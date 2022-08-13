@@ -45,7 +45,6 @@ export class SummaryParticipantsComponent implements OnInit {
       };
 
       this.dataSource = new MatTableDataSource<any>([this.participantSummary]);
-      console.log('To jest liczba braci:', this.brothers)
     }
   }
 

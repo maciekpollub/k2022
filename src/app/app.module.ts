@@ -29,6 +29,7 @@ import { SummaryOtherAccommodationComponent } from './top-filter/summary-other-a
 import { ReactiveFormsModule } from '@angular/forms';
 import { EffectsModule } from '@ngrx/effects';
 import { ParticipantsEffects } from './participants/effects';
+import { DeletionDialogComponent } from './deletion-dialog/deletion-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ParticipantsEffects } from './participants/effects';
     SummaryParticipantsComponent,
     SummaryAccommodationComponent,
     SummaryOtherAccommodationComponent,
+    DeletionDialogComponent,
   ],
   imports: [
     CommonModule,
