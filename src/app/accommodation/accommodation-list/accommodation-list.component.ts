@@ -6,9 +6,10 @@ import { IAccommodation } from '../../interfaces/accommodation';
 import { Subscription, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { MatTableDataSource } from '@angular/material/table';
-import { deleteAccommodationSuccess, loadActiveAccommodationDataSuccess } from '../actions';
-import { FirebaseService } from '../../services/firebase.service';
+import { loadActiveAccommodationDataSuccess } from '../actions';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { DeletionDialogComponent } from '../../deletion-dialog/deletion-dialog.component';
 
 @Component({
   selector: 'app-accommodation-list',
@@ -33,8 +34,8 @@ export class AccommodationListComponent implements OnInit {
 
   constructor(
     private store: Store<fromRoot.IAppState>,
-    private fBSrv: FirebaseService,
-    private router: Router) { }
+    private router: Router,
+    private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.subs.add(
@@ -50,11 +51,11 @@ export class AccommodationListComponent implements OnInit {
     this.router.navigate(['accommodation', 'buzun-list', 'edit', accommodation.id.toString()]);
   }
 
-  delete(accommodation: IAccommodation) {
-    this.store.dispatch(deleteAccommodationSuccess({accommodationId: accommodation.id.toString()}));
-    this.subs.add(
-      this.fBSrv.deleteAccommodation(accommodation.id.toString()).subscribe()
-    );
+  openDialog(enterAnimationDuration: string, exitAnimationDuration: string, element: any): void {
+    this.dialog.open(DeletionDialogComponent, {
+      data: element,
+      width: '50%',
+    });
   }
 
   ngOnDestroy(): void {

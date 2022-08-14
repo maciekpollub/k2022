@@ -6,9 +6,10 @@ import { Store } from '@ngrx/store';
 import * as fromRoot from '../../reducer';
 import * as fromOtherAccommodations from '../other-accommodation.reducer';
 import { MatTableDataSource } from '@angular/material/table';
-import { FirebaseService } from '../../services/firebase.service';
-import { deleteOtherAccommodationSuccess, loadActiveOtherAccommodationDataSuccess } from '../actions';
+import { loadActiveOtherAccommodationDataSuccess } from '../actions';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { DeletionDialogComponent } from '../../deletion-dialog/deletion-dialog.component';
 
 @Component({
   selector: 'app-other-accommodation-list',
@@ -33,8 +34,8 @@ export class OtherAccommodationListComponent implements OnInit {
 
   constructor(
     private store: Store<fromRoot.IAppState>,
-    private fBSrv: FirebaseService,
-    private router: Router) { }
+    private router: Router,
+    private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.subs.add(
@@ -50,11 +51,11 @@ export class OtherAccommodationListComponent implements OnInit {
     this.router.navigate(['accommodation', 'other-list', 'edit', otherAccommodation.id.toString()]);
   }
 
-  delete(otherAccommodation: IOtherAccommodation) {
-    this.store.dispatch(deleteOtherAccommodationSuccess({ otherAccommodationId: otherAccommodation.id.toString() }));
-    this.subs.add(
-      this.fBSrv.deleteOtherAccommodation(otherAccommodation.id.toString()).subscribe()
-    );
+  openDialog(enterAnimationDuration: string, exitAnimationDuration: string, element: any): void {
+    this.dialog.open(DeletionDialogComponent, {
+      data: element,
+      width: '50%',
+    });
   }
 
   ngOnDestroy(): void {

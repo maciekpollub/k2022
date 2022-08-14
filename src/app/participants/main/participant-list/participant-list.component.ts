@@ -7,7 +7,6 @@ import { Subscription, tap } from 'rxjs';
 import { IParticipant, IExpandedParticipant } from '../../../interfaces/participant';
 import { MatTableDataSource } from '@angular/material/table';
 import { loadActiveParticipantDataSuccess } from '../../actions';
-import { FirebaseService } from '../../../services/firebase.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeletionDialogComponent } from '../../../deletion-dialog/deletion-dialog.component';
@@ -41,7 +40,6 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<fromRoot.IAppState>,
-    private fBSrv: FirebaseService,
     private router: Router,
     private dialog: MatDialog) {
   }
