@@ -10,10 +10,12 @@ const initialState: IParticipantsState = {
 
 const _participantsReducer = createReducer(
   initialState,
-  on(fetchData, (state, { fetchedDataParticipants, fetchedDataAccommodations }) => ({
-    ...state,
-    participants: fetchedDataParticipants
-  })),
+  on(fetchData, (state, { fetchedDataParticipants, fetchedDataAccommodations }) => {
+    return ({
+      ...state,
+      participants: fetchedDataParticipants
+    })
+  }),
   on(addParticipantSuccess, (state, { newParticipant } ) => ({
     ...state,
     participants: [...state.participants, newParticipant]

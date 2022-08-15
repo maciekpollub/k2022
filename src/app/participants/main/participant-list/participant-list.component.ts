@@ -66,6 +66,16 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
     });
   }
 
+  compareParticipants(one: IParticipant, two: IParticipant) {
+  if ( one.wspólnota.toLowerCase() < two.wspólnota.toLowerCase()){
+    return -1;
+  }
+  if ( one.wspólnota.toLowerCase() > two.wspólnota.toLowerCase()){
+    return 1;
+  }
+  return 0;
+}
+
   ngOnDestroy(): void {
       this.subs.unsubscribe();
   }

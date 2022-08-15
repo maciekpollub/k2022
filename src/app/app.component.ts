@@ -5,7 +5,7 @@ import { IAppState, isCTAVisible } from './reducer';
 import { setCTAVisibility, toggleDrawerState, fetchData } from './actions';
 import { IFirstDataPiece } from './interfaces/data-piece';
 import { IParticipant } from './interfaces/participant';
-import { filter, map, Observable, Subscription, tap, zip } from 'rxjs';
+import { filter, map, Observable, Subscription, tap, zip, combineLatest } from 'rxjs';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Router, NavigationStart, ActivatedRoute } from '@angular/router';
 import { IAccommodation } from './interfaces/accommodation';
@@ -126,13 +126,16 @@ export class AppComponent implements OnInit, OnDestroy {
     );
 
     this.subs.add(
-      zip([ this.participantList$, this.accommodationList$, this.otherAccommodationList$ ])
+      combineLatest([ this.participantList$, this.accommodationList$, this.otherAccommodationList$ ])
       .pipe(
         tap(([ partList, accomList, otherAccomList ]) => {
+          const sortedParticipants = partList.sort((a, b) => a.wspólnota.localeCompare(b.wspólnota));
+          const sortedAccommodations = accomList.sort((a, b) => a.pokój.localeCompare(b.pokój));
+          const sortedOtherAccommodations = otherAccomList.sort((a, b) => a.pokój.localeCompare(b.pokój));
           this.store.dispatch(fetchData({
-            fetchedDataParticipants: partList,
-            fetchedDataAccommodations: accomList,
-            fetchedDataOtherAccommodations: otherAccomList,
+            fetchedDataParticipants: sortedParticipants,
+            fetchedDataAccommodations: sortedAccommodations,
+            fetchedDataOtherAccommodations: sortedOtherAccommodations,
           }));
         })
       ).subscribe()
