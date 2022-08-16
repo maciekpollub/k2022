@@ -2,6 +2,25 @@ import { props, createAction } from '@ngrx/store';
 import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
 
+
+export const fetchAccommodationsDataRequest = createAction(
+  '[Accommodations] Fetch accommodations from data base - request',
+)
+
+export const fetchAccommodationsDataSuccess = createAction(
+  '[Accommodations] Fetch accommodations from data base - success',
+  props<{ accommodationList: IAccommodation[] }>()
+)
+
+export const fetchOtherAccommodationsDataRequest = createAction(
+  '[Accommodations] Fetch other accommodations from data base - request',
+)
+
+export const fetchOtherAccommodationsDataSuccess = createAction(
+  '[Accommodations] Fetch other accommodations from data base - success',
+  props<{ otherAccommodationList: IOtherAccommodation[] }>()
+)
+
 export const addAccommodationRequest = createAction(
   '[Accommodations] Add newly created accommodation - request',
   props<{ newAccommodation: IAccommodation }>()

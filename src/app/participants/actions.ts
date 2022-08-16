@@ -1,6 +1,15 @@
 import { props, createAction } from '@ngrx/store';
 import { IParticipant } from '../interfaces/participant';
 
+export const fetchParticipantsDataRequest = createAction(
+  '[Participants] Fetch participants from data base - request',
+)
+
+export const fetchParticipantsDataSuccess = createAction(
+  '[Participants] Fetch participants from data base - success',
+  props<{ participantList: IParticipant[] }>()
+)
+
 export const addParticipantRequest = createAction(
   '[Participants] Add newly created participant - request',
   props<{ newParticipant: IParticipant }>()

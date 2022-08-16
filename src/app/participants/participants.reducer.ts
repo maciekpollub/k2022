@@ -1,7 +1,6 @@
-import { Action, createReducer, on, createFeatureSelector, createSelector, ActionReducerMap } from '@ngrx/store';
-import { fetchData } from '../actions';
+import { Action, createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
 import { IParticipantsState } from '../interfaces/participant-state';
-import { addParticipantSuccess, deleteParticipantSuccess, loadActiveParticipantDataSuccess, relieveActiveParticpantData, updateParticipantSuccess } from './actions';
+import { addParticipantSuccess, deleteParticipantSuccess, loadActiveParticipantDataSuccess, relieveActiveParticpantData, updateParticipantSuccess, fetchParticipantsDataRequest, fetchParticipantsDataSuccess } from './actions';
 
 const initialState: IParticipantsState = {
   participants: [],
@@ -10,10 +9,10 @@ const initialState: IParticipantsState = {
 
 const _participantsReducer = createReducer(
   initialState,
-  on(fetchData, (state, { fetchedDataParticipants, fetchedDataAccommodations }) => {
+  on(fetchParticipantsDataSuccess, (state, { participantList }) => {
     return ({
       ...state,
-      participants: fetchedDataParticipants
+      participants: participantList
     })
   }),
   on(addParticipantSuccess, (state, { newParticipant } ) => ({

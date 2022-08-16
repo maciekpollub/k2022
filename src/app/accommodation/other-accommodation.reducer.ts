@@ -1,8 +1,6 @@
 import { IOtherAccommodationState } from '../interfaces/other-accommodation-state';
-import { fetchData } from '../actions';
 import { on, createReducer, Action, createFeatureSelector, createSelector } from '@ngrx/store';
-import { addOtherAccommodationSuccess, deleteOtherAccommodationSuccess, loadActiveOtherAccommodationDataSuccess, relieveActiveOtherAccommodationData, updateOtherAccommodationRequest, updateOtherAccommodationSuccess } from './actions';
-import { state } from '@angular/animations';
+import { addOtherAccommodationSuccess, deleteOtherAccommodationSuccess, loadActiveOtherAccommodationDataSuccess, relieveActiveOtherAccommodationData, updateOtherAccommodationRequest, updateOtherAccommodationSuccess, fetchOtherAccommodationsDataSuccess } from './actions';
 
 const initialState: IOtherAccommodationState = {
   otherAccommodations: [],
@@ -11,10 +9,10 @@ const initialState: IOtherAccommodationState = {
 
 const _otherAccommodationsReducer = createReducer(
   initialState,
-  on(fetchData, (state, { fetchedDataOtherAccommodations }) => ({
+  on(fetchOtherAccommodationsDataSuccess, (state, { otherAccommodationList }) => ({
     ...state,
-    otherAccommodations: fetchedDataOtherAccommodations
-  })),
+    otherAccommodations: otherAccommodationList
+    })),
   on(addOtherAccommodationSuccess, (state, { newOtherAccommodation } ) => ({
     ...state,
     otherAccommodations: [...state.otherAccommodations, newOtherAccommodation]
