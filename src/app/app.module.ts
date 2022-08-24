@@ -30,6 +30,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { EffectsModule } from '@ngrx/effects';
 import { ParticipantsEffects } from './participants/effects';
 import { DeletionDialogComponent } from './deletion-dialog/deletion-dialog.component';
+import { OtherAccommodationEffects } from './accommodation/other-accommodation-effects';
+import { AccommodationEffects } from './accommodation/accommodation-effects';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,7 @@ import { DeletionDialogComponent } from './deletion-dialog/deletion-dialog.compo
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([ParticipantsEffects]),
+    EffectsModule.forRoot([ParticipantsEffects, AccommodationEffects, OtherAccommodationEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production
@@ -60,7 +62,6 @@ import { DeletionDialogComponent } from './deletion-dialog/deletion-dialog.compo
     ParticipantsModule,
     MatSidenavModule,
     MatMenuModule,
-    EffectsModule.forRoot([]),
   ],
   exports: [
     SharedModule,

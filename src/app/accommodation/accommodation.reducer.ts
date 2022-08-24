@@ -1,10 +1,12 @@
 import { IAccommodationState } from '../interfaces/accommodation-state';
 import { Action, createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
-import { addAccommodationSuccess, deleteAccommodationSuccess, loadActiveAccommodationDataSuccess, relieveActiveAccommodationData, updateAccommodationSuccess, fetchAccommodationsDataSuccess, fetchOtherAccommodationsDataSuccess } from './actions';
+import { addAccommodationSuccess, deleteAccommodationSuccess, loadActiveAccommodationDataSuccess, relieveActiveAccommodationData, updateAccommodationSuccess, fetchAccommodationsDataSuccess, fetchOtherAccommodationsDataSuccess, markSaveAccommodationBtnUnClicked, markSaveAccommodationBtnClicked } from './actions';
+
 
 const initialState: IAccommodationState = {
   accommodations: [],
   activeAccommodation: undefined,
+  saveAccommodationButtonRecentlyClicked: false,
 }
 
 const _accommodationsReducer = createReducer(
@@ -23,7 +25,7 @@ const _accommodationsReducer = createReducer(
     })),
   on(loadActiveAccommodationDataSuccess, (state, { accommodationId }) => ({
     ...state,
-    activeAccommodation: state.accommodations.find(a => a.id.toString() === accommodationId)
+    activeAccommodation: state.accommodations.find(a => a.id?.toString() === accommodationId)
   })),
   on(relieveActiveAccommodationData, (state) => ({
     ...state,
@@ -34,6 +36,7 @@ const _accommodationsReducer = createReducer(
     let updatedAccommodationOrderNumber = -1;
     if(accommodationBeforeUpdate) {
       updatedAccommodationOrderNumber = state.accommodations.indexOf(accommodationBeforeUpdate);
+      console.log('To jerst udatedAccOrderNumber:', updatedAccommodationOrderNumber);
     }
     let accommodationsCopy = state.accommodations.slice();
     accommodationsCopy.splice(updatedAccommodationOrderNumber, 1, accommodation);
@@ -42,7 +45,15 @@ const _accommodationsReducer = createReducer(
       ...state,
       accommodations: accommodationsCopy,
     })
-  })
+  }),
+  on(markSaveAccommodationBtnClicked, (state) => ({
+    ...state,
+    saveAccommodationButtonRecentlyClicked: true,
+  })),
+  on(markSaveAccommodationBtnUnClicked, (state) => ({
+    ...state,
+    saveAccommodationButtonRecentlyClicked: false,
+  })),
 )
 export function accommodationsReducer(state: any, action: Action){
   return _accommodationsReducer(state, action);
@@ -56,5 +67,9 @@ export const getAccommodations = createSelector(
 export const getActiveAccommodation = createSelector(
   getAccommodationsState,
   (state: IAccommodationState) => state.activeAccommodation
+);
+export const isSaveAccommodationButtonRecentlyClicked = createSelector(
+  getAccommodationsState,
+  (state: IAccommodationState) => state.saveAccommodationButtonRecentlyClicked
 );
 

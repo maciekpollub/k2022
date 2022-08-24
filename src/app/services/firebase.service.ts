@@ -7,7 +7,8 @@ import {
   AngularFireList,
   AngularFireObject,
 } from '@angular/fire/compat/database';
-import { map, tap, combineLatest, Subscription } from 'rxjs';
+import { map, tap, combineLatest, Subscription, filter } from 'rxjs';
+import { FetchedDataService } from './fetched-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -36,21 +37,30 @@ export class FirebaseService implements OnDestroy {
 
   subs = new Subscription();
 
-  constructor(private fireDb: AngularFireDatabase) {}
+  constructor(private fireDb: AngularFireDatabase, private fDSrv: FetchedDataService) {}
 
   getParticipantList() {
     this.participantsRef = this.fireDb.list('Lista braci');
-    return this.participantsRef;
+    return this.participantsRef.valueChanges().pipe(
+      filter(partList => !!partList),
+      map(partList => this.fDSrv.mapParticipantList(partList).sort((a, b) => a.wspólnota.localeCompare(b.wspólnota))),
+    );
   }
 
   getAccommodationList(){
     this.accommodationsRef = this.fireDb.list('Kwatery u Buzunów');
-    return this.accommodationsRef;
+    return this.accommodationsRef.valueChanges().pipe(
+      filter(accomList => !!accomList),
+      map(accomList => this.fDSrv.mapAccommodationList(accomList).sort((a, b) => a.pokój.localeCompare(b.pokój)))
+    );
   }
 
   getOtherAccommodationList(){
     this.otherAccommodationsRef = this.fireDb.list('Kwatery obce');
-    return this.otherAccommodationsRef;
+    return this.otherAccommodationsRef.valueChanges().pipe(
+      filter(otherAccomList => !!otherAccomList),
+      map(otherAccomList => this.fDSrv.mapOtherAccommodationList(otherAccomList).sort((a, b) => a.pokój.localeCompare(b.pokój)))
+    );
   }
 
   addParticipant(p: IParticipant) {
@@ -133,15 +143,14 @@ export class FirebaseService implements OnDestroy {
       }),
       tap(() => {
         let elemToUpdate = this.participantListWithFBKeys.find(p => (+p.elem['Id '] === +part.id || +p.elem.id === +part.id));
-        console.log('To jest key:', elemToUpdate?.key);
         this.participantRef = this.fireDb.object('Lista braci/' + elemToUpdate?.key);
         this.participantRef.update({
           wspólnota: part.wspólnota,
-          obecność: part.obecność,
+          obecność: part.obecność ?? '',
           nazwisko: part.nazwisko,
-          przydział: part.przydział,
-          zakwaterowanie: part.zakwaterowanie,
-          samochód: part.samochód,
+          przydział: part.przydział ?? '',
+          zakwaterowanie: part.zakwaterowanie ?? '',
+          samochód: part.samochód ?? '',
           prezbiter: part.prezbiter,
           małżeństwo: part.małżeństwo,
           kobiety: part.kobiety,
@@ -150,7 +159,7 @@ export class FirebaseService implements OnDestroy {
           dzieci: part.dzieci,
           nianiaZRodziny: part.nianiaZRodziny,
           nianiaObca: part.nianiaObca,
-          uwagi: part.uwagi,
+          uwagi: part.uwagi ?? '',
           wiek: part.wiek,
         }).catch((error) => {
           this.errorMgmt(error);
@@ -171,19 +180,19 @@ export class FirebaseService implements OnDestroy {
         let elemToUpdate = this.accommodationListWithFBKeys.find(a => (+a.elem['Id '] === +accom.id || +a.elem.id === +accom.id));
         this.accommodationRef = this.fireDb.object('Kwatery u Buzunów/' + elemToUpdate?.key);
         this.accommodationRef.update({
-        'il os zakwaterowana': accom['il os zakwaterowana'],
-        'il tap 1-os': accom['il tap 1-os'],
-        'można dostawić': accom['można dostawić'],
-        'wolne łóżka': accom['wolne łóżka'],
-        'przydział': accom.przydział,
-        'nazwiska': accom.nazwiska,
-        'pokój': accom.pokój,
-        'razem osób': accom['razem osób'],
-        'wspólnota': accom.wspólnota,
+        'il os zakwaterowana': accom['il os zakwaterowana'] ?? null,
+        'il tap 1-os': accom['il tap 1-os'] ?? null,
+        'można dostawić': accom['można dostawić'] ?? null,
+        'wolne łóżka': accom['wolne łóżka'] ?? null,
+        'przydział': accom.przydział ?? null,
+        'nazwiska': accom.nazwiska ?? '',
+        'pokój': accom['pokój'] ?? '',
+        'razem osób': accom['razem osób'] ?? null,
+        'wspólnota': accom['wspólnota'] ?? '',
         }).catch((error) => {
           this.errorMgmt(error);
         });
-      })
+      }),
     )
   }
 
@@ -199,16 +208,16 @@ export class FirebaseService implements OnDestroy {
         let elemToUpdate = this.otherAccommodationListWithFBKeys.find(a => (+a.elem['Id '] === +othAccom.id || +a.elem.id === +othAccom.id));
         this.otherAccommodationRef = this.fireDb.object('Kwatery obce/' + elemToUpdate?.key);
         this.otherAccommodationRef.update({
-          'il os zakwaterowana': othAccom['il os zakwaterowana'],
-          'il tap 2-os': othAccom['il tap 2-os'],
-          'łóżko pojed': othAccom['łóżko pojed'],
-          'łóżko duże': othAccom['łóżko duże'],
-          'wolne łóżka': othAccom['wolne łóżka'],
-          'przydział': othAccom.przydział,
-          'nazwiska': othAccom.nazwiska,
-          'pokój': othAccom.pokój,
-          'max il osób': othAccom['max il osób'],
-          'wspólnota': othAccom.wspólnota,
+          'il os zakwaterowana': othAccom['il os zakwaterowana'] ?? null,
+          'il tap 2-os': othAccom['il tap 2-os'] ?? null,
+          'łóżko pojed': othAccom['łóżko pojed'] ?? null,
+          'łóżko duże': othAccom['łóżko duże'] ?? null,
+          'wolne łóżka': othAccom['wolne łóżka'] ?? null,
+          'przydział': othAccom.przydział ?? null,
+          'nazwiska': othAccom['nazwiska'] ?? '',
+          'pokój': othAccom['pokój'] ?? '',
+          'max il osób': othAccom['max il osób'] ?? null,
+          'wspólnota': othAccom['wspólnota'] ?? '',
         }).catch((error) => {
           this.errorMgmt(error);
         });
@@ -272,7 +281,7 @@ export class FirebaseService implements OnDestroy {
   }
 
   private errorMgmt(error: any) {
-    console.log(error);
+    console.log('Coś się zespsuło....: ', error);
   }
 
   ngOnDestroy(): void {

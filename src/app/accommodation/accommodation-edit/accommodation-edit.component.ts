@@ -4,10 +4,11 @@ import * as fromRoot from '../../reducer';
 import * as fromAccommodations from '../accommodation.reducer';
 import { Store } from '@ngrx/store';
 import { FirebaseService } from '../../services/firebase.service';
-import { addAccommodationSuccess, updateAccommodationSuccess, relieveActiveAccommodationData } from '../actions';
+import { addAccommodationSuccess, updateAccommodationSuccess, relieveActiveAccommodationData, updateAccommodationRequest, markSaveAccommodationBtnClicked, markSaveOtherAccommodationBtnUnClicked } from '../actions';
 import { Router } from '@angular/router';
 import { IAccommodation } from '../../interfaces/accommodation';
 import { BehaviorSubject, map, of, Subscription, withLatestFrom } from 'rxjs';
+import { markSaveParticipantBtnUnClicked } from '../../participants/actions';
 
 @Component({
   selector: 'app-accommodation-edit',
@@ -93,11 +94,11 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
       this.router.navigate(['accommodation', 'buzun-list']);
     } else {
       const updatedAccomObj = {...this.accommodationForm.value, id: this.activeAccommodation?.id};
-      this.store.dispatch(updateAccommodationSuccess({accommodation: updatedAccomObj}));
-      this.subs.add(
-        this.fBSrv.updateAccommodation(updatedAccomObj).subscribe(() => this.router.navigate(['accommodation', 'buzun-list']))
-      );
+      this.store.dispatch(updateAccommodationRequest({ accommodation: updatedAccomObj}));
     }
+    this.store.dispatch(markSaveAccommodationBtnClicked());
+    this.store.dispatch(markSaveOtherAccommodationBtnUnClicked());
+    this.store.dispatch(markSaveParticipantBtnUnClicked());
   }
 
   ngOnDestroy() {

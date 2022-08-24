@@ -1,10 +1,14 @@
 import { IOtherAccommodationState } from '../interfaces/other-accommodation-state';
 import { on, createReducer, Action, createFeatureSelector, createSelector } from '@ngrx/store';
-import { addOtherAccommodationSuccess, deleteOtherAccommodationSuccess, loadActiveOtherAccommodationDataSuccess, relieveActiveOtherAccommodationData, updateOtherAccommodationRequest, updateOtherAccommodationSuccess, fetchOtherAccommodationsDataSuccess } from './actions';
+import { addOtherAccommodationSuccess, deleteOtherAccommodationSuccess,
+        loadActiveOtherAccommodationDataSuccess, relieveActiveOtherAccommodationData,
+        updateOtherAccommodationSuccess, fetchOtherAccommodationsDataSuccess,
+        markSaveOtherAccommodationBtnClicked, markSaveOtherAccommodationBtnUnClicked } from './actions';
 
 const initialState: IOtherAccommodationState = {
   otherAccommodations: [],
   activeOtherAccommodation: undefined,
+  saveOtherAccommodationButtonRecentlyClicked: false,
 }
 
 const _otherAccommodationsReducer = createReducer(
@@ -41,7 +45,15 @@ const _otherAccommodationsReducer = createReducer(
       ...state,
       otherAccommodations: otherAccommodationsCopy,
     })
-  })
+  }),
+  on(markSaveOtherAccommodationBtnClicked, (state) => ({
+    ...state,
+    saveOtherAccommodationButtonRecentlyClicked: true,
+  })),
+  on(markSaveOtherAccommodationBtnUnClicked, (state) => ({
+    ...state,
+    saveOtherAccommodationButtonRecentlyClicked: false,
+  })),
 )
 export function otherAccommodationsReducer(state: any, action: Action) {
   return _otherAccommodationsReducer(state, action);
@@ -55,4 +67,8 @@ export const getOtherAccommodations = createSelector(
 export const getActiveOtherAccommodation = createSelector(
   getOtherAccommodationsState,
   (state: IOtherAccommodationState) => state.activeOtherAccommodation
+);
+export const isSaveOtherAccommodationButtonRecentlyClicked = createSelector(
+  getOtherAccommodationsState,
+  (state: IOtherAccommodationState) => state.saveOtherAccommodationButtonRecentlyClicked
 );

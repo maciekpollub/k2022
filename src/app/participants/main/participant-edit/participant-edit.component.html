@@ -1,7 +1,7 @@
 <div class="form-container">
   <h4>{{ headerText | uppercase}} </h4>
 
-  <form [formGroup]="participantForm" (ngSubmit)="save()">
+  <form [formGroup]="participantForm">
 
     <div class="part-width">
       <mat-form-field appearance="fill" class="obligatory-control">
@@ -89,13 +89,20 @@
             {{ accom['pokój'] }}
           </mat-option>
         </mat-select>
+        <button *ngIf="activeParticipant?.zakwaterowanie" mat-icon-button matSuffix
+                #tooltip="matTooltip"
+                matTooltip="Zwolnij kwaterę"
+                matTooltipPosition="right"
+                >
+          <mat-icon (click)="relieveRoom($event)">lock_open</mat-icon>
+        </button>
       </mat-form-field>
 
     </div>
 
     <div class="part-width thiner bottom">
       <div class="button-container">
-        <button color="primary" mat-raised-button [disabled]="disabled$ | async" type="submit">
+        <button color="primary" mat-raised-button [disabled]="disabled$ | async" type="submit" (click)="save()">
           <span>{{ buttonText }}</span>
         </button>
       </div>

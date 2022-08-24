@@ -4,10 +4,13 @@ import * as fromRoot from '../../reducer';
 import * as fromOtherAccommodations from '../other-accommodation.reducer';
 import { Store } from '@ngrx/store';
 import { FirebaseService } from '../../services/firebase.service';
-import { addOtherAccommodationSuccess, updateOtherAccommodationSuccess, relieveActiveOtherAccommodationData } from '../actions';
+import { addOtherAccommodationSuccess, relieveActiveOtherAccommodationData,
+      markSaveOtherAccommodationBtnClicked, markSaveAccommodationBtnUnClicked,
+      updateOtherAccommodationRequest } from '../actions';
 import { Router } from '@angular/router';
 import { IOtherAccommodation } from '../../interfaces/other-accommodation';
 import { BehaviorSubject, map, of, Subscription, withLatestFrom } from 'rxjs';
+import { markSaveParticipantBtnUnClicked } from '../../participants/actions';
 
 @Component({
   selector: 'app-other-accommodation-edit',
@@ -87,6 +90,9 @@ export class OtherAccommodationEditComponent implements OnInit, OnDestroy {
   }
 
   save() {
+    this.store.dispatch(markSaveOtherAccommodationBtnClicked());
+    this.store.dispatch(markSaveAccommodationBtnUnClicked());
+    this.store.dispatch(markSaveParticipantBtnUnClicked());
     if(!this.editMode) {
       const newOthAccObj = {...this.otherAccommodationForm.value, id: Date.now()}
       this.store.dispatch(addOtherAccommodationSuccess({newOtherAccommodation: newOthAccObj}));
@@ -94,10 +100,7 @@ export class OtherAccommodationEditComponent implements OnInit, OnDestroy {
       this.router.navigate(['accommodation', 'other-list']);
     } else {
       const updatedOthAccomObj = {...this.otherAccommodationForm.value, id: this.activeOtherAccommodation?.id};
-      this.store.dispatch(updateOtherAccommodationSuccess({otherAccommodation: updatedOthAccomObj}));
-      this.subs.add(
-        this.fBSrv.updateOtherAccommodation(updatedOthAccomObj).subscribe(() => this.router.navigate(['accommodation', 'other-list']))
-      );
+      this.store.dispatch(updateOtherAccommodationRequest({otherAccommodation: updatedOthAccomObj}));
     }
   }
 

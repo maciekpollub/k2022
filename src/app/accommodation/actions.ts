@@ -1,6 +1,7 @@
 import { props, createAction } from '@ngrx/store';
 import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
+import { IParticipant } from '../interfaces/participant';
 
 
 export const fetchAccommodationsDataRequest = createAction(
@@ -84,7 +85,7 @@ export const relieveActiveOtherAccommodationData = createAction(
   '[Accommodations] Relieve active other accommodation data',
 )
 
-export const updateAccomodationRequest = createAction(
+export const updateAccommodationRequest = createAction(
   '[Accommodations] Update accommodation - request',
   props<{ accommodation: IAccommodation }>()
 )
@@ -103,3 +104,20 @@ export const updateOtherAccommodationSuccess = createAction(
   '[Accommodations] Update other accommodation - success',
   props<{ otherAccommodation: IOtherAccommodation }>()
 )
+
+export const markSaveAccommodationBtnClicked = createAction(
+  '[Accommodations] Mark save accommodation button as clicked'
+)
+
+export const markSaveAccommodationBtnUnClicked = createAction(
+  '[Accommodations] Mark save accommodation button as unclicked'
+)
+
+export const markSaveOtherAccommodationBtnClicked = createAction(
+  '[Other accommodations] Mark save other accommodation button as clicked'
+)
+
+export const markSaveOtherAccommodationBtnUnClicked = createAction(
+  '[Other accommodations] Mark save other accommodation button as unclicked'
+)
+

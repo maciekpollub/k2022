@@ -5,7 +5,7 @@ import { IAppState, isCTAVisible } from './reducer';
 import { setCTAVisibility, toggleDrawerState } from './actions';
 import { IFirstDataPiece } from './interfaces/data-piece';
 import { IParticipant } from './interfaces/participant';
-import { filter, map, Observable, Subscription, tap, zip, combineLatest } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Router, NavigationStart, ActivatedRoute } from '@angular/router';
 import { IAccommodation } from './interfaces/accommodation';
@@ -13,8 +13,8 @@ import { FetchedDataService } from './services/fetched-data.service';
 import { IOtherAccommodation } from './interfaces/other-accommodation';
 import { FirebaseService } from './services/firebase.service';
 import { Location } from '@angular/common';
-import { fetchParticipantsDataSuccess } from './participants/actions';
-import { fetchAccommodationsDataSuccess, fetchOtherAccommodationsDataSuccess } from './accommodation/actions';
+import { fetchParticipantsDataRequest } from './participants/actions';
+import { fetchAccommodationsDataRequest, fetchOtherAccommodationsDataRequest } from './accommodation/actions';
 
 @Component({
   selector: 'app-root',
@@ -47,10 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<IAppState>,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private location: Location,
-    private fDSrv: FetchedDataService,
-    private firebaseSrv: FirebaseService,
+    private location: Location
     ) {
     this.file = null;
     this.firstFilteredList= [];
@@ -58,18 +55,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.accommodationList = [];
     this.otherAccommodationList = [];
 
-    this.participantList$ = this.firebaseSrv.getParticipantList().valueChanges().pipe(
-      filter(partList => !!partList),
-      tap(pts => console.log('To są uczestnicy sprzed zmapowania: ', pts)),
-      map(partList => this.fDSrv.mapParticipantList(partList).sort((a, b) => a.wspólnota.localeCompare(b.wspólnota))),
-      tap(pts => console.log('A too są uczestnicy już po zmapowaniu: ', pts))
-    );
-    this.accommodationList$ = this.firebaseSrv.getAccommodationList().valueChanges().pipe(
-      map(accomList => this.fDSrv.mapAccommodationList(accomList).sort((a, b) => a.pokój.localeCompare(b.pokój)))
-    );
-    this.otherAccommodationList$ = this.firebaseSrv.getOtherAccommodationList().valueChanges().pipe(
-      map(otherAccomList => this.fDSrv.mapOtherAccommodationList(otherAccomList).sort((a, b) => a.pokój.localeCompare(b.pokój)))
-    );
+    // this.accommodationList$ = this.firebaseSrv.getAccommodationList().valueChanges().pipe(
+    //   map(accomList => this.fDSrv.mapAccommodationList(accomList).sort((a, b) => a.pokój.localeCompare(b.pokój)))
+    // );
+    // this.otherAccommodationList$ = this.firebaseSrv.getOtherAccommodationList().valueChanges().pipe(
+    //   map(otherAccomList => this.fDSrv.mapOtherAccommodationList(otherAccomList).sort((a, b) => a.pokój.localeCompare(b.pokój)))
+    // );
   }
 
   // readfile() {
@@ -127,16 +118,20 @@ export class AppComponent implements OnInit, OnDestroy {
       ).subscribe()
     );
 
-    this.subs.add(
-      combineLatest([ this.participantList$, this.accommodationList$, this.otherAccommodationList$ ])
-      .pipe(
-        tap(([ partList, accomList, otherAccomList ]) => {
-          this.store.dispatch(fetchParticipantsDataSuccess({ participantList: partList }));
-          this.store.dispatch(fetchAccommodationsDataSuccess({ accommodationList: accomList }));
-          this.store.dispatch(fetchOtherAccommodationsDataSuccess({ otherAccommodationList: otherAccomList }));
-        })
-      ).subscribe()
-    )
+    this.store.dispatch(fetchParticipantsDataRequest());
+    this.store.dispatch(fetchAccommodationsDataRequest());
+    this.store.dispatch(fetchOtherAccommodationsDataRequest());
+
+    // this.subs.add(
+    //   combineLatest([ this.participantList$, this.accommodationList$, this.otherAccommodationList$ ])
+    //   .pipe(
+    //     tap(([ partList, accomList, otherAccomList ]) => {
+    //       this.store.dispatch(fetchParticipantsDataSuccess({ participantList: partList }));
+    //       this.store.dispatch(fetchAccommodationsDataSuccess({ accommodationList: accomList }));
+    //       this.store.dispatch(fetchOtherAccommodationsDataSuccess({ otherAccommodationList: otherAccomList }));
+    //     })
+    //   ).subscribe()
+    // )
 
     this.CTAVisible = this.store.select(isCTAVisible);
   }

@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import * as fromRoot from './.././../../reducer';
 import { Store } from '@ngrx/store';
-import { addParticipantSuccess, relieveActiveParticpantData, updateParticipantSuccess } from '../../actions';
+import { addParticipantSuccess, relieveActiveParticpantData,
+      relieveActiveParticipantRoom, updateParticipantRequest,
+      markSaveParticipantBtnClicked } from '../../actions';
 import { FirebaseService } from '../../../services/firebase.service';
 import { Router } from '@angular/router';
 import { Subscription, map, withLatestFrom, of, BehaviorSubject, combineLatest, Observable } from 'rxjs';
@@ -10,11 +12,9 @@ import * as fromParticipants from '../../participants.reducer';
 import * as fromAccommodations from '../../../accommodation/accommodation.reducer';
 import * as fromOtherAccommodations from '../../../accommodation/other-accommodation.reducer';
 import { IParticipant } from '../../../interfaces/participant';
-import { getAccommodations } from '../../../accommodation/accommodation.reducer';
-import { TopFilterComponent } from '../../../top-filter/top-filter.component';
-import { getOtherAccommodations } from '../../../accommodation/other-accommodation.reducer';
 import { IOtherAccommodation } from '../../../interfaces/other-accommodation';
 import { IAccommodation } from '../../../interfaces/accommodation';
+import { markSaveAccommodationBtnUnClicked, markSaveOtherAccommodationBtnUnClicked } from '../../../accommodation/actions';
 
 @Component({
   selector: 'app-participant-edit',
@@ -116,6 +116,12 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
     return accom['nazwiska'] || (!accom['nazwiska'] && (accom['wolne łóżka'] >= 0));
   }
 
+  relieveRoom(e: Event) {
+    e.stopPropagation();
+    this.store.dispatch(relieveActiveParticipantRoom());
+    this.disabled$ = of(false);
+  }
+
   save() {
     if (!this.editMode) {
       const newPartObj = {...this.participantForm.value, id: Date.now() };
@@ -123,12 +129,13 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
       this.fBSrv.addParticipant(newPartObj);
       this.router.navigate(['participants', 'list']);
     } else {
-      const updatedPartObj = {...this.participantForm.value, id: this.activeParticipant?.id};
-      this.store.dispatch(updateParticipantSuccess({participant: updatedPartObj}));
-      this.subs.add(
-        this.fBSrv.updateParticipant(updatedPartObj).subscribe(() => this.router.navigate(['participants', 'list']))
-      );
+      const updatedPartObj: IParticipant = {...this.participantForm.value, id: this.activeParticipant?.id};
+      console.log('To są dane participanta updateowane podczas savea.:', updatedPartObj);
+      this.store.dispatch(updateParticipantRequest({ participant: updatedPartObj }));
     }
+    this.store.dispatch(markSaveParticipantBtnClicked());
+    this.store.dispatch(markSaveAccommodationBtnUnClicked());
+    this.store.dispatch(markSaveOtherAccommodationBtnUnClicked());
   }
 
   ngOnDestroy() {

@@ -12,6 +12,7 @@ import { TopFilterComponent } from '../top-filter/top-filter.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 
@@ -32,6 +33,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatAutocompleteModule,
     MatMenuModule,
     MatSelectModule,
+    MatTooltipModule,
   ],
   exports: [
     MatGridListModule,
@@ -47,6 +49,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatAutocompleteModule,
     MatMenuModule,
     MatSelectModule,
+    MatTooltipModule,
   ],
 })
 export class SharedModule { }

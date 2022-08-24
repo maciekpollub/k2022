@@ -1,10 +1,12 @@
 import { Action, createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
 import { IParticipantsState } from '../interfaces/participant-state';
-import { addParticipantSuccess, deleteParticipantSuccess, loadActiveParticipantDataSuccess, relieveActiveParticpantData, updateParticipantSuccess, fetchParticipantsDataRequest, fetchParticipantsDataSuccess } from './actions';
+import { addParticipantSuccess, deleteParticipantSuccess, loadActiveParticipantDataSuccess, relieveActiveParticpantData, updateParticipantSuccess, fetchParticipantsDataRequest, fetchParticipantsDataSuccess, relieveActiveParticipantRoom, markSaveParticipantBtnClicked, markSaveParticipantBtnUnClicked } from './actions';
 
 const initialState: IParticipantsState = {
   participants: [],
   activeParticipant: undefined,
+  relievedActiveParticipantRoom: '',
+  saveParticipantButtonRecentlyClicked: false,
 }
 
 const _participantsReducer = createReducer(
@@ -31,8 +33,25 @@ const _participantsReducer = createReducer(
     ...state,
     activeParticipant: undefined,
   })),
+  on(relieveActiveParticipantRoom, (state) => {
+    let activeParticipantWithRelievedAccommodation;
+    let relievedRoom;
+    if(state.activeParticipant) {
+      activeParticipantWithRelievedAccommodation = {
+        ...state.activeParticipant,
+        'zakwaterowanie': ''
+      };
+      relievedRoom = state.activeParticipant.zakwaterowanie;
+    }
+
+    return ({
+      ...state,
+      relievedActiveParticipantRoom: relievedRoom ?? '',
+      activeParticipant: activeParticipantWithRelievedAccommodation,
+    })
+  }),
   on(updateParticipantSuccess, (state, { participant }) => {
-    const participantBeforeUpdate = state.participants.find(p => p.id === participant.id);
+    const participantBeforeUpdate = state.participants.find(p => p?.id === participant.id);
     let updatedParticipantOrderNumber = -1;
     if (participantBeforeUpdate) {
       updatedParticipantOrderNumber = state.participants.indexOf(participantBeforeUpdate);
@@ -45,7 +64,16 @@ const _participantsReducer = createReducer(
       participants: participantsCopy,
     })
   }),
+  on(markSaveParticipantBtnClicked, (state) => ({
+    ...state,
+    saveParticipantButtonRecentlyClicked: true,
+  })),
+  on(markSaveParticipantBtnUnClicked, (state) => ({
+    ...state,
+    saveParticipantButtonRecentlyClicked: false,
+  })),
 )
+
 export function participantsReducer(state: any, action: Action) {
   return _participantsReducer(state, action);
 }
@@ -54,11 +82,18 @@ export const getParticipantsState = createFeatureSelector<IParticipantsState>('p
 export const getParticipants = createSelector(
   getParticipantsState,
   (state: IParticipantsState) => state.participants
-  );
+);
 export const getActiveParticipant = createSelector(
   getParticipantsState,
   (state: IParticipantsState) => state.activeParticipant
 );
+export const getActiveParticipantRelievedRoom = createSelector(
+  getParticipantsState,
+  (state: IParticipantsState) => state.relievedActiveParticipantRoom
+)
 
-
+export const isSaveParticipantButtonRecentlyClicked = createSelector(
+  getParticipantsState,
+  (state: IParticipantsState) => state.saveParticipantButtonRecentlyClicked
+)
 

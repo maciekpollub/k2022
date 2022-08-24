@@ -3,7 +3,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import * as fromRoot from '../../reducer';
 import * as fromAccommodations from '../accommodation.reducer';
 import { IAccommodation } from '../../interfaces/accommodation';
-import { Subscription, tap } from 'rxjs';
+import { map, Observable, Subscription, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { MatTableDataSource } from '@angular/material/table';
 import { loadActiveAccommodationDataSuccess } from '../actions';
@@ -43,12 +43,15 @@ export class AccommodationListComponent implements OnInit {
         tap((accommodations) => {
           this.dataSource = new MatTableDataSource(accommodations);
         })
-      ).subscribe());
+      ).subscribe()
+    );
   }
 
   edit(accommodation: IAccommodation) {
-    this.store.dispatch(loadActiveAccommodationDataSuccess({accommodationId: accommodation.id.toString()}));
-    this.router.navigate(['accommodation', 'buzun-list', 'edit', accommodation.id.toString()]);
+    if(accommodation && accommodation.id) {
+      this.store.dispatch(loadActiveAccommodationDataSuccess({accommodationId: accommodation.id.toString()}));
+      this.router.navigate(['accommodation', 'buzun-list', 'edit', accommodation.id.toString()]);
+    }
   }
 
   openDialog(enterAnimationDuration: string, exitAnimationDuration: string, element: any): void {
