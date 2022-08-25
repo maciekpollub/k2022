@@ -12,6 +12,7 @@ import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
 import { OtherAccommodationService } from '../services/other-accommodation.service';
 import { IParticipant } from '../interfaces/participant';
+import { deleteParticipantRequest, deleteParticipantSuccess } from './actions';
 
 
 @Injectable()
@@ -28,43 +29,46 @@ export class ParticipantsEffects {
   updateParticipant$ = createEffect(() => this.actions$.pipe(
     ofType(updateParticipantRequest.type),
     switchMap((action) => this.fBSrv.updateParticipant(action['participant']).pipe(
-      map(() => {
-        return updateParticipantSuccess({ participant: action['participant'] })
-      }),
+      map(() => updateParticipantSuccess({ participant: action['participant'] })),
       mergeMap(() => {
         let acc$: Observable<any>;
         let part: IParticipant = action['participant'];
-        if (part['zakwaterowanie']) {
+        if(part['zakwaterowanie']) {
           acc$ = merge(this.accomSrv.findAccommodationByItsOccupier(part), this.othAccomSrv.findOtherAccommodationByItsOccupier(part));
         } else {
-          acc$ = merge(this.accomSrv.findRelievedAccommodation(), this.othAccomSrv.findRelievedOtherAccommodation());
+          acc$ = merge(this.accomSrv.findRelievedAccommodation(), this.othAccomSrv.findRelievedOtherAccommodation()) || EMPTY;
         }
         return acc$.pipe(
-          filter(accom => !!accom),
           map((accom) => {
-            let accIsBuzuns = accom.hasOwnProperty('il tap 1-os');
-            let accomUpdated: IAccommodation;
-            let otherAccomUpdated: IOtherAccommodation;
+            if(accom) {
+              console.log('Top jest pusta wartość accom: ', accom);
+              let accIsBuzuns = accom.hasOwnProperty('il tap 1-os');
+              let accomUpdated: IAccommodation;
+              let otherAccomUpdated: IOtherAccommodation;
 
-            if(!!part['zakwaterowanie']) {
-              accom = {...accom, 'nazwiska': part['nazwisko'], 'wspólnota': part['wspólnota']};
-
-              if(!!accIsBuzuns) {
-                accomUpdated = accom;
-                return updateAccommodationRequest({ accommodation: accomUpdated });
+              if(!!part['zakwaterowanie']) {
+                accom = {...accom, 'nazwiska': part['nazwisko'], 'wspólnota': part['wspólnota']};
+                if(!!accIsBuzuns) {
+                  accomUpdated = accom;
+                  return updateAccommodationRequest({ accommodation: accomUpdated });
+                } else {
+                  otherAccomUpdated = accom;
+                  return updateOtherAccommodationRequest({ otherAccommodation: otherAccomUpdated })
+                }
               } else {
-                otherAccomUpdated = accom;
-                return updateOtherAccommodationRequest({ otherAccommodation: otherAccomUpdated })
+                accom = {...accom, 'nazwiska': '', 'wspólnota': ''};
+                if(!!accIsBuzuns) {
+                  accomUpdated = accom;
+                  return updateAccommodationRequest({ accommodation: accomUpdated });
+                } else {
+                  otherAccomUpdated = accom;
+                  return updateOtherAccommodationRequest({ otherAccommodation: otherAccomUpdated })
+                }
               }
             } else {
-              accom = {...accom, 'nazwiska': '', 'wspólnota': ''};
-              if(!!accIsBuzuns) {
-                accomUpdated = accom;
-                return updateAccommodationRequest({ accommodation: accomUpdated });
-              } else {
-                otherAccomUpdated = accom;
-                return updateOtherAccommodationRequest({ otherAccommodation: otherAccomUpdated })
-              }
+              // nonaccom Particiant has been updated with nonaccom properities...
+              // we update again because an action must be returned
+              return updateParticipantSuccess({participant: action['participant']});
             }
           }),
           catchError(() => EMPTY)
@@ -72,7 +76,15 @@ export class ParticipantsEffects {
       })
     )),
     tap(() => this.router.navigate(['participants', 'list']))
-  ))
+  ));
+
+  deleteParticipant$ = createEffect(() => this.actions$.pipe(
+    ofType(deleteParticipantRequest.type),
+    switchMap((action) => this.fBSrv.deleteParticipant(action['participantId']).pipe(
+      map(() => deleteParticipantSuccess({ participant: action['participant'] })),
+      catchError(() => EMPTY)
+    ))
+  ));
 
   constructor(
     private actions$: Actions,

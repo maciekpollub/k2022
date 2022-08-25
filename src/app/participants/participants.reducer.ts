@@ -1,6 +1,9 @@
 import { Action, createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
 import { IParticipantsState } from '../interfaces/participant-state';
-import { addParticipantSuccess, deleteParticipantSuccess, loadActiveParticipantDataSuccess, relieveActiveParticpantData, updateParticipantSuccess, fetchParticipantsDataRequest, fetchParticipantsDataSuccess, relieveActiveParticipantRoom, markSaveParticipantBtnClicked, markSaveParticipantBtnUnClicked } from './actions';
+import { addParticipantSuccess, deleteParticipantSuccess,
+  loadActiveParticipantDataSuccess, relieveActiveParticpantData,
+  updateParticipantSuccess, fetchParticipantsDataSuccess, relieveActiveParticipantRoom,
+  markSaveParticipantBtnClicked, markSaveParticipantBtnUnClicked } from './actions';
 
 const initialState: IParticipantsState = {
   participants: [],
@@ -21,9 +24,9 @@ const _participantsReducer = createReducer(
     ...state,
     participants: [...state.participants, newParticipant]
   })),
-  on(deleteParticipantSuccess, (state, { participantId } ) => ({
+  on(deleteParticipantSuccess, (state, { participant } ) => ({
     ...state,
-    participants: [...state.participants.filter(p => p.id.toString() !== participantId)]
+    participants: [...state.participants.filter(p => p.id.toString() !== participant.id.toString())]
   })),
   on(loadActiveParticipantDataSuccess, (state, { participantId }) => ({
     ...state,

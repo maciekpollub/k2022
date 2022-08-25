@@ -1,5 +1,4 @@
 import { props, createAction } from '@ngrx/store';
-import { callbackify } from 'util';
 import { IParticipant } from '../interfaces/participant';
 
 export const fetchParticipantsDataRequest = createAction(
@@ -23,12 +22,12 @@ export const addParticipantSuccess = createAction(
 
 export const deleteParticipantRequest = createAction(
   '[Participants] Delete participant - request',
-  props<{ participantId: string }>()
+  props<{ participant: IParticipant }>()
 )
 
 export const deleteParticipantSuccess = createAction(
   '[Participants] Delete participant - success',
-  props<{ participantId: string }>()
+  props<{ participant: IParticipant }>()
 )
 
 export const loadActiveParticipantDataRequest = createAction(
@@ -48,16 +47,6 @@ export const relieveActiveParticpantData = createAction(
 export const relieveActiveParticipantRoom = createAction(
   '[Participants] Relieve active participant room',
 )
-
-// export const occupySelectedRoomRequest = createAction(
-//   '[Participants] Occupy selected room - request',
-//   props<{ participant: IParticipant }>
-// )
-
-// export const occupySelectedRoomSuccess = createAction(
-//   '[Participants] Occupy selected room - success',
-//   props<{ participant: IParticipant }>
-// )
 
 export const updateParticipantRequest = createAction(
   '[Participants] Update participant - request',

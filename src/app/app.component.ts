@@ -7,11 +7,9 @@ import { IFirstDataPiece } from './interfaces/data-piece';
 import { IParticipant } from './interfaces/participant';
 import { map, Observable, Subscription } from 'rxjs';
 import { MatDrawer } from '@angular/material/sidenav';
-import { Router, NavigationStart, ActivatedRoute } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
 import { IAccommodation } from './interfaces/accommodation';
-import { FetchedDataService } from './services/fetched-data.service';
 import { IOtherAccommodation } from './interfaces/other-accommodation';
-import { FirebaseService } from './services/firebase.service';
 import { Location } from '@angular/common';
 import { fetchParticipantsDataRequest } from './participants/actions';
 import { fetchAccommodationsDataRequest, fetchOtherAccommodationsDataRequest } from './accommodation/actions';
@@ -54,13 +52,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.participantList = [];
     this.accommodationList = [];
     this.otherAccommodationList = [];
-
-    // this.accommodationList$ = this.firebaseSrv.getAccommodationList().valueChanges().pipe(
-    //   map(accomList => this.fDSrv.mapAccommodationList(accomList).sort((a, b) => a.pokój.localeCompare(b.pokój)))
-    // );
-    // this.otherAccommodationList$ = this.firebaseSrv.getOtherAccommodationList().valueChanges().pipe(
-    //   map(otherAccomList => this.fDSrv.mapOtherAccommodationList(otherAccomList).sort((a, b) => a.pokój.localeCompare(b.pokój)))
-    // );
   }
 
   // readfile() {
@@ -121,17 +112,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.store.dispatch(fetchParticipantsDataRequest());
     this.store.dispatch(fetchAccommodationsDataRequest());
     this.store.dispatch(fetchOtherAccommodationsDataRequest());
-
-    // this.subs.add(
-    //   combineLatest([ this.participantList$, this.accommodationList$, this.otherAccommodationList$ ])
-    //   .pipe(
-    //     tap(([ partList, accomList, otherAccomList ]) => {
-    //       this.store.dispatch(fetchParticipantsDataSuccess({ participantList: partList }));
-    //       this.store.dispatch(fetchAccommodationsDataSuccess({ accommodationList: accomList }));
-    //       this.store.dispatch(fetchOtherAccommodationsDataSuccess({ otherAccommodationList: otherAccomList }));
-    //     })
-    //   ).subscribe()
-    // )
 
     this.CTAVisible = this.store.select(isCTAVisible);
   }
