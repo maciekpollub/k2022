@@ -4,11 +4,13 @@ import * as fromRoot from '../../reducer';
 import * as fromAccommodations from '../accommodation.reducer';
 import { Store } from '@ngrx/store';
 import { FirebaseService } from '../../services/firebase.service';
-import { addAccommodationSuccess, updateAccommodationSuccess, relieveActiveAccommodationData, updateAccommodationRequest, markSaveAccommodationBtnClicked, markSaveOtherAccommodationBtnUnClicked } from '../actions';
+import { addAccommodationSuccess, updateAccommodationSuccess, relieveActiveAccommodationData, updateAccommodationRequest, markSaveAccommodationBtnClicked, markSaveOtherAccommodationBtnUnClicked, relieveActiveAccommodationOccupier } from '../actions';
 import { Router } from '@angular/router';
 import { IAccommodation } from '../../interfaces/accommodation';
 import { BehaviorSubject, map, of, Subscription, withLatestFrom } from 'rxjs';
 import { markSaveParticipantBtnUnClicked } from '../../participants/actions';
+import { ParticipantsService } from '../../services/participants.service';
+import { IOtherAccommodation } from '../../interfaces/other-accommodation';
 
 @Component({
   selector: 'app-accommodation-edit',
@@ -84,6 +86,12 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
       return this.accommodationUnit.hasError('required') ? 'Pole wymagane': '';
     };
     return;
+  }
+
+  relieveOccupier(e: Event) {
+    e.stopPropagation();
+    this.store.dispatch(relieveActiveAccommodationOccupier());
+    this.disabled$ = of(false);
   }
 
   save() {

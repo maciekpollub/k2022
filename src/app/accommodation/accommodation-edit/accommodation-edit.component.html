@@ -53,6 +53,12 @@
           <mat-option *ngFor="let option of [] " [value]="option">
           </mat-option>
         </mat-autocomplete>
+        <button *ngIf="activeAccommodation?.nazwiska" mat-icon-button matSuffix
+                #tooltip="matTooltip"
+                matTooltip="Odłącz lokatorów"
+                matTooltipPosition="right">
+          <mat-icon (click)="relieveOccupier($event)" style="font-size: 24px;">lock_open</mat-icon>
+        </button>
       </mat-form-field>
 
       <mat-form-field>
@@ -69,7 +75,9 @@
 
     <div class="part-width thiner bottom">
       <div class="button-container">
-        <button color="primary" mat-raised-button [disabled]="disabled$ | async" type="submit">{{ buttonText }}</button>
+        <button color="primary" mat-raised-button [disabled]="disabled$ | async" type="submit">
+          <span>{{ buttonText }}</span>
+        </button>
       </div>
     </div>
 

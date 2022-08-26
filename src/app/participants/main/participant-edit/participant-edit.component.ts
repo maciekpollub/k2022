@@ -15,6 +15,7 @@ import { IParticipant } from '../../../interfaces/participant';
 import { IOtherAccommodation } from '../../../interfaces/other-accommodation';
 import { IAccommodation } from '../../../interfaces/accommodation';
 import { markSaveAccommodationBtnUnClicked, markSaveOtherAccommodationBtnUnClicked } from '../../../accommodation/actions';
+import { ParticipantsService } from '../../../services/participants.service';
 
 @Component({
   selector: 'app-participant-edit',
@@ -43,7 +44,8 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
     private fB: FormBuilder,
     private store: Store<fromRoot.IAppState>,
     private fBSrv: FirebaseService,
-    private router: Router) {
+    private router: Router,
+    private partSrv: ParticipantsService) {
     this.participantForm = this.fB.group({
       'wspólnota': ['', Validators.required],
       'obecność': [''],
@@ -113,7 +115,7 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
   }
 
   isTaken(accom: IAccommodation | IOtherAccommodation) {
-    return accom['nazwiska'] || (!accom['nazwiska'] && (accom['wolne łóżka'] >= 0));
+    return this.partSrv.isTaken(accom);
   }
 
   relieveRoom(e: Event) {

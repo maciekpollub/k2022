@@ -1,11 +1,12 @@
 import { IAccommodationState } from '../interfaces/accommodation-state';
 import { Action, createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
-import { addAccommodationSuccess, deleteAccommodationSuccess, loadActiveAccommodationDataSuccess, relieveActiveAccommodationData, updateAccommodationSuccess, fetchAccommodationsDataSuccess, fetchOtherAccommodationsDataSuccess, markSaveAccommodationBtnUnClicked, markSaveAccommodationBtnClicked } from './actions';
+import { addAccommodationSuccess, deleteAccommodationSuccess, loadActiveAccommodationDataSuccess, relieveActiveAccommodationData, updateAccommodationSuccess, fetchAccommodationsDataSuccess, fetchOtherAccommodationsDataSuccess, markSaveAccommodationBtnUnClicked, markSaveAccommodationBtnClicked, relieveActiveAccommodationOccupier } from './actions';
 
 
 const initialState: IAccommodationState = {
   accommodations: [],
   activeAccommodation: undefined,
+  relievedActiveAccommodationOccupier: '',
   saveAccommodationButtonRecentlyClicked: false,
 }
 
@@ -31,6 +32,24 @@ const _accommodationsReducer = createReducer(
     ...state,
     activeAccommodation: undefined,
   })),
+  on(relieveActiveAccommodationOccupier, (state) => {
+    let activeAccommodationWithRelievedOccupier;
+    let relievedOccupier;
+    if(state.activeAccommodation) {
+      activeAccommodationWithRelievedOccupier = {
+        ...state.activeAccommodation,
+        'nazwiska': '',
+        'wspólnota': ''
+      };
+      relievedOccupier = state.activeAccommodation.nazwiska;
+    }
+
+    return ({
+      ...state,
+      relievedActiveAccommodationOccupier: relievedOccupier ?? '',
+      activeAccommodation: activeAccommodationWithRelievedOccupier,
+    })
+  }),
   on(updateAccommodationSuccess, (state, { accommodation }) => {
     const accommodationBeforeUpdate = state.accommodations.find(a => a.id === accommodation.id);
     let updatedAccommodationOrderNumber = -1;
@@ -68,6 +87,10 @@ export const getActiveAccommodation = createSelector(
   getAccommodationsState,
   (state: IAccommodationState) => state.activeAccommodation
 );
+export const getActiveAccommodationRelievedOccupier = createSelector(
+  getAccommodationsState,
+  (state: IAccommodationState) => state.relievedActiveAccommodationOccupier
+)
 export const isSaveAccommodationButtonRecentlyClicked = createSelector(
   getAccommodationsState,
   (state: IAccommodationState) => state.saveAccommodationButtonRecentlyClicked

@@ -92,8 +92,7 @@
         <button *ngIf="activeParticipant?.zakwaterowanie" mat-icon-button matSuffix
                 #tooltip="matTooltip"
                 matTooltip="Zwolnij kwaterę"
-                matTooltipPosition="right"
-                >
+                matTooltipPosition="right">
           <mat-icon (click)="relieveRoom($event)">lock_open</mat-icon>
         </button>
       </mat-form-field>

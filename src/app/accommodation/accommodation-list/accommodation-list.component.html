@@ -19,7 +19,7 @@
                 <mat-icon>create</mat-icon>
                 <span>Edytuj kwaterę</span>
               </button>
-              <button mat-menu-item (click)="openDialog('0ms', '0ms', element)">
+              <button *ngIf="!isSubjectToAboveAccom(element)" mat-menu-item (click)="openDialog('0ms', '0ms', element)">
                 <mat-icon>delete</mat-icon>
                 <span>Usuń kwaterę</span>
               </button>

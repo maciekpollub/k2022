@@ -81,8 +81,16 @@ export const relieveActiveAccommodationData = createAction(
   '[Accommodations] Relieve active accommodation data',
 )
 
+export const relieveActiveAccommodationOccupier = createAction(
+  '[Accommodation edit] Relieve active accommodation occupier',
+)
+
 export const relieveActiveOtherAccommodationData = createAction(
   '[Accommodations] Relieve active other accommodation data',
+)
+
+export const relieveActiveOtherAccommodationOccupier = createAction(
+  '[Other accommodation edit] Relieve active other accommodation occupier',
 )
 
 export const updateAccommodationRequest = createAction(
