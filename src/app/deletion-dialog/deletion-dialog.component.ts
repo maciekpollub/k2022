@@ -8,6 +8,7 @@ import { OtherAccommodationService } from '../services/other-accommodation.servi
 import { IAppState } from '../reducer';
 import { Store } from '@ngrx/store';
 import { deleteParticipantRequest } from '../participants/actions';
+import { deleteAccommodationRequest, deleteOtherAccommodationRequest } from '../accommodation/actions';
 
 @Component({
   selector: 'app-deletion-dialog',
@@ -32,9 +33,12 @@ export class DeletionDialogComponent implements OnInit {
   delete() {
     if(this.elemToDelete.hasOwnProperty('nazwisko')) {
       this.store.dispatch(deleteParticipantRequest({participant: this.elemToDelete}));
-    } else if(this.elemToDelete.hasOwnProperty('il tap 1-os')) {
-      // this.accomSrv.delete(this.elemToDelete);
-    } else {
+    };
+    if(this.elemToDelete.hasOwnProperty('il tap 1-os')) {
+      this.store.dispatch(deleteAccommodationRequest({accommodation: this.elemToDelete}));
+    };
+    if(this.elemToDelete.hasOwnProperty('il tap 2-os')) {
+      this.store.dispatch(deleteOtherAccommodationRequest({otherAccommodation: this.elemToDelete}))
       // this.othAccomSrv.delete(this.elemToDelete);
     }
   }

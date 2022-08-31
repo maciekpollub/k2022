@@ -30,18 +30,18 @@ export class ParticipantsEffects {
     ofType(updateParticipantRequest.type),
     switchMap((action) => this.fBSrv.updateParticipant(action['participant']).pipe(
       map(() => updateParticipantSuccess({ participant: action['participant'] })),
-      mergeMap(() => {
+      switchMap(() => {
         let acc$: Observable<any>;
         let part: IParticipant = action['participant'];
         if(part['zakwaterowanie']) {
           acc$ = merge(this.accomSrv.findAccommodationByItsOccupier(part), this.othAccomSrv.findOtherAccommodationByItsOccupier(part));
         } else {
-          acc$ = merge(this.accomSrv.findRelievedAccommodation(), this.othAccomSrv.findRelievedOtherAccommodation()) || EMPTY;
+          acc$ = merge(this.accomSrv.findRelievedAccommodation(), this.othAccomSrv.findRelievedOtherAccommodation());
         }
         return acc$.pipe(
           map((accom) => {
-            if(accom) {
-              console.log('Top jest pusta wartość accom: ', accom);
+            console.log('To jest wartość flagi updateAcmd: ', action['updateAcmd']);
+            if(action['updateAcmd'] && accom) {
               let accIsBuzuns = accom.hasOwnProperty('il tap 1-os');
               let accomUpdated: IAccommodation;
               let otherAccomUpdated: IOtherAccommodation;
@@ -50,6 +50,7 @@ export class ParticipantsEffects {
                 accom = {...accom, 'nazwiska': part['nazwisko'], 'wspólnota': part['wspólnota']};
                 if(!!accIsBuzuns) {
                   accomUpdated = accom;
+                  console.log('Wywoływany jest w pętli EFFECT updateParticipant')
                   return updateAccommodationRequest({ accommodation: accomUpdated });
                 } else {
                   otherAccomUpdated = accom;
@@ -80,7 +81,7 @@ export class ParticipantsEffects {
 
   deleteParticipant$ = createEffect(() => this.actions$.pipe(
     ofType(deleteParticipantRequest.type),
-    switchMap((action) => this.fBSrv.deleteParticipant(action['participantId']).pipe(
+    switchMap((action) => this.fBSrv.deleteParticipant(action['participant']).pipe(
       map(() => deleteParticipantSuccess({ participant: action['participant'] })),
       catchError(() => EMPTY)
     ))

@@ -1,6 +1,6 @@
 <div class="dialog-container">
   <div mat-dialog-content>
-    <div *ngIf="elemToDelete['nazwisko']">
+    <div *ngIf="elemToDelete.hasOwnProperty('nazwisko')">
       <p *ngIf="elemToDelete['zakwaterowanie'] else infoForNonaccommodatedParticipant">
         By móc usunąć uczestnika, musisz najpierw <span class="bold-medium">zwolnić</span> zajmowaną przez niego <span class="bold-medium">kwaterę</span>.
       </p>
@@ -8,7 +8,7 @@
         Czy na pewno usunąć <span class="bold-medium">{{ elemToDelete['nazwisko'] }} ?</span>
       </ng-template>
     </div>
-    <div *ngIf="elemToDelete['il tap 1-os']">
+    <div *ngIf="elemToDelete.hasOwnProperty('il tap 1-os')">
       <p *ngIf="elemToDelete['nazwiska'] else infoForNonTakenAccommodation">
         By móc usunąć kwaterę, musisz najpierw <span class="bold-medium">odłączyć</span> przypisanych jej <span class="bold-medium">lokatorów</span>.
       </p>
@@ -17,9 +17,15 @@
       </ng-template>
     </div>
 
-    <p *ngIf="elemToDelete['il tap 2-os']">
-      Czy na pewno usunąć <span class="bold-medium">{{ elemToDelete['pokój'] }} ?</span>
-    </p>
+    <div *ngIf="elemToDelete.hasOwnProperty('il tap 2-os')">
+      <p *ngIf="elemToDelete['nazwiska'] else infoForNonTakenOtherAccommodation">
+        By móc usunąć kwaterę, musisz najpierw <span class="bold-medium">odłączyć</span> przypisanych jej <span class="bold-medium">lokatorów</span>.
+      </p>
+      <ng-template #infoForNonTakenOtherAccommodation>
+        Czy na pewno usunąć <span class="bold-medium">{{ elemToDelete['pokój'] }} ?</span>
+      </ng-template>
+    </div>
+
   </div>
   <div class="dialog-actions" mat-dialog-actions>
 

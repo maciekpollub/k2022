@@ -1,6 +1,6 @@
 import { IAccommodationState } from '../interfaces/accommodation-state';
 import { Action, createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
-import { addAccommodationSuccess, deleteAccommodationSuccess, loadActiveAccommodationDataSuccess, relieveActiveAccommodationData, updateAccommodationSuccess, fetchAccommodationsDataSuccess, fetchOtherAccommodationsDataSuccess, markSaveAccommodationBtnUnClicked, markSaveAccommodationBtnClicked, relieveActiveAccommodationOccupier } from './actions';
+import { addAccommodationSuccess, deleteAccommodationSuccess, loadActiveAccommodationDataSuccess, relieveActiveAccommodationData, updateAccommodationSuccess, fetchAccommodationsDataSuccess, fetchOtherAccommodationsDataSuccess, markSaveAccommodationBtnUnClicked, markSaveAccommodationBtnClicked, relieveActiveAccommodationOccupier, emptyRelievedActiveAccommodationOccupier } from './actions';
 
 
 const initialState: IAccommodationState = {
@@ -20,9 +20,9 @@ const _accommodationsReducer = createReducer(
       ...state,
       accommodations: [...state.accommodations, newAccommodation]
     })),
-  on(deleteAccommodationSuccess, (state, { accommodationId }) => ({
+  on(deleteAccommodationSuccess, (state, { accommodation }) => ({
     ...state,
-    accommodations: [...state.accommodations.filter(a => a.id?.toString() !== accommodationId)]
+    accommodations: [...state.accommodations.filter(a => a.id?.toString() !== accommodation.id?.toString())]
     })),
   on(loadActiveAccommodationDataSuccess, (state, { accommodationId }) => ({
     ...state,
@@ -43,19 +43,21 @@ const _accommodationsReducer = createReducer(
       };
       relievedOccupier = state.activeAccommodation.nazwiska;
     }
-
     return ({
       ...state,
       relievedActiveAccommodationOccupier: relievedOccupier ?? '',
       activeAccommodation: activeAccommodationWithRelievedOccupier,
     })
   }),
+  on(emptyRelievedActiveAccommodationOccupier, (state) => ({
+    ...state,
+    relievedActiveAccommodationOccupier: ''
+  })),
   on(updateAccommodationSuccess, (state, { accommodation }) => {
     const accommodationBeforeUpdate = state.accommodations.find(a => a.id === accommodation.id);
     let updatedAccommodationOrderNumber = -1;
     if(accommodationBeforeUpdate) {
       updatedAccommodationOrderNumber = state.accommodations.indexOf(accommodationBeforeUpdate);
-      console.log('To jerst udatedAccOrderNumber:', updatedAccommodationOrderNumber);
     }
     let accommodationsCopy = state.accommodations.slice();
     accommodationsCopy.splice(updatedAccommodationOrderNumber, 1, accommodation);

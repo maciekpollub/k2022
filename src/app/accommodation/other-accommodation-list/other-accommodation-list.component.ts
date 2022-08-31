@@ -10,6 +10,8 @@ import { loadActiveOtherAccommodationDataSuccess } from '../actions';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeletionDialogComponent } from '../../deletion-dialog/deletion-dialog.component';
+import { IAccommodation } from '../../interfaces/accommodation';
+import { ParticipantsService } from '../../services/participants.service';
 
 @Component({
   selector: 'app-other-accommodation-list',
@@ -35,7 +37,8 @@ export class OtherAccommodationListComponent implements OnInit {
   constructor(
     private store: Store<fromRoot.IAppState>,
     private router: Router,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private partSrv: ParticipantsService) { }
 
   ngOnInit(): void {
     this.subs.add(
@@ -49,6 +52,10 @@ export class OtherAccommodationListComponent implements OnInit {
   edit(otherAccommodation: IOtherAccommodation) {
     this.store.dispatch(loadActiveOtherAccommodationDataSuccess({otherAccommodationId: otherAccommodation.id.toString()}));
     this.router.navigate(['accommodation', 'other-list', 'edit', otherAccommodation.id.toString()]);
+  }
+
+  isSubjectToAboveOthAccom(accom: IAccommodation | IOtherAccommodation) {
+    return this.partSrv.isSubjectToAboveAccom(accom);
   }
 
   openDialog(enterAnimationDuration: string, exitAnimationDuration: string, element: any): void {

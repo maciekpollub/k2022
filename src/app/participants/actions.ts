@@ -50,7 +50,7 @@ export const relieveActiveParticipantRoom = createAction(
 
 export const updateParticipantRequest = createAction(
   '[Participants] Update participant - request',
-  props<{ participant: IParticipant }>(),
+  props<{ participant: IParticipant, updateAcmd: boolean }>(),
 )
 
 export const updateParticipantSuccess = createAction(

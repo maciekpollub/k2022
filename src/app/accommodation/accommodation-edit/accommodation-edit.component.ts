@@ -4,7 +4,7 @@ import * as fromRoot from '../../reducer';
 import * as fromAccommodations from '../accommodation.reducer';
 import { Store } from '@ngrx/store';
 import { FirebaseService } from '../../services/firebase.service';
-import { addAccommodationSuccess, updateAccommodationSuccess, relieveActiveAccommodationData, updateAccommodationRequest, markSaveAccommodationBtnClicked, markSaveOtherAccommodationBtnUnClicked, relieveActiveAccommodationOccupier } from '../actions';
+import { addAccommodationSuccess, updateAccommodationSuccess, relieveActiveAccommodationData, updateAccommodationRequest, markSaveAccommodationBtnClicked, markSaveOtherAccommodationBtnUnClicked, relieveActiveAccommodationOccupier, emptyRelievedActiveAccommodationOccupier } from '../actions';
 import { Router } from '@angular/router';
 import { IAccommodation } from '../../interfaces/accommodation';
 import { BehaviorSubject, map, of, Subscription, withLatestFrom } from 'rxjs';
@@ -95,6 +95,9 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
   }
 
   save() {
+    this.store.dispatch(markSaveAccommodationBtnClicked());
+    this.store.dispatch(markSaveOtherAccommodationBtnUnClicked());
+    this.store.dispatch(markSaveParticipantBtnUnClicked());
     if(!this.editMode) {
       const newAccObj = {...this.accommodationForm.value, id: Date.now()}
       this.store.dispatch(addAccommodationSuccess({newAccommodation: newAccObj}));
@@ -104,10 +107,7 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
       const updatedAccomObj = {...this.accommodationForm.value, id: this.activeAccommodation?.id};
       this.store.dispatch(updateAccommodationRequest({ accommodation: updatedAccomObj}));
     }
-    this.store.dispatch(markSaveAccommodationBtnClicked());
-    this.store.dispatch(markSaveOtherAccommodationBtnUnClicked());
-    this.store.dispatch(markSaveParticipantBtnUnClicked());
-  }
+      }
 
   ngOnDestroy() {
     this.subs.unsubscribe();

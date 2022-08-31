@@ -1,9 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { IAccommodation } from '../interfaces/accommodation';
-import { deleteAccommodationSuccess } from '../accommodation/actions';
+import { deleteAccommodationSuccess, emptyRelievedActiveAccommodationOccupier } from '../accommodation/actions';
 import { IAppState } from '../reducer';
 import { Store } from '@ngrx/store';
-import { map, Subscription, take, zip } from 'rxjs';
+import { map, Subscription, take, zip, combineLatest } from 'rxjs';
 import { FirebaseService } from './firebase.service';
 import { IParticipant } from '../interfaces/participant';
 import * as fromAccommodations from '../accommodation/accommodation.reducer';
@@ -46,18 +46,32 @@ export class AccommodationService implements OnDestroy {
         accommodation = accommodationList.filter(a => a.pokój === room)[0];
         return accommodation;
       })
-    )
+    );
+  }
+
+  findParticipantByIncomingOccupiersSurname(surname: string) {
+    return this.store.select(fromParticipants.getParticipants).pipe(
+      map((participants: IParticipant[]) => participants.filter(p => p['nazwisko'] === surname)[0])
+    );
+  }
+
+  findParticipantByRelievedOccupiersSurname() {
+    return zip([
+      this.store.select(fromAccommodations.getActiveAccommodationRelievedOccupier),
+      this.store.select(fromParticipants.getParticipants)]).pipe(
+        map(([surname, participants]) => {
+          console.log('To natomiast jest surname z metody findParticpantByRelievedCooucpierSurname w accomSrv: ', surname)
+          return participants.filter(p => p.nazwisko === surname)[0];
+        })
+      );
+  }
+
+  emptyRelievedActiveAccommodationOccupier() {
+    this.store.dispatch(emptyRelievedActiveAccommodationOccupier());
   }
 
   checkIfSaveAccommodationBtnWasRecentlyClicked() {
     return this.store.select(isSaveAccommodationButtonRecentlyClicked);
-  }
-
-  delete(accommodation: IAccommodation) {
-    this.store.dispatch(deleteAccommodationSuccess({accommodationId: accommodation.id?.toString()}));
-    this.subs.add(
-      this.fBSrv.deleteAccommodation(accommodation.id?.toString()).subscribe()
-    );
   }
 
   ngOnDestroy(): void {

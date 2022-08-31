@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { IOtherAccommodation } from '../../interfaces/other-accommodation';
 import { BehaviorSubject, map, of, Subscription, withLatestFrom } from 'rxjs';
 import { markSaveParticipantBtnUnClicked } from '../../participants/actions';
+import { relieveActiveOtherAccommodationOccupier, emptyRelievedActiveOtherAccommodationOccupier } from '../actions';
 
 @Component({
   selector: 'app-other-accommodation-edit',
@@ -87,6 +88,12 @@ export class OtherAccommodationEditComponent implements OnInit, OnDestroy {
       return this.otherAccommodationUnit.hasError('required') ? 'Pole wymagane': '';
     };
     return;
+  }
+
+  relieveOccupier(e: Event) {
+    e.stopPropagation();
+    this.store.dispatch(relieveActiveOtherAccommodationOccupier());
+    this.disabled$ = of(false);
   }
 
   save() {

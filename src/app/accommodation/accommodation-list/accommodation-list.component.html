@@ -27,7 +27,7 @@
           </div>
           <div *ngSwitchCase="'przydzielony'">
             <mat-icon
-              [ngStyle]="{'color': element['nazwiska'] || (!element['nazwiska'] && (element['wolne łóżka'] >= 0)) ? 'green' : 'red'}">
+              [ngStyle]="{'color': element['nazwiska'] || (!element['nazwiska'] && (element['przydział'] !== '')) ? 'green' : 'red'}">
               person_pin
             </mat-icon>
           </div>

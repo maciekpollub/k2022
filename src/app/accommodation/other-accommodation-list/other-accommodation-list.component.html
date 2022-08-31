@@ -19,7 +19,7 @@
                 <mat-icon>create</mat-icon>
                 <span>Edytuj kwaterę</span>
               </button>
-              <button mat-menu-item (click)="openDialog('0ms', '0ms', element)">
+              <button *ngIf="!isSubjectToAboveOthAccom(element)" mat-menu-item (click)="openDialog('0ms', '0ms', element)">
                 <mat-icon>delete</mat-icon>
                 <span>Usuń kwaterę</span>
               </button>
@@ -27,7 +27,7 @@
           </div>
           <div *ngSwitchCase="'przydzielony'">
             <mat-icon
-              [ngStyle]="{'color': element['nazwiska'] || (!element['nazwiska'] && (element['wolne łóżka'] >= 0)) ? 'green' : 'red'}">
+              [ngStyle]="{'color': element['nazwiska'] || (!element['nazwiska'] && (element['przydział'] !== '')) ? 'green' : 'red'}">
               person_pin
             </mat-icon>
           </div>

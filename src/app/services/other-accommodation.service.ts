@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Subscription, take, zip } from 'rxjs';
+import { Subscription, take, zip, combineLatest } from 'rxjs';
 import { IAppState } from '../reducer';
 import { Store } from '@ngrx/store';
 import { FirebaseService } from './firebase.service';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
-import { deleteOtherAccommodationSuccess } from '../accommodation/actions';
+import { deleteOtherAccommodationSuccess, emptyRelievedActiveOtherAccommodationOccupier } from '../accommodation/actions';
 import { isSaveOtherAccommodationButtonRecentlyClicked } from '../accommodation/other-accommodation.reducer';
 import * as fromOtherAccommodations from '../accommodation/other-accommodation.reducer';
 import * as fromParticipants from '../participants/participants.reducer';
@@ -47,6 +47,20 @@ export class OtherAccommodationService {
         return otherAccommodation;
       })
     )
+  }
+
+  findParticipantByRelievedOccupiersSurname() {
+    return combineLatest([
+      this.store.select(fromOtherAccommodations.getActiveOtherAccommodationRelievedOccupier),
+      this.store.select(fromParticipants.getParticipants)]).pipe(
+        map(([surname, participants]) => {
+          return participants.filter(p => p.nazwisko === surname)[0];
+        })
+      );
+  }
+
+  emptyRelievedActiveOtherAccommodationOccupier() {
+    this.store.dispatch(emptyRelievedActiveOtherAccommodationOccupier());
   }
 
   checkIfSaveOtherAccommodationBtnWasRecentlyClicked() {

@@ -63,6 +63,28 @@ export class FirebaseService implements OnDestroy {
     );
   }
 
+  supplyAccommodationsWithFBKeys() {
+    return combineLatest([this.accommodationsSnChngs$, this.accommodationsValChngs$]).pipe(
+      map(([sC, vC]) => {
+        vC.forEach((elem, index) => {
+          let accommodationWithFBKey = {...{elem}, key: sC[index]?.key}
+          this.accommodationListWithFBKeys.push(accommodationWithFBKey);
+        })
+      })
+    )
+  }
+
+  supplyOtherAccommodationsWithFBKeys() {
+    return combineLatest([this.otherAccommodationsSnChngs$, this.otherAccommodationsValChngs$]).pipe(
+      map(([sC, vC]) => {
+        vC.forEach((elem, index) => {
+          let otherAccommodationWithFBKey = {...{elem}, key: sC[index]?.key};
+          this.otherAccommodationListWithFBKeys.push(otherAccommodationWithFBKey);
+        })
+      })
+    )
+  }
+
   addParticipant(p: IParticipant) {
     this.participantsRef
       .push({
@@ -145,22 +167,22 @@ export class FirebaseService implements OnDestroy {
         let elemToUpdate = this.participantListWithFBKeys.find(p => (+p.elem['Id '] === +part.id || +p.elem.id === +part.id));
         this.participantRef = this.fireDb.object('Lista braci/' + elemToUpdate?.key);
         this.participantRef.update({
-          wspólnota: part.wspólnota,
+          wspólnota: part.wspólnota ?? '',
           obecność: part.obecność ?? '',
-          nazwisko: part.nazwisko,
+          nazwisko: part.nazwisko ?? '',
           przydział: part.przydział ?? '',
           zakwaterowanie: part.zakwaterowanie ?? '',
           samochód: part.samochód ?? '',
-          prezbiter: part.prezbiter,
-          małżeństwo: part.małżeństwo,
-          kobiety: part.kobiety,
-          mężczyźni: part.mężczyźni,
-          niemowlęta: part.niemowlęta,
-          dzieci: part.dzieci,
-          nianiaZRodziny: part.nianiaZRodziny,
-          nianiaObca: part.nianiaObca,
+          prezbiter: part.prezbiter ?? null,
+          małżeństwo: part.małżeństwo ?? null,
+          kobiety: part.kobiety ?? null,
+          mężczyźni: part.mężczyźni ?? null,
+          niemowlęta: part.niemowlęta ?? null,
+          dzieci: part.dzieci ?? null,
+          nianiaZRodziny: part.nianiaZRodziny ?? null,
+          nianiaObca: part.nianiaObca ?? null,
           uwagi: part.uwagi ?? '',
-          wiek: part.wiek,
+          wiek: part.wiek ?? null,
         }).catch((error) => {
           this.errorMgmt(error);
         });
@@ -169,13 +191,7 @@ export class FirebaseService implements OnDestroy {
   }
 
   updateAccommodation(accom: IAccommodation) {
-    return combineLatest([this.accommodationsSnChngs$, this.accommodationsValChngs$]).pipe(
-      map(([sC, vC]) => {
-        vC.forEach((elem, index) => {
-          let accommodationWithFBKey = {...{elem}, key: sC[index]?.key}
-          this.accommodationListWithFBKeys.push(accommodationWithFBKey);
-        })
-      }),
+    return this.supplyAccommodationsWithFBKeys().pipe(
       tap(() => {
         let elemToUpdate = this.accommodationListWithFBKeys.find(a => (+a.elem['Id '] === +accom.id || +a.elem.id === +accom.id));
         this.accommodationRef = this.fireDb.object('Kwatery u Buzunów/' + elemToUpdate?.key);
@@ -197,13 +213,7 @@ export class FirebaseService implements OnDestroy {
   }
 
   updateOtherAccommodation(othAccom: IOtherAccommodation) {
-    return combineLatest([this.otherAccommodationsSnChngs$, this.otherAccommodationsValChngs$]).pipe(
-      map(([sC, vC]) => {
-        vC.forEach((elem, index) => {
-          let otherAccommodationWithFBKey = {...{elem}, key: sC[index]?.key};
-          this.otherAccommodationListWithFBKeys.push(otherAccommodationWithFBKey);
-        })
-      }),
+    return this.supplyOtherAccommodationsWithFBKeys().pipe(
       tap(() => {
         let elemToUpdate = this.otherAccommodationListWithFBKeys.find(a => (+a.elem['Id '] === +othAccom.id || +a.elem.id === +othAccom.id));
         this.otherAccommodationRef = this.fireDb.object('Kwatery obce/' + elemToUpdate?.key);
@@ -245,13 +255,7 @@ export class FirebaseService implements OnDestroy {
   }
 
   deleteAccommodation(id: string) {
-    return combineLatest([this.accommodationsSnChngs$, this.accommodationsValChngs$]).pipe(
-      map(([sC, vC]) => {
-        vC.forEach((elem, index) => {
-          let accommodationWithFBKey = {...{elem}, key: sC[index]?.key}
-          this.accommodationListWithFBKeys.push(accommodationWithFBKey);
-        })
-      }),
+    return this.supplyAccommodationsWithFBKeys().pipe(
       tap(() => {
         let elemToDelete = this.accommodationListWithFBKeys.find(a => (+a.elem['id'] === +id));
         this.accommodationRef = this.fireDb.object('Kwatery u Buzunów/' + elemToDelete?.key);
@@ -263,13 +267,7 @@ export class FirebaseService implements OnDestroy {
   }
 
   deleteOtherAccommodation(id: string) {
-    return combineLatest([this.otherAccommodationsSnChngs$, this.otherAccommodationsValChngs$]).pipe(
-      map(([sC, vC]) => {
-        vC.forEach((elem, index) => {
-          let otherAccommodationWithFBKey = {...{elem}, key: sC[index]?.key}
-          this.otherAccommodationListWithFBKeys.push(otherAccommodationWithFBKey);
-        })
-      }),
+    return this.supplyOtherAccommodationsWithFBKeys().pipe(
       tap(() => {
         let elemToDelete = this.otherAccommodationListWithFBKeys.find(a => (+a.elem['id'] === +id));
         this.otherAccommodationRef = this.fireDb.object('Kwatery obce/' + elemToDelete?.key);

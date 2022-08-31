@@ -133,7 +133,7 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
     } else {
       const updatedPartObj: IParticipant = {...this.participantForm.value, id: this.activeParticipant?.id};
       console.log('To są dane participanta updateowane podczas savea.:', updatedPartObj);
-      this.store.dispatch(updateParticipantRequest({ participant: updatedPartObj }));
+      this.store.dispatch(updateParticipantRequest({ participant: updatedPartObj, updateAcmd: true }));
     }
     this.store.dispatch(markSaveParticipantBtnClicked());
     this.store.dispatch(markSaveAccommodationBtnUnClicked());
