@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { Subscription, take, zip, combineLatest } from 'rxjs';
 import { IAppState } from '../reducer';
 import { Store } from '@ngrx/store';
-import { FirebaseService } from './firebase.service';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
-import { deleteOtherAccommodationSuccess, emptyRelievedActiveOtherAccommodationOccupier } from '../accommodation/actions';
+import { emptyRelievedActiveOtherAccommodationOccupier } from '../accommodation/actions';
 import { isSaveOtherAccommodationButtonRecentlyClicked } from '../accommodation/other-accommodation.reducer';
 import * as fromOtherAccommodations from '../accommodation/other-accommodation.reducer';
 import * as fromParticipants from '../participants/participants.reducer';
@@ -21,7 +20,6 @@ export class OtherAccommodationService {
 
   constructor(
     private store: Store<IAppState>,
-    private fBSrv: FirebaseService,
   ) { }
 
   findOtherAccommodationByItsOccupier(participant: IParticipant) {
@@ -29,8 +27,9 @@ export class OtherAccommodationService {
       take(1),
       map((otherAccommodationList) => {
         if (participant.zakwaterowanie) {
-          this.occupiersOtherAccommodation =  otherAccommodationList.filter(a => a.pokój === participant.zakwaterowanie)[0];
+          this.occupiersOtherAccommodation = otherAccommodationList.filter(a => a.pokój === participant.zakwaterowanie)[0];
         };
+        // console.log('To jest occupiersOtherAccommodation: ', this.occupiersOtherAccommodation)
         return this.occupiersOtherAccommodation;
       })
     );
@@ -65,13 +64,6 @@ export class OtherAccommodationService {
 
   checkIfSaveOtherAccommodationBtnWasRecentlyClicked() {
     return this.store.select(isSaveOtherAccommodationButtonRecentlyClicked);
-  }
-
-  delete(otherAccommodation: IOtherAccommodation) {
-    this.store.dispatch(deleteOtherAccommodationSuccess({otherAccommodationId: otherAccommodation.id.toString()}));
-    this.subs.add(
-      this.fBSrv.deleteAccommodation(otherAccommodation.id.toString()).subscribe()
-    );
   }
 
   ngOnDestroy(): void {

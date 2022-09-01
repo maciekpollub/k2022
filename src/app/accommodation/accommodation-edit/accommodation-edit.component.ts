@@ -105,7 +105,7 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
       this.router.navigate(['accommodation', 'buzun-list']);
     } else {
       const updatedAccomObj = {...this.accommodationForm.value, id: this.activeAccommodation?.id};
-      this.store.dispatch(updateAccommodationRequest({ accommodation: updatedAccomObj}));
+      this.store.dispatch(updateAccommodationRequest({ accommodation: updatedAccomObj, updatePart: true }));
     }
       }
 

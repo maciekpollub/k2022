@@ -107,7 +107,7 @@ export class OtherAccommodationEditComponent implements OnInit, OnDestroy {
       this.router.navigate(['accommodation', 'other-list']);
     } else {
       const updatedOthAccomObj = {...this.otherAccommodationForm.value, id: this.activeOtherAccommodation?.id};
-      this.store.dispatch(updateOtherAccommodationRequest({otherAccommodation: updatedOthAccomObj}));
+      this.store.dispatch(updateOtherAccommodationRequest({otherAccommodation: updatedOthAccomObj, updatePart: true}));
     }
   }
 

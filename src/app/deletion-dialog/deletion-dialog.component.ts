@@ -3,8 +3,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IParticipant } from '../interfaces/participant';
 import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
-import { AccommodationService } from '../services/accommodation.service';
-import { OtherAccommodationService } from '../services/other-accommodation.service';
 import { IAppState } from '../reducer';
 import { Store } from '@ngrx/store';
 import { deleteParticipantRequest } from '../participants/actions';
@@ -22,9 +20,7 @@ export class DeletionDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DeletionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public element: IParticipant | IAccommodation | IOtherAccommodation,
-    private store: Store<IAppState>,
-    private accomSrv: AccommodationService,
-    private othAccomSrv: OtherAccommodationService) { }
+    private store: Store<IAppState>) { }
 
   ngOnInit(): void {
     this.elemToDelete = this.element;
@@ -38,8 +34,7 @@ export class DeletionDialogComponent implements OnInit {
       this.store.dispatch(deleteAccommodationRequest({accommodation: this.elemToDelete}));
     };
     if(this.elemToDelete.hasOwnProperty('il tap 2-os')) {
-      this.store.dispatch(deleteOtherAccommodationRequest({otherAccommodation: this.elemToDelete}))
-      // this.othAccomSrv.delete(this.elemToDelete);
+      this.store.dispatch(deleteOtherAccommodationRequest({otherAccommodation: this.elemToDelete}));
     }
   }
 

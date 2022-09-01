@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY, Observable, take, of, withLatestFrom } from 'rxjs';
+import { EMPTY, Observable, take, of, withLatestFrom, combineLatest } from 'rxjs';
 import { map, catchError, switchMap, tap, mergeMap, filter } from 'rxjs/operators';
 import { fetchAccommodationsDataRequest, updateAccommodationRequest,
       updateAccommodationSuccess, fetchAccommodationsDataSuccess } from './actions';
@@ -30,8 +30,8 @@ export class AccommodationEffects {
       switchMap(() => {
         let part$: Observable<IParticipant>;
         let accommodation = action['accommodation'];
+        let updateParticipant = action['updatePart'];
         let surname = accommodation['nazwiska'];
-        console.log('To jest surname z efektu updateAccommodation: ', surname)
         if(surname) {
           // during edition, a participant has been assigned to the accommodation (rare...but possible)
           part$ = this.accomSrv.findParticipantByIncomingOccupiersSurname(surname);
@@ -39,33 +39,33 @@ export class AccommodationEffects {
           // participant assigned to the accom has been relieved and thus, participant update is inevitable
           part$ = this.accomSrv.findParticipantByRelievedOccupiersSurname();
         }
-        return part$.pipe(
+        return combineLatest([
+          part$,
+          this.accomSrv.checkIfSaveAccommodationBtnWasRecentlyClicked()
+        ]).pipe(
           take(1),
-          map((participant) => {
+          map(([participant, clicked]) => {
             let participantUpdated: IParticipant;
-            console.log('A to jest participant z efektu updateAccommodation: ', participant)
-            if(participant) {
+            let actionToTake: any;
+            if(participant && updateParticipant) {
               if(surname) {
                 participantUpdated = {...participant, 'zakwaterowanie': accommodation['pokój']};
               } else {
                 participantUpdated = {...participant, 'zakwaterowanie': ''};
               }
               console.log('To jest zupdateowanyParticipant z efektu updateAccommodation: ', participantUpdated);
-              return updateParticipantRequest({ participant: participantUpdated, updateAcmd: false });
+              actionToTake = updateParticipantRequest({ participant: participantUpdated, updateAcmd: false });
             } else {
-              return updateAccommodationSuccess({ accommodation: action['accommodation'] });
+              actionToTake = updateAccommodationSuccess({ accommodation: action['accommodation'] });
             }
+            if(clicked) { this.router.navigate(['accommodation', 'buzun-list']) }
+            return actionToTake;
           }),
           tap(() => this.accomSrv.emptyRelievedActiveAccommodationOccupier())
         );
       }),
       catchError(() => EMPTY)
     )),
-    tap(() => this.accomSrv.checkIfSaveAccommodationBtnWasRecentlyClicked().pipe(
-      map((clicked) => {
-        if(clicked) { this.router.navigate(['accommodation', 'buzun-list'])};
-      })
-    ).subscribe()),
   ));
 
   deleteAccommodation$ = createEffect(() => this.actions$.pipe(

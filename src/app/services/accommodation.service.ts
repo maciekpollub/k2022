@@ -1,10 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { IAccommodation } from '../interfaces/accommodation';
-import { deleteAccommodationSuccess, emptyRelievedActiveAccommodationOccupier } from '../accommodation/actions';
+import { emptyRelievedActiveAccommodationOccupier } from '../accommodation/actions';
 import { IAppState } from '../reducer';
 import { Store } from '@ngrx/store';
 import { map, Subscription, take, zip, combineLatest } from 'rxjs';
-import { FirebaseService } from './firebase.service';
 import { IParticipant } from '../interfaces/participant';
 import * as fromAccommodations from '../accommodation/accommodation.reducer';
 import * as fromParticipants from '../participants/participants.reducer';
@@ -21,7 +20,6 @@ export class AccommodationService implements OnDestroy {
 
   constructor(
     private store: Store<IAppState>,
-    private fBSrv: FirebaseService,
   ) { }
 
   findAccommodationByItsOccupier(participant: IParticipant) {
@@ -29,7 +27,7 @@ export class AccommodationService implements OnDestroy {
       take(1),
       map((accommodationList) => {
         if (participant.zakwaterowanie) {
-          this.occupiersAccommodation =  accommodationList.filter(a => a.pokój === participant.zakwaterowanie)[0];
+          this.occupiersAccommodation = accommodationList.filter(a => a.pokój === participant.zakwaterowanie)[0];
         };
         return this.occupiersAccommodation;
       })
@@ -56,11 +54,10 @@ export class AccommodationService implements OnDestroy {
   }
 
   findParticipantByRelievedOccupiersSurname() {
-    return zip([
+    return combineLatest([
       this.store.select(fromAccommodations.getActiveAccommodationRelievedOccupier),
       this.store.select(fromParticipants.getParticipants)]).pipe(
         map(([surname, participants]) => {
-          console.log('To natomiast jest surname z metody findParticpantByRelievedCooucpierSurname w accomSrv: ', surname)
           return participants.filter(p => p.nazwisko === surname)[0];
         })
       );

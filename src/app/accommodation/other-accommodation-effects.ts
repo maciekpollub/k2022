@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY, Observable, take } from 'rxjs';
+import { EMPTY, Observable, take, combineLatest, zip } from 'rxjs';
 import { map, catchError, switchMap, tap, mergeMap, finalize, mapTo } from 'rxjs/operators';
 import { fetchOtherAccommodationsDataRequest, fetchOtherAccommodationsDataSuccess,
     updateOtherAccommodationRequest, updateOtherAccommodationSuccess } from './actions';
@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { IParticipant } from '../interfaces/participant';
 import { AccommodationService } from '../services/accommodation.service';
 import { updateParticipantRequest } from '../participants/actions';
+import { deleteOtherAccommodationRequest, deleteOtherAccommodationSuccess } from './actions';
 
 @Injectable()
 
@@ -30,6 +31,7 @@ export class OtherAccommodationEffects {
       switchMap(() => {
         let part$: Observable<IParticipant>;
         let otherAccommodation = action['otherAccommodation'];
+        let updateParticipant = action['updatePart'];
         let surname = otherAccommodation['nazwiska'];
         if(surname) {
           // during edition, a participant has been assigned to the accommodation (rare...but possible)
@@ -38,32 +40,41 @@ export class OtherAccommodationEffects {
           // participant assigned to the accom has been relieved and thus, participant update is inevitable
           part$ = this.othAccomSrv.findParticipantByRelievedOccupiersSurname();
         }
-        return part$.pipe(
+        return combineLatest([
+          part$,
+          this.othAccomSrv.checkIfSaveOtherAccommodationBtnWasRecentlyClicked()
+        ]).pipe(
           take(1),
-          map((participant) => {
+          map(([participant, clicked]) => {
             let participantUpdated: IParticipant;
-            if(participant) {
+            let actionToTake: any;
+            if(participant && updateParticipant) {
               if(surname) {
                 participantUpdated = {...participant, 'zakwaterowanie': otherAccommodation['pokój']};
               } else {
                 participantUpdated = {...participant, 'zakwaterowanie': ''};
               }
-              return updateParticipantRequest({ participant: participantUpdated, updateAcmd: false });
+              actionToTake = updateParticipantRequest({ participant: participantUpdated, updateAcmd: false });
             } else {
-              return updateOtherAccommodationSuccess({ otherAccommodation: action['otherAccommodation'] });
+              actionToTake = updateOtherAccommodationSuccess({ otherAccommodation: action['otherAccommodation'] });
             }
+            if(clicked) { this.router.navigate(['accommodation', 'other-list']) };
+            return actionToTake;
           }),
-          tap(() => this.othAccomSrv.emptyRelievedActiveOtherAccommodationOccupier())
+          tap(() => this.othAccomSrv.emptyRelievedActiveOtherAccommodationOccupier()),
         );
       }),
       catchError(() => EMPTY)
     )),
-    tap(() => this.othAccomSrv.checkIfSaveOtherAccommodationBtnWasRecentlyClicked().pipe(
-      map((clicked) => {
-        if(clicked) { this.router.navigate(['accommodation', 'other-list']) };
-      })
-    ).subscribe()),
   ));
+
+  deleteOtherAccommodation$ = createEffect(() => this.actions$.pipe(
+    ofType(deleteOtherAccommodationRequest.type),
+    switchMap((action) => this.fBSrv.deleteOtherAccommodation(action['otherAccommodation']['id']).pipe(
+      map(() => deleteOtherAccommodationSuccess({ otherAccommodation: action['otherAccommodation'] })),
+      catchError(() => EMPTY)
+    ))
+  ))
 
   constructor(
     private actions$: Actions,

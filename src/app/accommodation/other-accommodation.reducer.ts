@@ -23,9 +23,9 @@ const _otherAccommodationsReducer = createReducer(
     ...state,
     otherAccommodations: [...state.otherAccommodations, newOtherAccommodation]
   })),
-  on(deleteOtherAccommodationSuccess, (state, { otherAccommodationId }) => ({
+  on(deleteOtherAccommodationSuccess, (state, { otherAccommodation }) => ({
     ...state,
-    otherAccommodations: [...state.otherAccommodations.filter(a => a.id?.toString() !== otherAccommodationId)]
+    otherAccommodations: [...state.otherAccommodations.filter(a => a.id?.toString() !== otherAccommodation.id)]
   })),
   on(loadActiveOtherAccommodationDataSuccess, (state, { otherAccommodationId }) => ({
     ...state,
