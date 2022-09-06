@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
 import { isSaveParticipantButtonRecentlyClicked } from '../participants/participants.reducer';
+import { relieveActiveParticpantData } from '../participants/actions';
 
 @Injectable({
   providedIn: 'root'
@@ -18,15 +19,24 @@ export class ParticipantsService implements OnDestroy {
   ) { }
 
   isTaken(accom: any) {
-    return accom['nazwiska'] || (!accom['nazwiska'] && (accom['przydział'] !== ''));
+    if(accom){
+      return accom['nazwiska'] || (!accom['nazwiska'] && (accom['przydział'] !== ''));
+    }
+    return;
   }
 
   isSubjectToAboveAccom(accom: IAccommodation | IOtherAccommodation) {
-    return !accom['nazwiska'] && (accom['wolne łóżka'] >= 0);
+    if(accom) {
+      return (!accom['nazwiska']) && (accom['wolne łóżka']) && (accom['wolne łóżka'] >= 0);
+    }
+    return;
   }
 
   checkIfSaveParticipantBtnWasRecentlyClicked() {
     return this.store.select(isSaveParticipantButtonRecentlyClicked);
+  }
+  relieveActiveParticipantData() {
+    return this.store.dispatch(relieveActiveParticpantData());
   }
 
   ngOnDestroy(): void {

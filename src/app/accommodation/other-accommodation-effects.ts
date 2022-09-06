@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY, Observable, take, combineLatest, zip } from 'rxjs';
-import { map, catchError, switchMap, tap, mergeMap, finalize, mapTo } from 'rxjs/operators';
+import { EMPTY, Observable, take, combineLatest, zip, of } from 'rxjs';
+import { map, catchError, switchMap, tap, mergeMap, finalize, mapTo, delay } from 'rxjs/operators';
 import { fetchOtherAccommodationsDataRequest, fetchOtherAccommodationsDataSuccess,
     updateOtherAccommodationRequest, updateOtherAccommodationSuccess } from './actions';
 import { FirebaseService } from '../services/firebase.service';
@@ -10,7 +10,8 @@ import { Router } from '@angular/router';
 import { IParticipant } from '../interfaces/participant';
 import { AccommodationService } from '../services/accommodation.service';
 import { updateParticipantRequest } from '../participants/actions';
-import { deleteOtherAccommodationRequest, deleteOtherAccommodationSuccess } from './actions';
+import { deleteOtherAccommodationRequest, deleteOtherAccommodationSuccess, addOtherAccommodationRequest, addOtherAccommodationSuccess } from './actions';
+import { IOtherAccommodation } from '../interfaces/other-accommodation';
 
 @Injectable()
 
@@ -22,6 +23,16 @@ export class OtherAccommodationEffects {
       map((otherAccommodations) => fetchOtherAccommodationsDataSuccess({ otherAccommodationList: otherAccommodations })),
       catchError(() => EMPTY)
     ))
+  ));
+
+  addOtherAccommodation$ = createEffect(() => this.actions$.pipe(
+    ofType(addOtherAccommodationRequest.type),
+    switchMap((action) => of(this.fBSrv.addOtherAccommodation(action['newOtherAccommodation'])).pipe(
+      map(() => addOtherAccommodationSuccess({ newOtherAccommodation: action['newOtherAccommodation'] })),
+      catchError(() => EMPTY)
+    )),
+    // delay(50),
+    tap(() => this.router.navigate(['accommodation', 'other-list']))
   ));
 
   updateOtherAccommodation$ = createEffect(() => this.actions$.pipe(
@@ -70,10 +81,13 @@ export class OtherAccommodationEffects {
 
   deleteOtherAccommodation$ = createEffect(() => this.actions$.pipe(
     ofType(deleteOtherAccommodationRequest.type),
-    switchMap((action) => this.fBSrv.deleteOtherAccommodation(action['otherAccommodation']['id']).pipe(
-      map(() => deleteOtherAccommodationSuccess({ otherAccommodation: action['otherAccommodation'] })),
-      catchError(() => EMPTY)
-    ))
+    switchMap((action) => {
+      const otherAccommodation_: IOtherAccommodation = action['otherAccommodation'];
+      return this.fBSrv.deleteOtherAccommodation(otherAccommodation_?.id).pipe(
+        map(() => deleteOtherAccommodationSuccess({ otherAccommodation: otherAccommodation_ })),
+        catchError(() => EMPTY)
+      )
+    })
   ))
 
   constructor(

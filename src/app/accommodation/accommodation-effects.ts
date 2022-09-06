@@ -7,9 +7,10 @@ import { fetchAccommodationsDataRequest, updateAccommodationRequest,
 import { FirebaseService } from '../services/firebase.service';
 import { Router } from '@angular/router';
 import { AccommodationService } from '../services/accommodation.service';
-import { deleteAccommodationRequest, deleteAccommodationSuccess } from './actions';
+import { deleteAccommodationRequest, deleteAccommodationSuccess, addAccommodationRequest, addAccommodationSuccess } from './actions';
 import { IParticipant } from '../interfaces/participant';
 import { updateParticipantRequest } from '../participants/actions';
+import { IAccommodation } from '../interfaces/accommodation';
 
 @Injectable()
 
@@ -21,6 +22,15 @@ export class AccommodationEffects {
       map((accommodations) => fetchAccommodationsDataSuccess({ accommodationList: accommodations })),
       catchError(() => EMPTY)
     ))
+  ));
+
+  addAccommodation$ = createEffect(() => this.actions$.pipe(
+    ofType(addAccommodationRequest.type),
+    switchMap((action) => of(this.fBSrv.addAccommodation(action['newAccommodation'])).pipe(
+      map(() => addAccommodationSuccess({ newAccommodation: action['newAccommodation'] })),
+      catchError(() => EMPTY)
+    )),
+    tap(() => this.router.navigate(['accommodation', 'buzun-list']))
   ));
 
   updateAccommodation$ = createEffect(() => this.actions$.pipe(
@@ -70,10 +80,13 @@ export class AccommodationEffects {
 
   deleteAccommodation$ = createEffect(() => this.actions$.pipe(
     ofType(deleteAccommodationRequest.type),
-    switchMap((action) => this.fBSrv.deleteAccommodation(action['accommodation']['id']).pipe(
-      map(() => deleteAccommodationSuccess({ accommodation: action['accommodation'] })),
-      catchError(() => EMPTY)
-    ))
+    switchMap((action) => {
+      const accommodation_: IAccommodation = action['accommodation'];
+      return this.fBSrv.deleteAccommodation(accommodation_?.id).pipe(
+        map(() => deleteAccommodationSuccess({ accommodation: accommodation_ })),
+        catchError(() => EMPTY)
+      )
+    })
   ))
 
   constructor(

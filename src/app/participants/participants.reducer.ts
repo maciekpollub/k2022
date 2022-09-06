@@ -54,6 +54,7 @@ const _participantsReducer = createReducer(
     })
   }),
   on(updateParticipantSuccess, (state, { participant }) => {
+    console.log('To jest participantZupdateowany: ', participant);
     const participantBeforeUpdate = state.participants.find(p => p?.id === participant.id);
     let updatedParticipantOrderNumber = -1;
     if (participantBeforeUpdate) {

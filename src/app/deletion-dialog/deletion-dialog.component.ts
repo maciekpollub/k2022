@@ -24,6 +24,7 @@ export class DeletionDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.elemToDelete = this.element;
+    console.log('To jest elemToDelete: ', this.elemToDelete);
   }
 
   delete() {

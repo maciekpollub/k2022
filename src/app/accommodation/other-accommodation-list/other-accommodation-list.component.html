@@ -26,13 +26,14 @@
             </mat-menu>
           </div>
           <div *ngSwitchCase="'przydzielony'">
-            <mat-icon
-              [ngStyle]="{'color': element['nazwiska'] || (!element['nazwiska'] && (element['przydział'] !== '')) ? 'green' : 'red'}">
-              person_pin
-            </mat-icon>
+            <span *ngIf="element">
+              <mat-icon [ngStyle]="{'color': element['nazwiska'] || (!element['nazwiska'] && (element['przydział'] !== '')) ? 'green' : 'red'}">
+                person_pin
+              </mat-icon>
+            </span>
           </div>
           <div *ngSwitchDefault>
-            {{ element[column] }}
+            <span *ngIf="element">{{ element[column] }}</span>
           </div>
         </div>
       </td>
@@ -42,7 +43,7 @@
     <ng-container matColumnDef="expandedDetail">
       <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
         <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-          <mat-grid-list cols="1" rowHeight="35">
+          <mat-grid-list *ngIf="element" cols="1" rowHeight="35">
             <mat-grid-tile *ngIf="element['łóżko duże']">
               <span class="bold-medium">{{'Łóżko duże' | uppercase }}</span><span>{{ element['łóżko duże'] }}</span>
             </mat-grid-tile>

@@ -32,6 +32,11 @@ export const addAccommodationSuccess = createAction(
   props<{ newAccommodation: IAccommodation }>()
 );
 
+export const addOtherAccommodationRequest = createAction(
+  '[Other accommodations] Add newly created other accommodation - request',
+  props<{ newOtherAccommodation: IOtherAccommodation }>()
+);
+
 export const addOtherAccommodationSuccess = createAction(
   '[Accommodations] Add newly created other accommodation - success',
   props<{ newOtherAccommodation: IOtherAccommodation }>()

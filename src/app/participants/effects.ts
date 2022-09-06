@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY, filter, merge, Observable, combineLatest, zip, take } from 'rxjs';
-import { map, catchError, tap, switchMap, mergeMap } from 'rxjs/operators';
+import { EMPTY, filter, merge, Observable, combineLatest, zip, take, concat } from 'rxjs';
+import { map, catchError, tap, switchMap, mergeMap, concatMap, delay } from 'rxjs/operators';
 import { FirebaseService } from '../services/firebase.service';
 import { updateParticipantRequest, updateParticipantSuccess,
         fetchParticipantsDataRequest, fetchParticipantsDataSuccess } from './actions';
@@ -32,7 +32,10 @@ export class ParticipantsEffects {
   updateParticipant$ = createEffect(() => this.actions$.pipe(
     ofType(updateParticipantRequest.type),
     switchMap((action) => this.fBSrv.updateParticipant(action['participant']).pipe(
-      map(() => updateParticipantSuccess({ participant: action['participant'] })),
+      map(() => {
+        console.log('Jesteśmy w mapie po fBsrv.updateParticipant<<<<<<<<<<: ', action['participant']);
+        return updateParticipantSuccess({ participant: action['participant'] })
+      }),
       switchMap(() => {
         let acc$: Observable<any>;
         let part: IParticipant = action['participant'];

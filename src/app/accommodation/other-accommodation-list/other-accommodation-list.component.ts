@@ -59,10 +59,12 @@ export class OtherAccommodationListComponent implements OnInit {
   }
 
   openDialog(enterAnimationDuration: string, exitAnimationDuration: string, element: any): void {
-    this.dialog.open(DeletionDialogComponent, {
-      data: element,
-      width: '50%',
-    });
+    if(element) {
+      this.dialog.open(DeletionDialogComponent, {
+        data: element,
+        width: '50%',
+      });
+    }
   }
 
   ngOnDestroy(): void {

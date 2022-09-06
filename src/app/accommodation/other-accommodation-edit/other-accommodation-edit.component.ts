@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { IOtherAccommodation } from '../../interfaces/other-accommodation';
 import { BehaviorSubject, map, of, Subscription, withLatestFrom } from 'rxjs';
 import { markSaveParticipantBtnUnClicked } from '../../participants/actions';
-import { relieveActiveOtherAccommodationOccupier, emptyRelievedActiveOtherAccommodationOccupier } from '../actions';
+import { relieveActiveOtherAccommodationOccupier, emptyRelievedActiveOtherAccommodationOccupier, addOtherAccommodationRequest } from '../actions';
 
 @Component({
   selector: 'app-other-accommodation-edit',
@@ -41,12 +41,12 @@ export class OtherAccommodationEditComponent implements OnInit, OnDestroy {
   ) {
     this.otherAccommodationForm = this.fB.group({
       'pokój': ['', Validators.required],
-      'il os zakwaterowana': [null],
-      'łóżko pojed': [null],
-      'il tap 2-os': [null],
-      'łóżko duże': [null],
-      'max il osób': [null],
-      'wolne łóżka': [null],
+      'il os zakwaterowana': [],
+      'łóżko pojed': [],
+      'il tap 2-os': [],
+      'łóżko duże': [],
+      'max il osób': [],
+      'wolne łóżka': [],
       'przydział': [''],
       'nazwiska': [''],
       'wspólnota': [''],
@@ -102,12 +102,14 @@ export class OtherAccommodationEditComponent implements OnInit, OnDestroy {
     this.store.dispatch(markSaveParticipantBtnUnClicked());
     if(!this.editMode) {
       const newOthAccObj = {...this.otherAccommodationForm.value, id: Date.now()}
-      this.store.dispatch(addOtherAccommodationSuccess({newOtherAccommodation: newOthAccObj}));
-      this.fBSrv.addOtherAccommodation(newOthAccObj);
-      this.router.navigate(['accommodation', 'other-list']);
+      console.log('To jest newOthAccObj: ', newOthAccObj)
+      // this.store.dispatch(addOtherAccommodationSuccess({newOtherAccommodation: newOthAccObj}));
+      // this.fBSrv.addOtherAccommodation(newOthAccObj);
+      // this.router.navigate(['accommodation', 'other-list']);
+      this.store.dispatch(addOtherAccommodationRequest({ newOtherAccommodation: newOthAccObj }));
     } else {
       const updatedOthAccomObj = {...this.otherAccommodationForm.value, id: this.activeOtherAccommodation?.id};
-      this.store.dispatch(updateOtherAccommodationRequest({otherAccommodation: updatedOthAccomObj, updatePart: true}));
+      this.store.dispatch(updateOtherAccommodationRequest({ otherAccommodation: updatedOthAccomObj, updatePart: true }));
     }
   }
 

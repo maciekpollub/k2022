@@ -7,7 +7,7 @@ import {
   AngularFireList,
   AngularFireObject,
 } from '@angular/fire/compat/database';
-import { map, tap, combineLatest, Subscription, filter } from 'rxjs';
+import { map, tap, combineLatest, Subscription, filter, zip } from 'rxjs';
 import { FetchedDataService } from './fetched-data.service';
 
 @Injectable({
@@ -124,8 +124,7 @@ export class FirebaseService implements OnDestroy {
         'pokój': a.pokój,
         'razem osób': a['razem osób'],
         'wspólnota': a.wspólnota,
-      })
-      .catch((error) => {
+      }).catch((error) => {
         this.errorMgmt(error);
       });
   }
@@ -166,23 +165,24 @@ export class FirebaseService implements OnDestroy {
       tap(() => {
         let elemToUpdate = this.participantListWithFBKeys.find(p => (+p.elem['Id '] === +part.id || +p.elem.id === +part.id));
         this.participantRef = this.fireDb.object('Lista braci/' + elemToUpdate?.key);
+        console.log('To jest part z metody updateParticipant ', part);
         this.participantRef.update({
-          wspólnota: part.wspólnota ?? '',
-          obecność: part.obecność ?? '',
-          nazwisko: part.nazwisko ?? '',
-          przydział: part.przydział ?? '',
-          zakwaterowanie: part.zakwaterowanie ?? '',
-          samochód: part.samochód ?? '',
-          prezbiter: part.prezbiter ?? null,
-          małżeństwo: part.małżeństwo ?? null,
-          kobiety: part.kobiety ?? null,
-          mężczyźni: part.mężczyźni ?? null,
-          niemowlęta: part.niemowlęta ?? null,
-          dzieci: part.dzieci ?? null,
-          nianiaZRodziny: part.nianiaZRodziny ?? null,
-          nianiaObca: part.nianiaObca ?? null,
-          uwagi: part.uwagi ?? '',
-          wiek: part.wiek ?? null,
+          'wspólnota': part.wspólnota ?? '',
+          'obecność': part.obecność ?? '',
+          'nazwisko': part.nazwisko ?? '',
+          'przydział': part.przydział ?? '',
+          'zakwaterowanie': part.zakwaterowanie ?? '',
+          'samochód': part.samochód ?? '',
+          'prezbiter': part.prezbiter ?? null,
+          'małżeństwo': part.małżeństwo ?? null,
+          'kobiety': part.kobiety ?? null,
+          'mężczyźni': part.mężczyźni ?? null,
+          'niemowlęta': part.niemowlęta ?? null,
+          'dzieci': part.dzieci ?? null,
+          'nianiaZRodziny': part.nianiaZRodziny ?? null,
+          'nianiaObca': part.nianiaObca ?? null,
+          'uwagi': part.uwagi ?? '',
+          'wiek': part.wiek ?? null,
         }).catch((error) => {
           this.errorMgmt(error);
         });
@@ -254,9 +254,10 @@ export class FirebaseService implements OnDestroy {
     )
   }
 
-  deleteAccommodation(id: string) {
+  deleteAccommodation(id: string | number) {
     return this.supplyAccommodationsWithFBKeys().pipe(
       tap(() => {
+        console.log('Być może tutaj zmienia się coś zbyt często...fB.deleteAccomm-----------')
         let elemToDelete = this.accommodationListWithFBKeys.find(a => (+a.elem['id'] === +id));
         this.accommodationRef = this.fireDb.object('Kwatery u Buzunów/' + elemToDelete?.key);
         this.accommodationRef.remove().catch((error) => {
@@ -266,7 +267,7 @@ export class FirebaseService implements OnDestroy {
     )
   }
 
-  deleteOtherAccommodation(id: string) {
+  deleteOtherAccommodation(id: string | number) {
     return this.supplyOtherAccommodationsWithFBKeys().pipe(
       tap(() => {
         let elemToDelete = this.otherAccommodationListWithFBKeys.find(a => (+a.elem['id'] === +id));

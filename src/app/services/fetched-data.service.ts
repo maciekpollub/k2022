@@ -31,7 +31,7 @@ export class FetchedDataService {
   mapParticipantList(list: (IFirstDataPiece | IParticipant)[]): IParticipant[] {
     let mappedList: IParticipant[];
     mappedList = list.map((el: IFirstDataPiece | IParticipant) => {
-      if ( 'id' in el) {
+      if ('id' in el) {
         return el;
       } else {
         return {
@@ -50,7 +50,7 @@ export class FetchedDataService {
           'dzieci': el['Dzieci większe (z łóżkiem i posiłkiem)'] ?? null,
           'nianiaZRodziny': el['Niania z rodziny - mieszkanie z rodziną'] ?? null,
           'nianiaObca': el['Niania obca lub z rodziny - mieszkanie osobne'] ?? null,
-          'uwagi': el['Uwagi, niepełnosprawność, diety'] ?? null,
+          'uwagi': el['Uwagi, niepełnosprawność, diety'] ?? '',
           'wiek': el['Wiek jedynek, nianiek np 40+'] ?? null
         }
       }

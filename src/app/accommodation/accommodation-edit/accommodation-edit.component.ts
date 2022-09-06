@@ -4,7 +4,7 @@ import * as fromRoot from '../../reducer';
 import * as fromAccommodations from '../accommodation.reducer';
 import { Store } from '@ngrx/store';
 import { FirebaseService } from '../../services/firebase.service';
-import { addAccommodationSuccess, updateAccommodationSuccess, relieveActiveAccommodationData, updateAccommodationRequest, markSaveAccommodationBtnClicked, markSaveOtherAccommodationBtnUnClicked, relieveActiveAccommodationOccupier, emptyRelievedActiveAccommodationOccupier } from '../actions';
+import { addAccommodationSuccess, updateAccommodationSuccess, relieveActiveAccommodationData, updateAccommodationRequest, markSaveAccommodationBtnClicked, markSaveOtherAccommodationBtnUnClicked, relieveActiveAccommodationOccupier, emptyRelievedActiveAccommodationOccupier, addAccommodationRequest } from '../actions';
 import { Router } from '@angular/router';
 import { IAccommodation } from '../../interfaces/accommodation';
 import { BehaviorSubject, map, of, Subscription, withLatestFrom } from 'rxjs';
@@ -40,13 +40,13 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
   ) {
     this.accommodationForm = this.fB.group({
       'pokój': ['', Validators.required],
-      'il os zakwaterowana': [null],
-      'il tap 1-os': [null],
-      'można dostawić': [null],
-      'wolne łóżka': [null],
+      'il os zakwaterowana': [],
+      'il tap 1-os': [],
+      'można dostawić': [],
+      'wolne łóżka': [],
       'przydział': [''],
       'nazwiska': [''],
-      'razem osób': [null],
+      'razem osób': [],
       'wspólnota': [''],
     })
    }
@@ -100,9 +100,7 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
     this.store.dispatch(markSaveParticipantBtnUnClicked());
     if(!this.editMode) {
       const newAccObj = {...this.accommodationForm.value, id: Date.now()}
-      this.store.dispatch(addAccommodationSuccess({newAccommodation: newAccObj}));
-      this.fBSrv.addAccommodation(newAccObj);
-      this.router.navigate(['accommodation', 'buzun-list']);
+      this.store.dispatch(addAccommodationRequest({ newAccommodation: newAccObj }));
     } else {
       const updatedAccomObj = {...this.accommodationForm.value, id: this.activeAccommodation?.id};
       this.store.dispatch(updateAccommodationRequest({ accommodation: updatedAccomObj, updatePart: true }));
