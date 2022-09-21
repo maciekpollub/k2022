@@ -11,8 +11,8 @@ import { Router, NavigationStart } from '@angular/router';
 import { IAccommodation } from './interfaces/accommodation';
 import { IOtherAccommodation } from './interfaces/other-accommodation';
 import { Location } from '@angular/common';
-import { fetchParticipantsDataRequest } from './participants/actions';
-import { fetchAccommodationsDataRequest, fetchOtherAccommodationsDataRequest } from './accommodation/actions';
+import { fetchParticipantsDataRequest, supplyParticipantsWithFBKeysRequest } from './participants/actions';
+import { fetchAccommodationsDataRequest, fetchOtherAccommodationsDataRequest, supplyAccommodationsWithFBKeysRequest } from './accommodation/actions';
 
 @Component({
   selector: 'app-root',
@@ -52,6 +52,13 @@ export class AppComponent implements OnInit, OnDestroy {
     this.participantList = [];
     this.accommodationList = [];
     this.otherAccommodationList = [];
+
+    this.store.dispatch(fetchParticipantsDataRequest());
+    this.store.dispatch(fetchAccommodationsDataRequest());
+    this.store.dispatch(fetchOtherAccommodationsDataRequest());
+
+    this.store.dispatch(supplyParticipantsWithFBKeysRequest());
+    this.store.dispatch(supplyAccommodationsWithFBKeysRequest())
   }
 
   // readfile() {
@@ -108,11 +115,6 @@ export class AppComponent implements OnInit, OnDestroy {
         })
       ).subscribe()
     );
-
-    this.store.dispatch(fetchParticipantsDataRequest());
-    this.store.dispatch(fetchAccommodationsDataRequest());
-    this.store.dispatch(fetchOtherAccommodationsDataRequest());
-
     this.CTAVisible = this.store.select(isCTAVisible);
   }
 

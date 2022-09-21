@@ -3,10 +3,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../reducer';
 import * as fromParticipants from '../../participants.reducer';
-import { Subscription, tap } from 'rxjs';
+import { Subscription, tap, filter } from 'rxjs';
 import { IParticipant, IExpandedParticipant } from '../../../interfaces/participant';
 import { MatTableDataSource } from '@angular/material/table';
-import { loadActiveParticipantDataSuccess } from '../../actions';
+import { loadActiveParticipantDataSuccess, supplyParticipantsWithFBKeysRequest, fetchParticipantsDataRequest } from '../../actions';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeletionDialogComponent } from '../../../deletion-dialog/deletion-dialog.component';
@@ -42,16 +42,20 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
     private store: Store<fromRoot.IAppState>,
     private router: Router,
     private dialog: MatDialog) {
+      this.store.dispatch(fetchParticipantsDataRequest());
   }
 
   ngOnInit(): void {
     this.subs.add(
       this.store.select(fromParticipants.getParticipants).pipe(
+        filter(participants => !!participants),
         tap((participants) => {
-          this.dataSource = new MatTableDataSource(participants);
-          console.log('To są participants: ', participants)
+          let participants_ = [...participants];
+          participants_.sort((a: IParticipant, b: IParticipant) => a.wspólnota?.localeCompare(b.wspólnota));
+          this.dataSource = new MatTableDataSource(participants_);
         })
-      ).subscribe());
+      ).subscribe()
+    )
   }
 
   edit(participant: IParticipant) {

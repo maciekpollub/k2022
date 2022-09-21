@@ -22,6 +22,10 @@ export class AccommodationService implements OnDestroy {
     private store: Store<IAppState>,
   ) { }
 
+  getAccommodationsWithFBKeys() {
+    return this.store.select(fromAccommodations.getAccommodationsWithFBKeys);
+  }
+
   findAccommodationByItsOccupier(participant: IParticipant) {
     return this.store.select(fromAccommodations.getAccommodations).pipe(
       take(1),
@@ -49,6 +53,7 @@ export class AccommodationService implements OnDestroy {
 
   findParticipantByIncomingOccupiersSurname(surname: string) {
     return this.store.select(fromParticipants.getParticipants).pipe(
+      take(1),
       map((participants: IParticipant[]) => participants.filter(p => p['nazwisko'] === surname)[0])
     );
   }
@@ -57,7 +62,9 @@ export class AccommodationService implements OnDestroy {
     return combineLatest([
       this.store.select(fromAccommodations.getActiveAccommodationRelievedOccupier),
       this.store.select(fromParticipants.getParticipants)]).pipe(
+        take(1),
         map(([surname, participants]) => {
+          console.log('Nazwisko okupanta zwolnionej akomodacji to : ', surname);
           return participants.filter(p => p.nazwisko === surname)[0];
         })
       );

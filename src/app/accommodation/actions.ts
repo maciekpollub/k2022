@@ -1,5 +1,5 @@
 import { props, createAction } from '@ngrx/store';
-import { IAccommodation } from '../interfaces/accommodation';
+import { IAccommodation, IFBAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
 import { IParticipant } from '../interfaces/participant';
 
@@ -20,6 +20,15 @@ export const fetchOtherAccommodationsDataRequest = createAction(
 export const fetchOtherAccommodationsDataSuccess = createAction(
   '[Accommodations] Fetch other accommodations from data base - success',
   props<{ otherAccommodationList: IOtherAccommodation[] }>()
+)
+
+export const supplyAccommodationsWithFBKeysRequest = createAction(
+  '[Accommodation list] Supply accommodations with Firebase keys - request'
+)
+
+export const supplyAccommodationsWithFBKeysSuccess = createAction(
+  '[Accommodation list] Supply accommodations with Firebase keys - success',
+  props<{ accommodationsWithKeys: IFBAccommodation[] }>()
 )
 
 export const addAccommodationRequest = createAction(
@@ -99,11 +108,11 @@ export const relieveActiveOtherAccommodationOccupier = createAction(
 )
 
 export const emptyRelievedActiveAccommodationOccupier = createAction(
-  '[Accommodation edit] Empty the relieved active accommodation object',
+  '[Accommodation edit] Empty the relieved active accommodation occupier',
 )
 
 export const emptyRelievedActiveOtherAccommodationOccupier = createAction(
-  '[Other accommodation edit] Empty the relieved active other accommodation object',
+  '[Other accommodation edit] Empty the relieved active other accommodation occupier',
 )
 
 export const updateAccommodationRequest = createAction(
@@ -113,7 +122,16 @@ export const updateAccommodationRequest = createAction(
 
 export const updateAccommodationSuccess = createAction(
   '[Accommodations] Update accommodation - success',
-  props<{ accommodation: IAccommodation }>()
+  props<{ accommodation: IAccommodation, updatePart: boolean }>()
+)
+
+export const drawAccommodationUpdateConsequences = createAction(
+  '[Accommodation update] Draw consequences after accommodation update',
+  props<{ accommodation: IAccommodation, updatePart: boolean }>()
+)
+
+export const closeAccommodationUpdate = createAction(
+  '[Accommodation update] Close the process of accommodation update'
 )
 
 export const updateOtherAccommodationRequest = createAction(

@@ -3,10 +3,11 @@ import { IParticipantsState } from '../interfaces/participant-state';
 import { addParticipantSuccess, deleteParticipantSuccess,
   loadActiveParticipantDataSuccess, relieveActiveParticpantData,
   updateParticipantSuccess, fetchParticipantsDataSuccess, relieveActiveParticipantRoom,
-  markSaveParticipantBtnClicked, markSaveParticipantBtnUnClicked } from './actions';
+  markSaveParticipantBtnClicked, markSaveParticipantBtnUnClicked, supplyParticipantsWithFBKeysSuccess } from './actions';
 
 const initialState: IParticipantsState = {
   participants: [],
+  participantsWithFBKeys: [],
   activeParticipant: undefined,
   relievedActiveParticipantRoom: '',
   saveParticipantButtonRecentlyClicked: false,
@@ -20,13 +21,19 @@ const _participantsReducer = createReducer(
       participants: participantList
     })
   }),
+  on(supplyParticipantsWithFBKeysSuccess, (state, { participantsWithKeys }) => {
+    return ({
+      ...state,
+      participantsWithFBKeys: participantsWithKeys
+    })
+  }),
   on(addParticipantSuccess, (state, { newParticipant } ) => ({
     ...state,
     participants: [...state.participants, newParticipant]
   })),
   on(deleteParticipantSuccess, (state, { participant } ) => ({
     ...state,
-    participants: [...state.participants.filter(p => p.id.toString() !== participant.id.toString())]
+    participants: [...state.participants.filter(p => p.id?.toString() !== participant.id.toString())]
   })),
   on(loadActiveParticipantDataSuccess, (state, { participantId }) => ({
     ...state,
@@ -53,8 +60,8 @@ const _participantsReducer = createReducer(
       activeParticipant: activeParticipantWithRelievedAccommodation,
     })
   }),
-  on(updateParticipantSuccess, (state, { participant }) => {
-    console.log('To jest participantZupdateowany: ', participant);
+  on(updateParticipantSuccess, (state, { participant, updateAcmd }) => {
+    console.log('To jest participantZupdateowany: ', participant, ' a to wartość updateAcmd: ', updateAcmd);
     const participantBeforeUpdate = state.participants.find(p => p?.id === participant.id);
     let updatedParticipantOrderNumber = -1;
     if (participantBeforeUpdate) {
@@ -86,16 +93,19 @@ export const getParticipantsState = createFeatureSelector<IParticipantsState>('p
 export const getParticipants = createSelector(
   getParticipantsState,
   (state: IParticipantsState) => state.participants
-);
+)
+export const getParticipantsWithFBKeys = createSelector(
+  getParticipantsState,
+  (state: IParticipantsState) => state.participantsWithFBKeys
+)
 export const getActiveParticipant = createSelector(
   getParticipantsState,
   (state: IParticipantsState) => state.activeParticipant
-);
+)
 export const getActiveParticipantRelievedRoom = createSelector(
   getParticipantsState,
   (state: IParticipantsState) => state.relievedActiveParticipantRoom
 )
-
 export const isSaveParticipantButtonRecentlyClicked = createSelector(
   getParticipantsState,
   (state: IParticipantsState) => state.saveParticipantButtonRecentlyClicked

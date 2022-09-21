@@ -2,11 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import * as fromRoot from './.././../../reducer';
 import { Store } from '@ngrx/store';
-import { addParticipantSuccess, relieveActiveParticpantData,
-      relieveActiveParticipantRoom, updateParticipantRequest,
+import { relieveActiveParticpantData, relieveActiveParticipantRoom, updateParticipantRequest,
       markSaveParticipantBtnClicked } from '../../actions';
-import { FirebaseService } from '../../../services/firebase.service';
-import { Router } from '@angular/router';
 import { Subscription, map, withLatestFrom, of, BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import * as fromParticipants from '../../participants.reducer';
 import * as fromAccommodations from '../../../accommodation/accommodation.reducer';
@@ -16,6 +13,7 @@ import { IOtherAccommodation } from '../../../interfaces/other-accommodation';
 import { IAccommodation } from '../../../interfaces/accommodation';
 import { markSaveAccommodationBtnUnClicked, markSaveOtherAccommodationBtnUnClicked } from '../../../accommodation/actions';
 import { ParticipantsService } from '../../../services/participants.service';
+import { addParticipantRequest } from '../../actions';
 
 @Component({
   selector: 'app-participant-edit',
@@ -43,8 +41,6 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
   constructor(
     private fB: FormBuilder,
     private store: Store<fromRoot.IAppState>,
-    private fBSrv: FirebaseService,
-    private router: Router,
     private partSrv: ParticipantsService) {
     this.participantForm = this.fB.group({
       'wspólnota': ['', Validators.required],
@@ -127,12 +123,9 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
   save() {
     if (!this.editMode) {
       const newPartObj = {...this.participantForm.value, id: Date.now() };
-      this.store.dispatch(addParticipantSuccess({newParticipant: newPartObj}));
-      this.fBSrv.addParticipant(newPartObj);
-      this.router.navigate(['participants', 'list']);
+      this.store.dispatch(addParticipantRequest({newParticipant: newPartObj}));
     } else {
       const updatedPartObj: IParticipant = {...this.participantForm.value, id: this.activeParticipant?.id};
-      console.log('To są dane participanta updateowane podczas savea.:', updatedPartObj);
       this.store.dispatch(updateParticipantRequest({ participant: updatedPartObj, updateAcmd: true }));
     }
     this.store.dispatch(markSaveParticipantBtnClicked());

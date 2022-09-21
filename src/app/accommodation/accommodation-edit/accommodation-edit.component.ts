@@ -4,13 +4,12 @@ import * as fromRoot from '../../reducer';
 import * as fromAccommodations from '../accommodation.reducer';
 import { Store } from '@ngrx/store';
 import { FirebaseService } from '../../services/firebase.service';
-import { addAccommodationSuccess, updateAccommodationSuccess, relieveActiveAccommodationData, updateAccommodationRequest, markSaveAccommodationBtnClicked, markSaveOtherAccommodationBtnUnClicked, relieveActiveAccommodationOccupier, emptyRelievedActiveAccommodationOccupier, addAccommodationRequest } from '../actions';
+import { relieveActiveAccommodationData, updateAccommodationRequest, markSaveAccommodationBtnClicked,
+        markSaveOtherAccommodationBtnUnClicked, relieveActiveAccommodationOccupier, addAccommodationRequest } from '../actions';
 import { Router } from '@angular/router';
 import { IAccommodation } from '../../interfaces/accommodation';
 import { BehaviorSubject, map, of, Subscription, withLatestFrom } from 'rxjs';
 import { markSaveParticipantBtnUnClicked } from '../../participants/actions';
-import { ParticipantsService } from '../../services/participants.service';
-import { IOtherAccommodation } from '../../interfaces/other-accommodation';
 
 @Component({
   selector: 'app-accommodation-edit',

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY, filter, merge, Observable, combineLatest, zip, take, concat } from 'rxjs';
-import { map, catchError, tap, switchMap, mergeMap, concatMap, delay } from 'rxjs/operators';
+import { EMPTY, Observable, combineLatest, of } from 'rxjs';
+import { map, catchError, switchMap, tap, finalize, mergeMap, startWith } from 'rxjs/operators';
 import { FirebaseService } from '../services/firebase.service';
 import { updateParticipantRequest, updateParticipantSuccess,
         fetchParticipantsDataRequest, fetchParticipantsDataSuccess } from './actions';
@@ -12,11 +12,10 @@ import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
 import { OtherAccommodationService } from '../services/other-accommodation.service';
 import { IParticipant } from '../interfaces/participant';
-import { deleteParticipantRequest, deleteParticipantSuccess } from './actions';
+import { deleteParticipantRequest, deleteParticipantSuccess, supplyParticipantsWithFBKeysRequest,
+      supplyParticipantsWithFBKeysSuccess, drawParticipantUpdateConsequences } from './actions';
 import { ParticipantsService } from '../services/participants.service';
-import { AnyForUntypedForms } from '@angular/forms';
-import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
-
+import { closeParticipantUpdate, addParticipantRequest, addParticipantSuccess } from './actions';
 
 @Injectable()
 export class ParticipantsEffects {
@@ -29,74 +28,97 @@ export class ParticipantsEffects {
     ))
   ));
 
+  supplyParticipantsWithKeys$ = createEffect(() => this.actions$.pipe(
+    ofType(supplyParticipantsWithFBKeysRequest.type),
+    switchMap(() => this.fBSrv.supplyParticipantsWithFBKeys().pipe(
+      map((participantsWithKeys) => supplyParticipantsWithFBKeysSuccess({ participantsWithKeys })),
+      catchError(() => EMPTY)
+    ))
+  ))
+
+  addParticipant$ = createEffect(() => this.actions$.pipe(
+    ofType(addParticipantRequest.type),
+    switchMap((action) => of(this.fBSrv.addParticipant(action['newParticipant'])).pipe(
+      map(() => addParticipantSuccess({ newParticipant: action['newParticipant']})),
+      catchError(() => EMPTY)
+    )),
+    tap(() => this.router.navigate(['participants', 'list']))
+  ));
+
   updateParticipant$ = createEffect(() => this.actions$.pipe(
     ofType(updateParticipantRequest.type),
     switchMap((action) => this.fBSrv.updateParticipant(action['participant']).pipe(
-      map(() => {
-        console.log('Jesteśmy w mapie po fBsrv.updateParticipant<<<<<<<<<<: ', action['participant']);
-        return updateParticipantSuccess({ participant: action['participant'] })
-      }),
-      switchMap(() => {
-        let acc$: Observable<any>;
-        let part: IParticipant = action['participant'];
-        if(part['zakwaterowanie']) {
-          acc$ = combineLatest(([this.accomSrv.findAccommodationByItsOccupier(part), this.othAccomSrv.findOtherAccommodationByItsOccupier(part)]))
-          .pipe(map(([acc, othAcc]) => acc || othAcc));
-        } else {
-          acc$ = combineLatest(([this.accomSrv.findRelievedAccommodation(), this.othAccomSrv.findRelievedOtherAccommodation()]))
-          .pipe(map(([acc, othAcc]) => acc || othAcc));
-        }
-        return combineLatest([
-          acc$,
-          this.partSrv.checkIfSaveParticipantBtnWasRecentlyClicked()
-        ]).pipe(
-          map(([accom, clicked]) => {
-            if(action['updateAcmd'] && accom) {
-              let accIsBuzuns = accom.hasOwnProperty('il tap 1-os');
-              let accomUpdated: IAccommodation;
-              let otherAccomUpdated: IOtherAccommodation;
+      map(() => updateParticipantSuccess({ participant: action['participant'], updateAcmd: action['updateAcmd'] })),
+      catchError(() => EMPTY)
+    ))
+  ));
 
-              if(!!part['zakwaterowanie']) {
-                accom = {...accom, 'nazwiska': part['nazwisko'], 'wspólnota': part['wspólnota']};
-                let actionToTake: any;
-                if(!!accIsBuzuns) {
-                  accomUpdated = accom;
-                  actionToTake = updateAccommodationRequest({ accommodation: accomUpdated, updatePart: false });
-                } else {
-                  otherAccomUpdated = accom;
-                  actionToTake = updateOtherAccommodationRequest({ otherAccommodation: otherAccomUpdated, updatePart: false })
-                }
-                if(clicked) {this.router.navigate(['participants', 'list'])};
-                return actionToTake;
+  successfullyUpdateParticipant$ = createEffect(() => this.actions$.pipe(
+    ofType(updateParticipantSuccess.type),
+    switchMap((action) => of(drawParticipantUpdateConsequences({ participant: action['participant'], updateAcmd: action['updateAcmd'] })).pipe(
+      map((v) => v)
+    ))
+  ))
+
+  drawUpdateConsequences$ = createEffect(() => this.actions$.pipe(
+    ofType(drawParticipantUpdateConsequences.type),
+    switchMap((action) => {
+      let acc$: Observable<any>;
+      let part: IParticipant = action['participant'];
+      if(part['zakwaterowanie']) {
+        acc$ = combineLatest(([this.accomSrv.findAccommodationByItsOccupier(part), this.othAccomSrv.findOtherAccommodationByItsOccupier(part)])).pipe(
+          map(([acc, othAcc]) => acc || othAcc))
+      } else {
+        acc$ = combineLatest(([this.accomSrv.findRelievedAccommodation(), this.othAccomSrv.findRelievedOtherAccommodation()])).pipe(
+          map(([acc, othAcc]) => acc || othAcc));
+      }
+      return combineLatest([acc$, this.partSrv.checkIfSaveParticipantBtnWasRecentlyClicked()]).pipe(
+        map(([accom, wasClicked]) => {
+          // console.log('To jest akomodacja i wartość wasClicked otrzymane w I etapie returna...', accom, wasClicked)
+          if(accom && action['updateAcmd']) {
+            let accIsBuzuns = accom.hasOwnProperty('il tap 1-os');
+            let accomUpdated: IAccommodation;
+            let otherAccomUpdated: IOtherAccommodation;
+            let actionToTake: any;
+            if(!!part['zakwaterowanie']) {
+              accom = {...accom, 'nazwiska': part['nazwisko'], 'wspólnota': part['wspólnota']};
+              // console.log('Teraz prezentujemy wartość akomodacji po uzupełnieniu danych participanta: ', accom);
+              if(!!accIsBuzuns) {
+                accomUpdated = accom;
+                actionToTake = updateAccommodationRequest({ accommodation: accomUpdated, updatePart: false });
               } else {
-                accom = {...accom, 'nazwiska': '', 'wspólnota': ''};
-                let actionToTake: any;
-                if(!!accIsBuzuns) {
-                  accomUpdated = accom;
-                  actionToTake = updateAccommodationRequest({ accommodation: accomUpdated, updatePart: false });
-                } else {
-                  otherAccomUpdated = accom;
-                  actionToTake = updateOtherAccommodationRequest({ otherAccommodation: otherAccomUpdated, updatePart: false })
-                }
-                if(clicked) {this.router.navigate(['participants', 'list'])};
-                return actionToTake;
+                otherAccomUpdated = accom;
+                actionToTake = updateOtherAccommodationRequest({ otherAccommodation: otherAccomUpdated, updatePart: false })
               }
+              if(wasClicked) {this.router.navigate(['participants', 'list'])};
+              return actionToTake;
             } else {
-              if(clicked) {this.router.navigate(['participants', 'list'])};
+              accom = {...accom, 'nazwiska': '', 'wspólnota': ''};
+              if(!!accIsBuzuns) {
+                accomUpdated = accom;
+                actionToTake = updateAccommodationRequest({ accommodation: accomUpdated, updatePart: false });
+              } else {
+                otherAccomUpdated = accom;
+                actionToTake = updateOtherAccommodationRequest({ otherAccommodation: otherAccomUpdated, updatePart: false })
+              }
+              if(wasClicked) {this.router.navigate(['participants', 'list'])};
+              return actionToTake;
+            }
+          } else {
+            if(wasClicked) {this.router.navigate(['participants', 'list'])};
               // nonaccom Particiant has been updated with nonaccom properities...
               // we update again because an action must be returned
-              return updateParticipantSuccess({participant: action['participant']});
-            }
-          }),
-          catchError(() => EMPTY)
-        );
-      })
-    )),
-  ));
+            return closeParticipantUpdate();
+          }
+        }),
+        catchError(() => EMPTY)
+      );
+    }),
+  ))
 
   deleteParticipant$ = createEffect(() => this.actions$.pipe(
     ofType(deleteParticipantRequest.type),
-    switchMap((action) => this.fBSrv.deleteParticipant(action['participant']).pipe(
+    switchMap((action) => this.fBSrv.deleteParticipant(action['participant']['id']).pipe(
       map(() => deleteParticipantSuccess({ participant: action['participant'] })),
       catchError(() => EMPTY)
     ))

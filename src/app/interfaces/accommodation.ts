@@ -11,3 +11,8 @@ export interface IAccommodation {
   'razem osób': number | null;
   'wspólnota': string | null;
 }
+
+export interface IFBAccommodation {
+  key: string | null;
+  elem: IAccommodation;
+}

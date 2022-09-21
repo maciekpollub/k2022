@@ -30,19 +30,23 @@ export class FetchedDataService {
 
   mapParticipantList(list: (IFirstDataPiece | IParticipant)[]): IParticipant[] {
     let mappedList: IParticipant[];
-    mappedList = list.map((el: IFirstDataPiece | IParticipant) => {
-      if ('id' in el) {
-        return el;
+    mappedList = list.map((el: any) => {
+      if (el.hasOwnProperty('id')) {
+        // console.log('______________________________ten I przypadek')
+        // console.log('To jest el ', {...el})
+        return {...el};
       } else {
+        // console.log('______________________________ten II przypadek')
+        // console.log('To jest el ', {...el})
         return {
           'id': el['Id '],
           'wspólnota': el['Wspólnota'],
           'obecność': el['Obecność'],
           'nazwisko': el['Nazwisko i imię (małżeństwa razem, dzieci osobno)'],
-          'przydział': el.Przydział,
-          'zakwaterowanie': el.Zakwaterowanie,
+          'przydział': el['Przydział'],
+          'zakwaterowanie': el['Zakwaterowanie'] || el['zakwaterowanie'],
           'samochód': el['Środek transportu (własny samochód lub brak)'],
-          'prezbiter': el.Prezbiterzy ?? null,
+          'prezbiter': el['Prezbiterzy'] ?? null,
           'małżeństwo': el['Małżeństwa (il osób)'] ?? null,
           'kobiety': el['Kobiety (1)'] ?? null,
           'mężczyźni': el['Mężczyźni (1)'] ?? null,
@@ -55,14 +59,15 @@ export class FetchedDataService {
         }
       }
     })
+    console.log('Teraz mamy zmapowaną liste uczestników z fetchedDataServce: ', mappedList);
     return mappedList;
   }
 
   mapAccommodationList(list: (ISecondDataPiece | IAccommodation)[]): IAccommodation[] {
     let mappedList: IAccommodation[];
     let tempRoom = '';
-    mappedList = list.map((el: ISecondDataPiece | IAccommodation) => {
-      if ('nazwiska' in el) {
+    mappedList = list.map((el: any) => {
+      if (el.hasOwnProperty('nazwiska')) {
         return el;
       } else {
         if (el['kondygnacja – nr pokoju lub il pokoi']) {tempRoom = el['kondygnacja – nr pokoju lub il pokoi']};
@@ -73,7 +78,7 @@ export class FetchedDataService {
           'można dostawić': el['można dostawić'],
           'wolne łóżka': el['wolne łóżka'],
           'przydział': el.przydział,
-          'nazwiska': el['nazwiska zakwaterowanych'] ?? null,
+          'nazwiska': el['nazwiska zakwaterowanych'] ?? '',
           'pokój': tempRoom,
           'razem osób': el['razem il osób'] ?? null,
           'wspólnota': el.wspólnota ?? null

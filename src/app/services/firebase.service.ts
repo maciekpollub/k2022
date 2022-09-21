@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { IParticipant } from '../interfaces/participant';
+import { IParticipant, IFBParticipant } from '../interfaces/participant';
 import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
 import {
@@ -7,8 +7,10 @@ import {
   AngularFireList,
   AngularFireObject,
 } from '@angular/fire/compat/database';
-import { map, tap, combineLatest, Subscription, filter, zip } from 'rxjs';
+import { map, tap, combineLatest, Subscription, filter, Observable, zip, withLatestFrom, take } from 'rxjs';
 import { FetchedDataService } from './fetched-data.service';
+import { ParticipantsService } from './participants.service';
+import { AccommodationService } from './accommodation.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +28,8 @@ export class FirebaseService implements OnDestroy {
   participantsSnChngs$ = this.fireDb.list('Lista braci').snapshotChanges();
   participantsValChngs$ = this.fireDb.list('Lista braci').valueChanges();
   participantListWithFBKeys: any[] = [];
+  partToUpdate: IFBParticipant;
+  // updatedPart$: Observable<IParticipant>;
 
   accommodationsSnChngs$ = this.fireDb.list('Kwatery u Buzunów').snapshotChanges();
   accommodationsValChngs$ = this.fireDb.list('Kwatery u Buzunów').valueChanges();
@@ -37,21 +41,33 @@ export class FirebaseService implements OnDestroy {
 
   subs = new Subscription();
 
-  constructor(private fireDb: AngularFireDatabase, private fDSrv: FetchedDataService) {}
+  constructor(
+    private fireDb: AngularFireDatabase,
+    private fDSrv: FetchedDataService,
+    private partSrv: ParticipantsService,
+    private accomSrv: AccommodationService) {}
 
   getParticipantList() {
     this.participantsRef = this.fireDb.list('Lista braci');
     return this.participantsRef.valueChanges().pipe(
-      filter(partList => !!partList),
-      map(partList => this.fDSrv.mapParticipantList(partList).sort((a, b) => a.wspólnota.localeCompare(b.wspólnota))),
-    );
+      map(partList => {
+        console.log('LIsta sprzed zmapowania!!!!!!!!!!!!!: ', partList)
+        let list: IParticipant[] = this.fDSrv.mapParticipantList(partList);
+        return list;
+      }),
+      tap((list) => console.log('To jest lista: ', list)),
+      );
   }
 
   getAccommodationList(){
     this.accommodationsRef = this.fireDb.list('Kwatery u Buzunów');
+    console.log('To jest accommodationsRef z firebaseSErveice: ', this.accommodationsRef )
     return this.accommodationsRef.valueChanges().pipe(
-      filter(accomList => !!accomList),
-      map(accomList => this.fDSrv.mapAccommodationList(accomList).sort((a, b) => a.pokój.localeCompare(b.pokój)))
+      // take(1),
+      map(accomList => {
+          let mappedList = this.fDSrv.mapAccommodationList(accomList);
+          return mappedList.sort((a, b) => a.pokój.localeCompare(b.pokój));
+      })
     );
   }
 
@@ -63,19 +79,37 @@ export class FirebaseService implements OnDestroy {
     );
   }
 
+  supplyParticipantsWithFBKeys() {
+    // nie ruszać combineLatest !! ;]
+    return combineLatest([this.participantsSnChngs$, this.participantsValChngs$]).pipe(
+      map(([sC, vC]) => {
+        this.participantListWithFBKeys = [];
+        vC.forEach((elem, index) => {
+          let participantWithFBKey = {...{elem}, key: sC[+index]?.key};
+          this.participantListWithFBKeys = [...this.participantListWithFBKeys, participantWithFBKey]
+        })
+        console.log('To jest partcipantListWithFbKeys: ', this.participantListWithFBKeys)
+        return this.participantListWithFBKeys;
+      })
+    )
+  }
+
   supplyAccommodationsWithFBKeys() {
     return combineLatest([this.accommodationsSnChngs$, this.accommodationsValChngs$]).pipe(
       map(([sC, vC]) => {
+        this.accommodationListWithFBKeys = [];
         vC.forEach((elem, index) => {
-          let accommodationWithFBKey = {...{elem}, key: sC[index]?.key}
-          this.accommodationListWithFBKeys.push(accommodationWithFBKey);
+          let accommodationWithFBKey = {...{elem}, key: sC[+index]?.key};
+          this.accommodationListWithFBKeys = [...this.accommodationListWithFBKeys, accommodationWithFBKey];
         })
+        console.log('To jest accommodationListWithFbKeys: ', this.accommodationListWithFBKeys)
+        return this.accommodationListWithFBKeys;
       })
     )
   }
 
   supplyOtherAccommodationsWithFBKeys() {
-    return combineLatest([this.otherAccommodationsSnChngs$, this.otherAccommodationsValChngs$]).pipe(
+    return zip([this.otherAccommodationsSnChngs$, this.otherAccommodationsValChngs$]).pipe(
       map(([sC, vC]) => {
         vC.forEach((elem, index) => {
           let otherAccommodationWithFBKey = {...{elem}, key: sC[index]?.key};
@@ -88,23 +122,23 @@ export class FirebaseService implements OnDestroy {
   addParticipant(p: IParticipant) {
     this.participantsRef
       .push({
-        id: p.id,
-        wspólnota: p.wspólnota,
-        obecność: p.obecność,
-        nazwisko: p.nazwisko,
-        przydział: p.przydział,
-        zakwaterowanie: p.zakwaterowanie,
-        samochód: p.samochód,
-        prezbiter: p.prezbiter,
-        małżeństwo: p.małżeństwo,
-        kobiety: p.kobiety,
-        mężczyźni: p.mężczyźni,
-        niemowlęta: p.niemowlęta,
-        dzieci: p.dzieci,
-        nianiaZRodziny: p.nianiaZRodziny,
-        nianiaObca: p.nianiaObca,
-        uwagi: p.uwagi,
-        wiek: p.wiek,
+        'id': p.id,
+        'wspólnota': p.wspólnota,
+        'obecność': p.obecność ?? '',
+        'nazwisko': p.nazwisko,
+        'przydział': p.przydział ?? '',
+        'zakwaterowanie': p.zakwaterowanie ?? '',
+        'samochód': p.samochód ?? '',
+        'prezbiter': p.prezbiter ?? '',
+        'małżeństwo': p.małżeństwo ?? '',
+        'kobiety': p.kobiety ?? '',
+        'mężczyźni': p.mężczyźni ?? '',
+        'niemowlęta': p.niemowlęta ?? '',
+        'dzieci': p.dzieci ?? '',
+        'nianiaZRodziny': p.nianiaZRodziny ?? '',
+        'nianiaObca': p.nianiaObca ?? '',
+        'uwagi': p.uwagi ?? '',
+        'wiek': p.wiek ?? '',
       })
       .catch((error) => {
         this.errorMgmt(error);
@@ -116,7 +150,7 @@ export class FirebaseService implements OnDestroy {
       .push({
         'id': a.id,
         'il os zakwaterowana': a['il os zakwaterowana'],
-        'il tap 1-os': a['il tap 1-os'],
+        'il tap 1-os': a['il tap 1-os'] ?? '',
         'można dostawić': a['można dostawić'],
         'wolne łóżka': a['wolne łóżka'],
         'przydział': a.przydział,
@@ -155,59 +189,86 @@ export class FirebaseService implements OnDestroy {
   }
 
   updateParticipant(part: IParticipant) {
-    return combineLatest([this.participantsSnChngs$, this.participantsValChngs$]).pipe(
-      map(([sC, vC]) => {
-        vC.forEach((elem, index) => {
-          let participantWithFBKey = {...{elem}, key: sC[index]?.key}
-          this.participantListWithFBKeys.push(participantWithFBKey);
-        })
+    // return this.supplyParticipantsWithFBKeys().pipe(
+    //   tap((participantsWithKeys) => {
+    //     let elemToUpdate = participantsWithKeys.find(p => (+p.elem['Id '] === +part.id || +p.elem.id === +part.id));
+    //     // let elemToUpdate = this.participantListWithFBKeys.find(p => (+p.elem['Id '] === +part?.id || +p.elem?.id === +part?.id));
+    //     this.participantRef = this.fireDb.object('Lista braci/' + elemToUpdate?.key);
+    //     console.log('To jest part z metody updateParticipant ', part);
+    //     this.participantRef.update({
+    //       'wspólnota': part.wspólnota ?? '',
+    //       'obecność': part.obecność ?? '',
+    //       'nazwisko': part.nazwisko ?? '',
+    //       'przydział': part.przydział ?? '',
+    //       'zakwaterowanie': part.zakwaterowanie ?? '',
+    //       'samochód': part.samochód ?? '',
+    //       'prezbiter': part.prezbiter ?? null,
+    //       'małżeństwo': part.małżeństwo ?? null,
+    //       'kobiety': part.kobiety ?? null,
+    //       'mężczyźni': part.mężczyźni ?? null,
+    //       'niemowlęta': part.niemowlęta ?? null,
+    //       'dzieci': part.dzieci ?? null,
+    //       'nianiaZRodziny': part.nianiaZRodziny ?? null,
+    //       'nianiaObca': part.nianiaObca ?? null,
+    //       'uwagi': part.uwagi ?? '',
+    //       'wiek': part.wiek ?? null,
+    //     }).catch((error) => {
+    //       this.errorMgmt(error);
+    //     });
+    //   }),
+    // )
+    return this.partSrv.getParticipantsWithFBKeys().pipe(
+      tap((participantsWithKeys) => {
+        console.log('updateParticipant zostało wywołane YYYY')
+        // console.log('===================== To są participantsWithKeys: ', participantsWithKeys);
+        this.partToUpdate = participantsWithKeys.filter(p => (+p.elem['Id '] === +part.id || +p.elem.id === +part.id))[0];
+        // console.log('-----------------------To jest znaleziony partToUpdate: ', this.partToUpdate);
+        if(this.partToUpdate) {
+          this.participantRef = this.fireDb.object('Lista braci/' + this.partToUpdate.key);
+          this.participantRef.update({
+            // 'id': part.id,
+            'wspólnota': part.wspólnota ?? '',
+            'obecność': part.obecność ?? '',
+            'nazwisko': part.nazwisko ?? '',
+            'przydział': part.przydział ?? '',
+            'zakwaterowanie': part.zakwaterowanie,
+            'samochód': part.samochód ?? '',
+            'prezbiter': part.prezbiter ?? null,
+            'małżeństwo': part.małżeństwo ?? null,
+            'kobiety': part.kobiety ?? null,
+            'mężczyźni': part.mężczyźni ?? null,
+            'niemowlęta': part.niemowlęta ?? null,
+            'dzieci': part.dzieci ?? null,
+            'nianiaZRodziny': part.nianiaZRodziny ?? null,
+            'nianiaObca': part.nianiaObca ?? null,
+            'uwagi': part.uwagi ?? '',
+            'wiek': part.wiek ?? null,
+            }).catch((error) => this.errorMgmt(error));
+        }
       }),
-      tap(() => {
-        let elemToUpdate = this.participantListWithFBKeys.find(p => (+p.elem['Id '] === +part.id || +p.elem.id === +part.id));
-        this.participantRef = this.fireDb.object('Lista braci/' + elemToUpdate?.key);
-        console.log('To jest part z metody updateParticipant ', part);
-        this.participantRef.update({
-          'wspólnota': part.wspólnota ?? '',
-          'obecność': part.obecność ?? '',
-          'nazwisko': part.nazwisko ?? '',
-          'przydział': part.przydział ?? '',
-          'zakwaterowanie': part.zakwaterowanie ?? '',
-          'samochód': part.samochód ?? '',
-          'prezbiter': part.prezbiter ?? null,
-          'małżeństwo': part.małżeństwo ?? null,
-          'kobiety': part.kobiety ?? null,
-          'mężczyźni': part.mężczyźni ?? null,
-          'niemowlęta': part.niemowlęta ?? null,
-          'dzieci': part.dzieci ?? null,
-          'nianiaZRodziny': part.nianiaZRodziny ?? null,
-          'nianiaObca': part.nianiaObca ?? null,
-          'uwagi': part.uwagi ?? '',
-          'wiek': part.wiek ?? null,
-        }).catch((error) => {
-          this.errorMgmt(error);
-        });
-      })
-    )
+    );
   }
 
   updateAccommodation(accom: IAccommodation) {
-    return this.supplyAccommodationsWithFBKeys().pipe(
-      tap(() => {
-        let elemToUpdate = this.accommodationListWithFBKeys.find(a => (+a.elem['Id '] === +accom.id || +a.elem.id === +accom.id));
-        this.accommodationRef = this.fireDb.object('Kwatery u Buzunów/' + elemToUpdate?.key);
-        this.accommodationRef.update({
-        'il os zakwaterowana': accom['il os zakwaterowana'] ?? null,
-        'il tap 1-os': accom['il tap 1-os'] ?? null,
-        'można dostawić': accom['można dostawić'] ?? null,
-        'wolne łóżka': accom['wolne łóżka'] ?? null,
-        'przydział': accom.przydział ?? null,
-        'nazwiska': accom.nazwiska ?? '',
-        'pokój': accom['pokój'] ?? '',
-        'razem osób': accom['razem osób'] ?? null,
-        'wspólnota': accom['wspólnota'] ?? '',
+    return this.accomSrv.getAccommodationsWithFBKeys().pipe(
+      tap((accommodationsWithKeys) => {
+        let accomToUpdate = accommodationsWithKeys.filter(a => (+a.elem['Id '] === +accom.id || +a.elem.id === +accom.id))[0];
+        if(accomToUpdate) {
+          this.accommodationRef = this.fireDb.object('Kwatery u Buzunów/' + accomToUpdate.key);
+          this.accommodationRef.update({
+          'il os zakwaterowana': accom['il os zakwaterowana'] ?? null,
+          'il tap 1-os': accom['il tap 1-os'] ?? null,
+          'można dostawić': accom['można dostawić'] ?? null,
+          'wolne łóżka': accom['wolne łóżka'] ?? null,
+          'przydział': accom.przydział ?? null,
+          'nazwiska': accom.nazwiska ?? '',
+          'pokój': accom['pokój'] ?? '',
+          'razem osób': accom['razem osób'] ?? null,
+          'wspólnota': accom['wspólnota'] ?? '',
         }).catch((error) => {
           this.errorMgmt(error);
         });
+        }
       }),
     )
   }
@@ -237,16 +298,15 @@ export class FirebaseService implements OnDestroy {
 
 
   deleteParticipant(id: string) {
-    return combineLatest([this.participantsSnChngs$, this.participantsValChngs$]).pipe(
-      map(([sC, vC]) => {
-        vC.forEach((elem, index) => {
-          let participantWithFBKey = {...{elem}, key: sC[index]?.key}
-          this.participantListWithFBKeys.push(participantWithFBKey);
-        })
-      }),
-      tap(() => {
-        let elemToDelete = this.participantListWithFBKeys.find(p => (+p.elem['Id '] === +id || +p.elem.id === +id));
+    // return this.supplyParticipantsWithFBKeys().pipe(
+      // filter(fullList => !!fullList),
+    return this.partSrv.getParticipantsWithFBKeys().pipe(
+      tap((list) => {
+        console.log('Lista braci zwracana z metody deleteParticipant z oberwabla getParticipantsWithFBKeys:  ', list)
+        let elemToDelete = list.filter(p => (+p.elem['Id '] === +id || +p.elem.id === +id))[0];
+        // console.log('Elem to delete: ', elemToDelete)
         this.participantRef = this.fireDb.object('Lista braci/' + elemToDelete?.key);
+        // console.log('Participant Ref: ', this.participantRef)
         this.participantRef.remove().catch((error) => {
           this.errorMgmt(error);
         });
@@ -255,10 +315,13 @@ export class FirebaseService implements OnDestroy {
   }
 
   deleteAccommodation(id: string | number) {
-    return this.supplyAccommodationsWithFBKeys().pipe(
-      tap(() => {
-        console.log('Być może tutaj zmienia się coś zbyt często...fB.deleteAccomm-----------')
-        let elemToDelete = this.accommodationListWithFBKeys.find(a => (+a.elem['id'] === +id));
+    // return this.supplyAccommodationsWithFBKeys().pipe(
+      // take(1),
+    return this.accomSrv.getAccommodationsWithFBKeys().pipe(
+      tap((list) => {
+        console.log('Lista akomodacji zwracana z metody deleteAccommodation z oberwabla getAccommodationsWithFBKeys:  ', list)
+        let elemToDelete = list.find(a => (+a.elem['id'] === +id));
+        console.log('To jest element do usunięcia: ', elemToDelete);
         this.accommodationRef = this.fireDb.object('Kwatery u Buzunów/' + elemToDelete?.key);
         this.accommodationRef.remove().catch((error) => {
           this.errorMgmt(error);

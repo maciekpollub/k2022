@@ -6,7 +6,7 @@ import { IAccommodation } from '../../interfaces/accommodation';
 import { map, Observable, Subscription, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { MatTableDataSource } from '@angular/material/table';
-import { loadActiveAccommodationDataSuccess } from '../actions';
+import { loadActiveAccommodationDataSuccess, supplyAccommodationsWithFBKeysRequest } from '../actions';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeletionDialogComponent } from '../../deletion-dialog/deletion-dialog.component';
@@ -38,7 +38,9 @@ export class AccommodationListComponent implements OnInit {
     private store: Store<fromRoot.IAppState>,
     private router: Router,
     private dialog: MatDialog,
-    private partSrv: ParticipantsService) { }
+    private partSrv: ParticipantsService) {
+
+    }
 
   ngOnInit(): void {
     this.subs.add(

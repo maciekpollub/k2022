@@ -1,5 +1,5 @@
 import { props, createAction } from '@ngrx/store';
-import { IParticipant } from '../interfaces/participant';
+import { IParticipant, IFBParticipant } from '../interfaces/participant';
 
 export const fetchParticipantsDataRequest = createAction(
   '[Participants] Fetch participants from data base - request',
@@ -8,6 +8,15 @@ export const fetchParticipantsDataRequest = createAction(
 export const fetchParticipantsDataSuccess = createAction(
   '[Participants] Fetch participants from data base - success',
   props<{ participantList: IParticipant[] }>()
+)
+
+export const supplyParticipantsWithFBKeysRequest = createAction(
+  '[Application start] Supply participants with Firebase keys - request',
+)
+
+export const supplyParticipantsWithFBKeysSuccess = createAction(
+  '[Application start] Supply participants with Firebase keys - success',
+  props<{ participantsWithKeys: IFBParticipant[]}>()
 )
 
 export const addParticipantRequest = createAction(
@@ -55,7 +64,16 @@ export const updateParticipantRequest = createAction(
 
 export const updateParticipantSuccess = createAction(
   '[Participants] Update participant - success',
-  props<{ participant: IParticipant }>()
+  props<{ participant: IParticipant, updateAcmd: boolean }>()
+)
+
+export const drawParticipantUpdateConsequences = createAction(
+  '[Participant update] Draw consequences after participants update',
+  props<{ participant: IParticipant, updateAcmd: boolean }>()
+)
+
+export const closeParticipantUpdate = createAction(
+  '[Participant update] Close the process of participant update.'
 )
 
 export const markSaveParticipantBtnClicked = createAction(

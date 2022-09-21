@@ -1,10 +1,11 @@
 import { IAccommodationState } from '../interfaces/accommodation-state';
 import { Action, createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
-import { addAccommodationSuccess, deleteAccommodationSuccess, loadActiveAccommodationDataSuccess, relieveActiveAccommodationData, updateAccommodationSuccess, fetchAccommodationsDataSuccess, fetchOtherAccommodationsDataSuccess, markSaveAccommodationBtnUnClicked, markSaveAccommodationBtnClicked, relieveActiveAccommodationOccupier, emptyRelievedActiveAccommodationOccupier } from './actions';
+import { addAccommodationSuccess, deleteAccommodationSuccess, loadActiveAccommodationDataSuccess, relieveActiveAccommodationData, updateAccommodationSuccess, fetchAccommodationsDataSuccess, fetchOtherAccommodationsDataSuccess, markSaveAccommodationBtnUnClicked, markSaveAccommodationBtnClicked, relieveActiveAccommodationOccupier, emptyRelievedActiveAccommodationOccupier, supplyAccommodationsWithFBKeysSuccess } from './actions';
 
 
 const initialState: IAccommodationState = {
   accommodations: [],
+  accommodationsWithFBKeys: [],
   activeAccommodation: undefined,
   relievedActiveAccommodationOccupier: '',
   saveAccommodationButtonRecentlyClicked: false,
@@ -16,6 +17,12 @@ const _accommodationsReducer = createReducer(
     ...state,
     accommodations: accommodationList
     })),
+  on(supplyAccommodationsWithFBKeysSuccess, (state, { accommodationsWithKeys }) => {
+    return ({
+      ...state,
+      accommodationsWithFBKeys: accommodationsWithKeys
+    })
+  }),
   on(addAccommodationSuccess, (state, { newAccommodation }) => ({
       ...state,
       accommodations: [...state.accommodations, newAccommodation]
@@ -84,11 +91,15 @@ export const getAccommodationsState = createFeatureSelector<IAccommodationState>
 export const getAccommodations = createSelector(
   getAccommodationsState,
   (state: IAccommodationState) => state.accommodations
-);
+)
+export const getAccommodationsWithFBKeys = createSelector(
+  getAccommodationsState,
+  (state: IAccommodationState) => state.accommodationsWithFBKeys
+)
 export const getActiveAccommodation = createSelector(
   getAccommodationsState,
   (state: IAccommodationState) => state.activeAccommodation
-);
+)
 export const getActiveAccommodationRelievedOccupier = createSelector(
   getAccommodationsState,
   (state: IAccommodationState) => state.relievedActiveAccommodationOccupier
@@ -96,5 +107,5 @@ export const getActiveAccommodationRelievedOccupier = createSelector(
 export const isSaveAccommodationButtonRecentlyClicked = createSelector(
   getAccommodationsState,
   (state: IAccommodationState) => state.saveAccommodationButtonRecentlyClicked
-);
+)
 

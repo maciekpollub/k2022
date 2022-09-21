@@ -1,22 +1,23 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { IAppState } from '../reducer';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
 import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
-import { isSaveParticipantButtonRecentlyClicked } from '../participants/participants.reducer';
+import * as fromParticipants from '../participants/participants.reducer';
 import { relieveActiveParticpantData } from '../participants/actions';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ParticipantsService implements OnDestroy {
-
-  subs = new Subscription();
+export class ParticipantsService {
 
   constructor(
     private store: Store<IAppState>,
   ) { }
+
+  getParticipantsWithFBKeys() {
+    return this.store.select(fromParticipants.getParticipantsWithFBKeys);
+  }
 
   isTaken(accom: any) {
     if(accom){
@@ -33,13 +34,10 @@ export class ParticipantsService implements OnDestroy {
   }
 
   checkIfSaveParticipantBtnWasRecentlyClicked() {
-    return this.store.select(isSaveParticipantButtonRecentlyClicked);
-  }
-  relieveActiveParticipantData() {
-    return this.store.dispatch(relieveActiveParticpantData());
+    return this.store.select(fromParticipants.isSaveParticipantButtonRecentlyClicked);
   }
 
-  ngOnDestroy(): void {
-      this.subs.unsubscribe();
+  relieveActiveParticipantData() {
+    return this.store.dispatch(relieveActiveParticpantData());
   }
 }
