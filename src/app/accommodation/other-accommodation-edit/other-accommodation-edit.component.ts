@@ -4,7 +4,7 @@ import * as fromRoot from '../../reducer';
 import * as fromOtherAccommodations from '../other-accommodation.reducer';
 import { Store } from '@ngrx/store';
 import { FirebaseService } from '../../services/firebase.service';
-import { addOtherAccommodationSuccess, relieveActiveOtherAccommodationData,
+import { relieveActiveOtherAccommodationData,
       markSaveOtherAccommodationBtnClicked, markSaveAccommodationBtnUnClicked,
       updateOtherAccommodationRequest } from '../actions';
 import { Router } from '@angular/router';
@@ -36,8 +36,6 @@ export class OtherAccommodationEditComponent implements OnInit, OnDestroy {
   constructor(
     private fB: FormBuilder,
     private store: Store<fromRoot.IAppState>,
-    private fBSrv: FirebaseService,
-    private router: Router,
   ) {
     this.otherAccommodationForm = this.fB.group({
       'pokój': ['', Validators.required],
@@ -103,9 +101,6 @@ export class OtherAccommodationEditComponent implements OnInit, OnDestroy {
     if(!this.editMode) {
       const newOthAccObj = {...this.otherAccommodationForm.value, id: Date.now()}
       console.log('To jest newOthAccObj: ', newOthAccObj)
-      // this.store.dispatch(addOtherAccommodationSuccess({newOtherAccommodation: newOthAccObj}));
-      // this.fBSrv.addOtherAccommodation(newOthAccObj);
-      // this.router.navigate(['accommodation', 'other-list']);
       this.store.dispatch(addOtherAccommodationRequest({ newOtherAccommodation: newOthAccObj }));
     } else {
       const updatedOthAccomObj = {...this.otherAccommodationForm.value, id: this.activeOtherAccommodation?.id};

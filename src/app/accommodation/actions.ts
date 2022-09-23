@@ -1,7 +1,6 @@
 import { props, createAction } from '@ngrx/store';
 import { IAccommodation, IFBAccommodation } from '../interfaces/accommodation';
-import { IOtherAccommodation } from '../interfaces/other-accommodation';
-import { IParticipant } from '../interfaces/participant';
+import { IOtherAccommodation, IFBOtherAccommodation } from '../interfaces/other-accommodation';
 
 
 export const fetchAccommodationsDataRequest = createAction(
@@ -23,12 +22,21 @@ export const fetchOtherAccommodationsDataSuccess = createAction(
 )
 
 export const supplyAccommodationsWithFBKeysRequest = createAction(
-  '[Accommodation list] Supply accommodations with Firebase keys - request'
+  '[Application start] Supply accommodations with Firebase keys - request'
 )
 
 export const supplyAccommodationsWithFBKeysSuccess = createAction(
-  '[Accommodation list] Supply accommodations with Firebase keys - success',
+  '[Application start] Supply accommodations with Firebase keys - success',
   props<{ accommodationsWithKeys: IFBAccommodation[] }>()
+)
+
+export const supplyOtherAccommodationsWithFBKeysRequest = createAction(
+  '[Application start] Supply other accommodations with Firebase keys - request'
+)
+
+export const supplyOtherAccommodationsWithFBKeysSuccess = createAction(
+  '[Application start] Supply other accommodations with Firebase keys - success',
+  props<{ otherAccommodationsWithKeys: IFBOtherAccommodation[] }>()
 )
 
 export const addAccommodationRequest = createAction(
@@ -141,7 +149,16 @@ export const updateOtherAccommodationRequest = createAction(
 
 export const updateOtherAccommodationSuccess = createAction(
   '[Accommodations] Update other accommodation - success',
-  props<{ otherAccommodation: IOtherAccommodation }>()
+  props<{ otherAccommodation: IOtherAccommodation, updatePart: boolean }>()
+)
+
+export const drawOtherAccommodationUpdateConsequences = createAction(
+  '[Oter accommodation update] Draw consequences after other accommodation update',
+  props<{ otherAccommodation: IOtherAccommodation, updatePart: boolean }>()
+)
+
+export const closeOtherAccommodationUpdate = createAction(
+  '[Other accommodation update] Close the process of other accommodation update'
 )
 
 export const markSaveAccommodationBtnClicked = createAction(

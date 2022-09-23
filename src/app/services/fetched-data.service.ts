@@ -91,8 +91,8 @@ export class FetchedDataService {
   mapOtherAccommodationList(list: (IThirdDataPiece | IOtherAccommodation)[]): IOtherAccommodation[] {
     let mappedList: IOtherAccommodation[];
     let tempRoom = '';
-    mappedList = list.map((el: IThirdDataPiece | IOtherAccommodation) => {
-      if ('nazwiska' in el) {
+    mappedList = list.map((el: any) => {
+      if (el.hasOwnProperty('nazwiska')) {
         return el;
       } else {
         if (el['kondygnacja - nr pokoju lub il pokoi']) {tempRoom = el['kondygnacja - nr pokoju lub il pokoi']};
@@ -101,10 +101,10 @@ export class FetchedDataService {
           'łóżko pojed': el['łóżko pojedyncze'],
           'il tap 2-os': el['ilość tapczanów 2-os'],
           'łóżko duże': el['łóżko duże'],
-          'przydział': el.przydział ?? 0,
+          'przydział': el.przydział,
           'il os zakwaterowana': el['ilość os zakwaterowana'],
           'wolne łóżka': el['wolne łóżka'],
-          'nazwiska': el['nazwiska zakwaterowanych'] ?? null,
+          'nazwiska': el['nazwiska zakwaterowanych'] ?? '',
           'pokój': tempRoom,
           'max il osób': el['max il osób w pokoju'] ?? null,
           'wspólnota': el.wspólnota ?? null

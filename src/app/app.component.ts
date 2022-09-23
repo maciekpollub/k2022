@@ -12,7 +12,8 @@ import { IAccommodation } from './interfaces/accommodation';
 import { IOtherAccommodation } from './interfaces/other-accommodation';
 import { Location } from '@angular/common';
 import { fetchParticipantsDataRequest, supplyParticipantsWithFBKeysRequest } from './participants/actions';
-import { fetchAccommodationsDataRequest, fetchOtherAccommodationsDataRequest, supplyAccommodationsWithFBKeysRequest } from './accommodation/actions';
+import { fetchAccommodationsDataRequest, fetchOtherAccommodationsDataRequest, supplyAccommodationsWithFBKeysRequest,
+        supplyOtherAccommodationsWithFBKeysRequest } from './accommodation/actions';
 
 @Component({
   selector: 'app-root',
@@ -58,7 +59,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.store.dispatch(fetchOtherAccommodationsDataRequest());
 
     this.store.dispatch(supplyParticipantsWithFBKeysRequest());
-    this.store.dispatch(supplyAccommodationsWithFBKeysRequest())
+    this.store.dispatch(supplyAccommodationsWithFBKeysRequest());
+    this.store.dispatch(supplyOtherAccommodationsWithFBKeysRequest());
   }
 
   // readfile() {

@@ -34,8 +34,6 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
   constructor(
     private fB: FormBuilder,
     private store: Store<fromRoot.IAppState>,
-    private fBSrv: FirebaseService,
-    private router: Router,
   ) {
     this.accommodationForm = this.fB.group({
       'pokój': ['', Validators.required],

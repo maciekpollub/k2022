@@ -1,6 +1,6 @@
 import { IOtherAccommodationState } from '../interfaces/other-accommodation-state';
 import { on, createReducer, Action, createFeatureSelector, createSelector } from '@ngrx/store';
-import { relieveActiveOtherAccommodationOccupier, emptyRelievedActiveOtherAccommodationOccupier } from './actions';
+import { relieveActiveOtherAccommodationOccupier, emptyRelievedActiveOtherAccommodationOccupier, supplyOtherAccommodationsWithFBKeysSuccess } from './actions';
 import { addOtherAccommodationSuccess, deleteOtherAccommodationSuccess,
         loadActiveOtherAccommodationDataSuccess, relieveActiveOtherAccommodationData,
         updateOtherAccommodationSuccess, fetchOtherAccommodationsDataSuccess,
@@ -8,6 +8,7 @@ import { addOtherAccommodationSuccess, deleteOtherAccommodationSuccess,
 
 const initialState: IOtherAccommodationState = {
   otherAccommodations: [],
+  otherAccommodationsWithFBKeys: [],
   activeOtherAccommodation: undefined,
   relievedActiveOtherAccommodationOccupier: '',
   saveOtherAccommodationButtonRecentlyClicked: false,
@@ -19,13 +20,19 @@ const _otherAccommodationsReducer = createReducer(
     ...state,
     otherAccommodations: otherAccommodationList
     })),
+  on(supplyOtherAccommodationsWithFBKeysSuccess, (state, { otherAccommodationsWithKeys }) => {
+    return ({
+      ...state,
+      otherAccommodationsWithFBKeys: otherAccommodationsWithKeys
+    })
+  }),
   on(addOtherAccommodationSuccess, (state, { newOtherAccommodation } ) => ({
     ...state,
     otherAccommodations: [...state.otherAccommodations, newOtherAccommodation]
   })),
   on(deleteOtherAccommodationSuccess, (state, { otherAccommodation }) => ({
     ...state,
-    otherAccommodations: [...state.otherAccommodations.filter(a => a.id?.toString() !== otherAccommodation.id)]
+    otherAccommodations: [...state.otherAccommodations.filter(a => a.id?.toString() !== otherAccommodation.id?.toString())]
   })),
   on(loadActiveOtherAccommodationDataSuccess, (state, { otherAccommodationId }) => ({
     ...state,
@@ -88,6 +95,10 @@ export const getOtherAccommodations = createSelector(
   getOtherAccommodationsState,
   (state: IOtherAccommodationState) => state.otherAccommodations
 );
+export const getOtherAccommodationsWithFBKeys = createSelector(
+  getOtherAccommodationsState,
+  (state: IOtherAccommodationState) => state.otherAccommodationsWithFBKeys
+)
 export const getActiveOtherAccommodation = createSelector(
   getOtherAccommodationsState,
   (state: IOtherAccommodationState) => state.activeOtherAccommodation

@@ -22,6 +22,10 @@ export class OtherAccommodationService {
     private store: Store<IAppState>,
   ) { }
 
+  getOtherAccommodationsWithFBKeys() {
+    return this.store.select(fromOtherAccommodations.getOtherAccommodationsWithFBKeys);
+  }
+
   findOtherAccommodationByItsOccupier(participant: IParticipant) {
     return this.store.select(fromOtherAccommodations.getOtherAccommodations).pipe(
       take(1),
@@ -29,7 +33,6 @@ export class OtherAccommodationService {
         if (participant.zakwaterowanie) {
           this.occupiersOtherAccommodation = otherAccommodationList.filter(a => a.pokój === participant.zakwaterowanie)[0];
         };
-        // console.log('To jest occupiersOtherAccommodation: ', this.occupiersOtherAccommodation)
         return this.occupiersOtherAccommodation;
       })
     );
@@ -45,13 +48,14 @@ export class OtherAccommodationService {
         otherAccommodation = otherAccommodationList.filter(a => a.pokój === room)[0];
         return otherAccommodation;
       })
-    )
+    );
   }
 
   findParticipantByRelievedOccupiersSurname() {
     return combineLatest([
       this.store.select(fromOtherAccommodations.getActiveOtherAccommodationRelievedOccupier),
       this.store.select(fromParticipants.getParticipants)]).pipe(
+        take(1),
         map(([surname, participants]) => {
           return participants.filter(p => p.nazwisko === surname)[0];
         })

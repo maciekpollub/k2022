@@ -4,7 +4,6 @@ import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
 import { Store } from '@ngrx/store';
 import * as fromRoot from './../reducer';
-import { fetchData } from '../actions';
 export let participantsDB: IParticipant[] = [];
 export let accommodationsDB: IAccommodation[] = []
 export let otherAccommodationsDB: IOtherAccommodation[] = [];

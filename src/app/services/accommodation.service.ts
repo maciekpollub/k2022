@@ -9,7 +9,6 @@ import * as fromAccommodations from '../accommodation/accommodation.reducer';
 import * as fromParticipants from '../participants/participants.reducer';
 import { isSaveAccommodationButtonRecentlyClicked } from '../accommodation/accommodation.reducer';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -64,7 +63,6 @@ export class AccommodationService implements OnDestroy {
       this.store.select(fromParticipants.getParticipants)]).pipe(
         take(1),
         map(([surname, participants]) => {
-          console.log('Nazwisko okupanta zwolnionej akomodacji to : ', surname);
           return participants.filter(p => p.nazwisko === surname)[0];
         })
       );
