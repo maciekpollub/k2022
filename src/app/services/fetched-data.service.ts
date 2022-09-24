@@ -32,12 +32,8 @@ export class FetchedDataService {
     let mappedList: IParticipant[];
     mappedList = list.map((el: any) => {
       if (el.hasOwnProperty('id')) {
-        // console.log('______________________________ten I przypadek')
-        // console.log('To jest el ', {...el})
         return {...el};
       } else {
-        // console.log('______________________________ten II przypadek')
-        // console.log('To jest el ', {...el})
         return {
           'id': el['Id '],
           'wspólnota': el['Wspólnota'],
@@ -46,16 +42,16 @@ export class FetchedDataService {
           'przydział': el['Przydział'],
           'zakwaterowanie': el['Zakwaterowanie'] || el['zakwaterowanie'],
           'samochód': el['Środek transportu (własny samochód lub brak)'],
-          'prezbiter': el['Prezbiterzy'] ?? null,
-          'małżeństwo': el['Małżeństwa (il osób)'] ?? null,
-          'kobiety': el['Kobiety (1)'] ?? null,
-          'mężczyźni': el['Mężczyźni (1)'] ?? null,
-          'niemowlęta': el['Niemowlęta i dzieci (bez dodatkowego łóżka i posiłku)'] ?? null,
-          'dzieci': el['Dzieci większe (z łóżkiem i posiłkiem)'] ?? null,
-          'nianiaZRodziny': el['Niania z rodziny - mieszkanie z rodziną'] ?? null,
-          'nianiaObca': el['Niania obca lub z rodziny - mieszkanie osobne'] ?? null,
+          'prezbiter': el['Prezbiterzy'] ?? '',
+          'małżeństwo': el['Małżeństwa (il osób)'] ?? '',
+          'kobiety': el['Kobiety (1)'] ?? '',
+          'mężczyźni': el['Mężczyźni (1)'] ?? '',
+          'niemowlęta': el['Niemowlęta i dzieci (bez dodatkowego łóżka i posiłku)'] ?? '',
+          'dzieci': el['Dzieci większe (z łóżkiem i posiłkiem)'] ?? '',
+          'nianiaZRodziny': el['Niania z rodziny - mieszkanie z rodziną'] ?? '',
+          'nianiaObca': el['Niania obca lub z rodziny - mieszkanie osobne'] ?? '',
           'uwagi': el['Uwagi, niepełnosprawność, diety'] ?? '',
-          'wiek': el['Wiek jedynek, nianiek np 40+'] ?? null
+          'wiek': el['Wiek jedynek, nianiek np 40+'] ?? ''
         }
       }
     })
@@ -80,8 +76,8 @@ export class FetchedDataService {
           'przydział': el.przydział,
           'nazwiska': el['nazwiska zakwaterowanych'] ?? '',
           'pokój': tempRoom,
-          'razem osób': el['razem il osób'] ?? null,
-          'wspólnota': el.wspólnota ?? null
+          'razem osób': el['razem il osób'] ?? '',
+          'wspólnota': el.wspólnota ?? ''
         }
       }
     })
@@ -106,8 +102,8 @@ export class FetchedDataService {
           'wolne łóżka': el['wolne łóżka'],
           'nazwiska': el['nazwiska zakwaterowanych'] ?? '',
           'pokój': tempRoom,
-          'max il osób': el['max il osób w pokoju'] ?? null,
-          'wspólnota': el.wspólnota ?? null
+          'max il osób': el['max il osób w pokoju'] ?? '',
+          'wspólnota': el.wspólnota ?? ''
         }
       }
     })
