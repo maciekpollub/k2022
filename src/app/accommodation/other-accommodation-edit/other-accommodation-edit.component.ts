@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { IOtherAccommodation } from '../../interfaces/other-accommodation';
 import { BehaviorSubject, map, of, Subscription, withLatestFrom } from 'rxjs';
 import { markSaveParticipantBtnUnClicked } from '../../participants/actions';
-import { relieveActiveOtherAccommodationOccupier, emptyRelievedActiveOtherAccommodationOccupier, addOtherAccommodationRequest } from '../actions';
+import { relieveActiveOtherAccommodationOccupier, emptyRelievedActiveOtherAccommodationOccupier, addOtherAccommodationRequest, goToAssignedParticipant } from '../actions';
 
 @Component({
   selector: 'app-other-accommodation-edit',
@@ -94,6 +94,13 @@ export class OtherAccommodationEditComponent implements OnInit, OnDestroy {
     this.disabled$ = of(false);
   }
 
+  goToParticipant(e: Event) {
+    e.stopPropagation();
+    if(this.activeOtherAccommodation) {
+      this.store.dispatch(goToAssignedParticipant({ accommodation: this.activeOtherAccommodation}));
+    }
+  }
+
   save() {
     this.store.dispatch(markSaveOtherAccommodationBtnClicked());
     this.store.dispatch(markSaveAccommodationBtnUnClicked());
@@ -110,6 +117,6 @@ export class OtherAccommodationEditComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
-    this.store.dispatch(relieveActiveOtherAccommodationData());
+    // this.store.dispatch(relieveActiveOtherAccommodationData());
   }
 }

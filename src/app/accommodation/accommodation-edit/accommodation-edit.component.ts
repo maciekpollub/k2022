@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { IAccommodation } from '../../interfaces/accommodation';
 import { BehaviorSubject, map, of, Subscription, withLatestFrom } from 'rxjs';
 import { markSaveParticipantBtnUnClicked } from '../../participants/actions';
+import { goToAssignedParticipant } from '../actions';
 
 @Component({
   selector: 'app-accommodation-edit',
@@ -91,6 +92,13 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
     this.disabled$ = of(false);
   }
 
+  goToParticipant(e: Event) {
+    e.stopPropagation();
+    if(this.activeAccommodation) {
+      this.store.dispatch(goToAssignedParticipant({ accommodation: this.activeAccommodation}));
+    }
+  }
+
   save() {
     this.store.dispatch(markSaveAccommodationBtnClicked());
     this.store.dispatch(markSaveOtherAccommodationBtnUnClicked());
@@ -106,6 +114,7 @@ export class AccommodationEditComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
-    this.store.dispatch(relieveActiveAccommodationData());
+    // stop dispatching relieeActiveAccomodationData in order to be able to come back ...
+    // this.store.dispatch(relieveActiveAccommodationData());
   }
 }

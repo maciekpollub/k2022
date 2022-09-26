@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY, Observable, of, combineLatest } from 'rxjs';
-import { map, catchError, switchMap, tap, filter } from 'rxjs/operators';
+import { map, catchError, switchMap, tap, filter, startWith } from 'rxjs/operators';
 import { fetchAccommodationsDataRequest, updateAccommodationRequest,
       updateAccommodationSuccess, fetchAccommodationsDataSuccess } from './actions';
 import { FirebaseService } from '../services/firebase.service';
@@ -12,9 +12,12 @@ import { deleteAccommodationRequest, deleteAccommodationSuccess, addAccommodatio
         supplyAccommodationsWithFBKeysSuccess, drawAccommodationUpdateConsequences,
         closeAccommodationUpdate } from './actions';
 import { IParticipant } from '../interfaces/participant';
-import { updateParticipantRequest } from '../participants/actions';
+import { updateParticipantRequest, loadActiveParticipantDataSuccess } from '../participants/actions';
 import { IAccommodation } from '../interfaces/accommodation';
 import { FetchedDataService } from '../services/fetched-data.service';
+import { goToAssignedParticipant, relieveActiveAccommodationData } from './actions';
+import { IOtherAccommodation } from '../interfaces/other-accommodation';
+import { start } from 'repl';
 
 @Injectable()
 
@@ -43,6 +46,7 @@ export class AccommodationEffects {
       map(() => addAccommodationSuccess({ newAccommodation: action['newAccommodation'] })),
       catchError(() => EMPTY)
     )),
+    // tap(() => relieveActiveAccommodationData()),
     tap(() => this.router.navigate(['accommodation', 'buzun-list']))
   ));
 
@@ -97,6 +101,22 @@ export class AccommodationEffects {
         // tap(() => this.accomSrv.emptyRelievedActiveAccommodationOccupier())
       );
     }),
+  ));
+
+  goToAssignedParticipant$ = createEffect(() => this.actions$.pipe(
+    ofType(goToAssignedParticipant.type),
+    switchMap((action) => {
+      let acc: IAccommodation | IOtherAccommodation = action['accommodation'];
+      let participant: IParticipant;
+      return this.accomSrv.findParticipantByIncomingOccupiersSurname(acc['nazwiska']).pipe(
+        map(p => {
+          participant = p;
+          return loadActiveParticipantDataSuccess({ participantId: p.id.toString()});
+        }),
+        tap(() => this.accomSrv.goToParticipant(participant)),
+        catchError(() => EMPTY)
+      )
+    })
   ));
 
   deleteAccommodation$ = createEffect(() => this.actions$.pipe(

@@ -32,6 +32,7 @@ export class OtherAccommodationService {
       map((otherAccommodationList) => {
         if (participant.zakwaterowanie) {
           this.occupiersOtherAccommodation = otherAccommodationList.filter(a => a.pokój === participant.zakwaterowanie)[0];
+          console.log('A to jest zakwaterowanie znalezione w metodzie findOtherAccommodationByItsOccupeir: ', this.occupiersOtherAccommodation)
         };
         return this.occupiersOtherAccommodation;
       })

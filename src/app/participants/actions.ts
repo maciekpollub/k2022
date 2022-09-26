@@ -57,6 +57,11 @@ export const relieveActiveParticipantRoom = createAction(
   '[Participants] Relieve active participant room',
 )
 
+export const goToAssignedRoom = createAction(
+  '[Participant edit] Go to participants assigned room',
+  props<{ participant: IParticipant }>()
+)
+
 export const updateParticipantRequest = createAction(
   '[Participants] Update participant - request',
   props<{ participant: IParticipant, updateAcmd: boolean }>(),

@@ -91,9 +91,15 @@
         </mat-select>
         <button *ngIf="activeParticipant?.zakwaterowanie" mat-icon-button matSuffix
                 #tooltip="matTooltip"
+                matTooltip="Idź do kwatery"
+                matTooltipPosition="left">
+          <mat-icon (click)="goToRoom($event)" class="enter-icon">input</mat-icon>
+        </button>
+        <button *ngIf="activeParticipant?.zakwaterowanie" mat-icon-button matSuffix
+                #tooltip="matTooltip"
                 matTooltip="Zwolnij kwaterę"
                 matTooltipPosition="right">
-          <mat-icon (click)="relieveRoom($event)">lock_open</mat-icon>
+          <mat-icon (click)="relieveRoom($event)" class="relieve-icon">lock_open</mat-icon>
         </button>
       </mat-form-field>
 

@@ -8,6 +8,7 @@ import { IParticipant } from '../interfaces/participant';
 import * as fromAccommodations from '../accommodation/accommodation.reducer';
 import * as fromParticipants from '../participants/participants.reducer';
 import { isSaveAccommodationButtonRecentlyClicked } from '../accommodation/accommodation.reducer';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class AccommodationService implements OnDestroy {
 
   constructor(
     private store: Store<IAppState>,
+    private router: Router,
   ) { }
 
   getAccommodationsWithFBKeys() {
@@ -74,6 +76,10 @@ export class AccommodationService implements OnDestroy {
 
   checkIfSaveAccommodationBtnWasRecentlyClicked() {
     return this.store.select(isSaveAccommodationButtonRecentlyClicked);
+  }
+
+  goToParticipant(participant: IParticipant) {
+    this.router.navigate(['participants', 'edit', participant.id.toString()]);
   }
 
   ngOnDestroy(): void {

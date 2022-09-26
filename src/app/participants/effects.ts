@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY, Observable, combineLatest, of } from 'rxjs';
-import { map, catchError, switchMap, tap, finalize, mergeMap, startWith } from 'rxjs/operators';
+import { EMPTY, Observable, combineLatest, of, zip, forkJoin } from 'rxjs';
+import { map, catchError, switchMap, tap, finalize, mergeMap, startWith, filter, delay } from 'rxjs/operators';
 import { FirebaseService } from '../services/firebase.service';
 import { updateParticipantRequest, updateParticipantSuccess,
-        fetchParticipantsDataRequest, fetchParticipantsDataSuccess } from './actions';
+        fetchParticipantsDataRequest, fetchParticipantsDataSuccess, goToAssignedRoom } from './actions';
 import { Router } from '@angular/router';
 import { AccommodationService } from '../services/accommodation.service';
-import { updateAccommodationRequest, updateOtherAccommodationRequest } from '../accommodation/actions';
+import { updateAccommodationRequest, updateOtherAccommodationRequest, loadActiveAccommodationDataSuccess, loadActiveOtherAccommodationDataSuccess } from '../accommodation/actions';
 import { IAccommodation } from '../interfaces/accommodation';
 import { IOtherAccommodation } from '../interfaces/other-accommodation';
 import { OtherAccommodationService } from '../services/other-accommodation.service';
@@ -93,7 +93,7 @@ export class ParticipantsEffects {
               if(wasClicked) {this.router.navigate(['participants', 'list'])};
               return actionToTake;
             } else {
-              accom = {...accom, 'nazwiska': '', 'wspólnota': ''};
+              accom = {...accom, 'nazwiska': '', 'wspólnota': '', 'przydział': ''};
               if(!!accIsBuzuns) {
                 accomUpdated = accom;
                 actionToTake = updateAccommodationRequest({ accommodation: accomUpdated, updatePart: false });
@@ -114,7 +114,27 @@ export class ParticipantsEffects {
         catchError(() => EMPTY)
       );
     }),
-  ))
+  ));
+
+  goToAssignedRoom$ = createEffect(() => this.actions$.pipe(
+    ofType(goToAssignedRoom.type),
+    switchMap((action) => {
+      let part = action['participant'];
+      let room: IAccommodation | IOtherAccommodation;
+      return zip([this.accomSrv.findAccommodationByItsOccupier(part), this.othAccomSrv.findOtherAccommodationByItsOccupier(part)]).pipe(
+        map(([accom, othAccom]) => accom  || othAccom),
+        map(a => {
+          room = a;
+          let buzuns = room.hasOwnProperty('il tap 1-os');
+          return buzuns
+                 ? loadActiveAccommodationDataSuccess({accommodationId: a.id.toString()})
+                 : loadActiveOtherAccommodationDataSuccess({otherAccommodationId: a.id.toString()});
+        }),
+        tap(() => this.partSrv.goToRoom(room)),
+        catchError(() => EMPTY)
+      )
+    })
+  ));
 
   deleteParticipant$ = createEffect(() => this.actions$.pipe(
     ofType(deleteParticipantRequest.type),

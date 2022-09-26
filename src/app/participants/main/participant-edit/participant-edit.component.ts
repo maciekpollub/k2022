@@ -3,7 +3,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import * as fromRoot from './.././../../reducer';
 import { Store } from '@ngrx/store';
 import { relieveActiveParticpantData, relieveActiveParticipantRoom, updateParticipantRequest,
-      markSaveParticipantBtnClicked } from '../../actions';
+      markSaveParticipantBtnClicked, 
+      goToAssignedRoom} from '../../actions';
 import { Subscription, map, withLatestFrom, of, BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import * as fromParticipants from '../../participants.reducer';
 import * as fromAccommodations from '../../../accommodation/accommodation.reducer';
@@ -11,9 +12,12 @@ import * as fromOtherAccommodations from '../../../accommodation/other-accommoda
 import { IParticipant } from '../../../interfaces/participant';
 import { IOtherAccommodation } from '../../../interfaces/other-accommodation';
 import { IAccommodation } from '../../../interfaces/accommodation';
-import { markSaveAccommodationBtnUnClicked, markSaveOtherAccommodationBtnUnClicked } from '../../../accommodation/actions';
+import { markSaveAccommodationBtnUnClicked, markSaveOtherAccommodationBtnUnClicked, loadActiveAccommodationDataSuccess } from '../../../accommodation/actions';
 import { ParticipantsService } from '../../../services/participants.service';
 import { addParticipantRequest } from '../../actions';
+import { AccommodationService } from '../../../services/accommodation.service';
+import { OtherAccommodationService } from 'src/app/services/other-accommodation.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-participant-edit',
@@ -41,7 +45,9 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
   constructor(
     private fB: FormBuilder,
     private store: Store<fromRoot.IAppState>,
-    private partSrv: ParticipantsService) {
+    private partSrv: ParticipantsService,
+    private accSrv: AccommodationService,
+    private othAccSrv: OtherAccommodationService) {
     this.participantForm = this.fB.group({
       'wspólnota': ['', Validators.required],
       'obecność': [''],
@@ -72,7 +78,9 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
           if(participant) {
             this.editMode = true;
             this.activeParticipant = participant;
+            console.log('To jest aktywny participant: ', participant)
             this.participantForm.patchValue(participant);
+            console.log('To jest partForm: ', this.participantForm.value)
             this.buttonText = 'Aktualizuj';
             this.headerText = 'Edytuj uczestnika'
           }
@@ -120,6 +128,13 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
     this.disabled$ = of(false);
   }
 
+  goToRoom(e: Event) {
+    e.stopPropagation();
+    if(this.activeParticipant) {
+      this.store.dispatch(goToAssignedRoom({ participant: this.activeParticipant}));
+    }
+  }
+
   save() {
     if (!this.editMode) {
       const newPartObj = {...this.participantForm.value, id: Date.now() };
@@ -135,7 +150,8 @@ export class ParticipantEditComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
-    this.store.dispatch(relieveActiveParticpantData());
+    // stop dipatching relieveActiveParticipantData in order to be able to come back to partEdition by 'Powrót' button
+    // this.store.dispatch(relieveActiveParticpantData());
   }
 
 }

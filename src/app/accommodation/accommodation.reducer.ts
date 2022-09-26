@@ -46,7 +46,7 @@ const _accommodationsReducer = createReducer(
       activeAccommodationWithRelievedOccupier = {
         ...state.activeAccommodation,
         'nazwiska': '',
-        'wspólnota': ''
+        'wspólnota': '',
       };
       relievedOccupier = state.activeAccommodation.nazwiska;
     }

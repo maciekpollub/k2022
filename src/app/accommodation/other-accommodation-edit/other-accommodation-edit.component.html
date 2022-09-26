@@ -59,9 +59,15 @@
         </mat-autocomplete>
         <button *ngIf="activeOtherAccommodation?.nazwiska" mat-icon-button matSuffix
                 #tooltip="matTooltip"
+                matTooltip="Idź do lokatorów"
+                matTooltipPosition="left">
+          <mat-icon (click)="goToParticipant($event)" class="enter-icon" style="font-size: 24px; display: inline-block;">input</mat-icon>
+        </button>
+        <button *ngIf="activeOtherAccommodation?.nazwiska" mat-icon-button matSuffix
+                #tooltip="matTooltip"
                 matTooltip="Odłącz lokatorów"
                 matTooltipPosition="right">
-          <mat-icon (click)="relieveOccupier($event)" style="font-size: 24px;">lock_open</mat-icon>
+          <mat-icon (click)="relieveOccupier($event)" class="relieve-icon" style="font-size: 24px; display: inline-block; padding: 10px;">lock_open</mat-icon>
         </button>
       </mat-form-field>
 

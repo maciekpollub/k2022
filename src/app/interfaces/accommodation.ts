@@ -5,7 +5,7 @@ export interface IAccommodation {
   'il tap 1-os': number;
   'można dostawić': number;
   'wolne łóżka': number;
-  'przydział': number;
+  'przydział': number | string;
   'nazwiska': string | null;
   'pokój': string;
   'razem osób': number | null;

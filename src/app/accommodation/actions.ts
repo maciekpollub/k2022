@@ -107,6 +107,11 @@ export const relieveActiveAccommodationOccupier = createAction(
   '[Accommodation edit] Relieve active accommodation occupier',
 )
 
+export const goToAssignedParticipant = createAction(
+  '[Accommodation edit] Go to accommodation assigned participant',
+  props<{ accommodation: IAccommodation | IOtherAccommodation }>()
+)
+
 export const relieveActiveOtherAccommodationData = createAction(
   '[Accommodations] Relieve active other accommodation data',
 )

@@ -4,6 +4,8 @@ import { Store } from '@ngrx/store';
 import { IAppState } from '../reducer';
 import { setCTAVisibility } from '../actions';
 import { Subscription } from 'rxjs';
+import { relieveActiveAccommodationData, relieveActiveOtherAccommodationData } from '../accommodation/actions';
+import { relieveActiveParticpantData } from '../participants/actions';
 
 export interface IMenuItem {
   name: string;
@@ -48,7 +50,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
         break;
       };
       case 'new': {
-        // this.router.navigate([this.currentRoute.replace('list', path)]);
+        this.store.dispatch(relieveActiveParticpantData());
         this.router.navigate(['participants', 'new']);
         break;
       }
@@ -56,6 +58,16 @@ export class SideMenuComponent implements OnInit, OnDestroy {
         this.router.navigate([path, 'buzun-list']);
         break;
       };
+      case 'new-accommodation': {
+        this.store.dispatch(relieveActiveAccommodationData());
+        this.router.navigate(['accommodation', path]);
+        break;
+      };
+      case 'new-other-accommodation': {
+        this.store.dispatch(relieveActiveOtherAccommodationData());
+        this.router.navigate(['accommodation', path]);
+        break;
+      }
       default: {
         this.router.navigate(['accommodation', path]);
         break;

@@ -37,7 +37,7 @@ const _participantsReducer = createReducer(
   })),
   on(loadActiveParticipantDataSuccess, (state, { participantId }) => ({
     ...state,
-    activeParticipant: state.participants.find(p => p.id === +participantId)
+    activeParticipant: state.participants.find(p => +p.id === +participantId)
   })),
   on(relieveActiveParticpantData, (state) => ({
     ...state,
@@ -49,7 +49,7 @@ const _participantsReducer = createReducer(
     if(state.activeParticipant) {
       activeParticipantWithRelievedAccommodation = {
         ...state.activeParticipant,
-        'zakwaterowanie': ''
+        'zakwaterowanie': '',
       };
       relievedRoom = state.activeParticipant.zakwaterowanie;
     }
