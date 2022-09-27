@@ -121,11 +121,12 @@ export class ParticipantsEffects {
     switchMap((action) => {
       let part = action['participant'];
       let room: IAccommodation | IOtherAccommodation;
-      return zip([this.accomSrv.findAccommodationByItsOccupier(part), this.othAccomSrv.findOtherAccommodationByItsOccupier(part)]).pipe(
+      return combineLatest([this.accomSrv.findAccommodationByItsOccupier(part), this.othAccomSrv.findOtherAccommodationByItsOccupier(part)]).pipe(
         map(([accom, othAccom]) => accom  || othAccom),
         map(a => {
           room = a;
           let buzuns = room.hasOwnProperty('il tap 1-os');
+          console.log('To jest znalieziony pokój w metodzie goToAssgnedRoom: ', a);
           return buzuns
                  ? loadActiveAccommodationDataSuccess({accommodationId: a.id.toString()})
                  : loadActiveOtherAccommodationDataSuccess({otherAccommodationId: a.id.toString()});

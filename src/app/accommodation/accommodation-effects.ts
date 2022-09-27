@@ -106,7 +106,7 @@ export class AccommodationEffects {
   goToAssignedParticipant$ = createEffect(() => this.actions$.pipe(
     ofType(goToAssignedParticipant.type),
     switchMap((action) => {
-      let acc: IAccommodation | IOtherAccommodation = action['accommodation'];
+      let acc: IAccommodation | IOtherAccommodation = action['room'];
       let participant: IParticipant;
       return this.accomSrv.findParticipantByIncomingOccupiersSurname(acc['nazwiska']).pipe(
         map(p => {

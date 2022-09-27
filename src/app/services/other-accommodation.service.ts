@@ -31,7 +31,13 @@ export class OtherAccommodationService {
       take(1),
       map((otherAccommodationList) => {
         if (participant.zakwaterowanie) {
-          this.occupiersOtherAccommodation = otherAccommodationList.filter(a => a.pokój === participant.zakwaterowanie)[0];
+          this.occupiersOtherAccommodation = otherAccommodationList.filter(a => {
+            if(a.nazwiska) {
+              return a.pokój === participant.zakwaterowanie && a.nazwiska?.trim() === participant.nazwisko?.trim();
+            } else {
+              return a.pokój === participant.zakwaterowanie;
+            }
+          })[0];
           console.log('A to jest zakwaterowanie znalezione w metodzie findOtherAccommodationByItsOccupeir: ', this.occupiersOtherAccommodation)
         };
         return this.occupiersOtherAccommodation;

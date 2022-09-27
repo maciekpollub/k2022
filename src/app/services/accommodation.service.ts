@@ -32,7 +32,14 @@ export class AccommodationService implements OnDestroy {
       take(1),
       map((accommodationList) => {
         if (participant.zakwaterowanie) {
-          this.occupiersAccommodation = accommodationList.filter(a => a.pokój === participant.zakwaterowanie)[0];
+          this.occupiersAccommodation = accommodationList.filter(a => {
+            if(a.nazwiska) {
+              return a.pokój === participant.zakwaterowanie && a.nazwiska?.trim() === participant.nazwisko?.trim();
+            } else {
+              return a.pokój === participant.zakwaterowanie;
+            }
+          })[0];
+          console.log('A to jest zakwaterowanie znalezione w metodzie findAccommodationByItsOccupeir: ', this.occupiersAccommodation)
         };
         return this.occupiersAccommodation;
       })
@@ -55,7 +62,7 @@ export class AccommodationService implements OnDestroy {
   findParticipantByIncomingOccupiersSurname(surname: string) {
     return this.store.select(fromParticipants.getParticipants).pipe(
       take(1),
-      map((participants: IParticipant[]) => participants.filter(p => p['nazwisko'] === surname)[0])
+      map((participants: IParticipant[]) => participants.filter(p => p['nazwisko']?.trim() === surname?.trim())[0])
     );
   }
 

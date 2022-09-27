@@ -97,7 +97,7 @@ export class OtherAccommodationEditComponent implements OnInit, OnDestroy {
   goToParticipant(e: Event) {
     e.stopPropagation();
     if(this.activeOtherAccommodation) {
-      this.store.dispatch(goToAssignedParticipant({ accommodation: this.activeOtherAccommodation}));
+      this.store.dispatch(goToAssignedParticipant({ room: this.activeOtherAccommodation}));
     }
   }
 
